@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @Log
-@RequestMapping("/member/")
+@RequestMapping("/accounts/")
 public class LoginController {
     @RequestMapping(value = "/login")
     public ModelAndView goLogin(HttpServletRequest request) throws Exception {

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.lnworks.monitor.mapper.member.LoginUser">
+
+    <resultMap type="net.lnworks.monitor.util.DataListMap" id="DataMapVO" />
+
+    <select id="getUserInfo" parameterType="net.lnworks.monitor.domain.LoginVO" resultMap="DataMapVO">
+        <!-- 메인화면 진입 1번째 쿼리 -->
+        <![CDATA[
+        SELECT USER_ID AS USER_ID
+             , M.ESNTL_ID AS PASSWORD
+             , 1 ENABLED
+             , USER_NM
+             , EMAIL_ADRES AS USER_EMAIL
+             , 'USR' AS USER_SE
+             , STDYINST_ID
+             , M.ESNTL_ID
+             , ADMINAT1 AS ADMINAT
+             , ADMINAT2 AS ROLEADMINAT
+             , IFNULL(STPLATINFO_AGRE_AT, 'N') AS stplatinfoAgreAt
+             , IF(M.PSWD_LAST_PNTTM <= DATE_SUB(NOW(), INTERVAL 3 MONTH), 'Y','N') AS PSWD_MON_OVR
+        FROM COMTNUSERINFO M,
+             (
+                 SELECT T1.ESNTL_ID, IF(IFNULL(SUM(CASE WHEN T1.AUTHOR_CODE IN ('ROLE_ADMIN', 'SUB_ADMIN') THEN 1 ELSE
+                     0 END),0)=0,'N','Y') AS ADMINAT1, IF(IFNULL(SUM(CASE WHEN T1.AUTHOR_CODE IN ('ROLE_ADMIN')
+                                                                              THEN 1 ELSE 0 END),0)=0,'N','Y') AS ADMINAT2
+                 FROM SYSMEMBAUTHORINFO T1
+                          JOIN COMTNAUTHORINFO T2 ON T2.AUTHOR_CODE = T1.AUTHOR_CODE
+                 GROUP BY T1.ESNTL_ID
+             ) TA
+        WHERE M.ESNTL_ID = TA.ESNTL_ID
+          AND M.USER_ID = #{id}
+        ]]>
+    </select>
+
+    <select id="getUserauthority" parameterType="net.lnworks.monitor.domain.LoginVO" resultMap="DataMapVO">
+        <!-- 메인화면 진입 2번째 쿼리 -->
+        <![CDATA[
+        SELECT A.ESNTL_ID USER_ID, A.AUTHOR_CODE AUTHORITY
+        FROM SYSMEMBAUTHORINFO A
+           , COMVNUSERMASTER B
+        WHERE A.ESNTL_ID = B.ESNTL_ID
+          AND B.USER_ID = #{id}
+        ]]>
+    </select>
+
+    <select id="getLoginUser" parameterType="net.lnworks.monitor.domain.LoginVO" resultType="net.lnworks.monitor.domain.LoginVO">
+        <!-- 일반회원 -->
+        <if test='userSe == "GNR"' >
+            <![CDATA[
+			SELECT mber_id AS id
+			     , mber_nm AS name
+			     , ihidNum AS ihidNum
+			     , password AS password
+			     , mber_email_adres AS email
+			     , 'GNR' AS userSe
+			     , '-' AS orgnztId
+			     , esntl_id AS uniqId
+			  FROM COMTNGNRLMBER
+			 WHERE mber_id = #{id}
+			   AND mber_sttus = 'P'
+			]]>
+        </if>
+        <!-- 기업회원 -->
+        <if test='userSe == "ENT"' >
+            <![CDATA[
+			SELECT ENTRPRS_MBER_ID AS id
+			     , cmpny_nm AS name
+			     , entrprs_mber_password AS password
+			     , bizrno AS ihidNum
+			     , applcnt_email_adres AS email
+			     , 'ENT' AS userSe
+			     , '-' AS orgnztId
+			     , esntl_id AS uniqId
+			  FROM COMTNENTRPRSMBER
+			 WHERE ENTRPRS_MBER_ID = #{id}
+			   AND entrprs_mber_sttus = 'P'
+			]]>
+        </if>
+        <!-- 업무사용자 -->
+        <if test='userSe == "USR"' >
+            <![CDATA[
+            SELECT E.USER_ID AS id
+            , E.user_nm AS name
+            , password AS password
+            , E.email_adres AS email
+            , 'USR' AS userSe
+            , E.STDYINST_ID AS stdyinstId
+            , E.ESNTL_ID AS uniqId
+            , B.IP_INFO AS ip
+            , IFNULL(E.STPLATINFO_AGRE_AT, 'N') AS STPLATINFO_AGRE_AT
+            FROM COMTNUSERINFO E
+            LEFT OUTER JOIN COMTNLOGINPOLICY B
+            ON E.ESNTL_ID = B.ESNTL_ID
+            WHERE 1=1
+            AND BINARY(E.USER_ID) = REPLACE(#{id},'SYSsu.','')
+            ]]>
+        </if>
+    </select>
+
+</mapper>

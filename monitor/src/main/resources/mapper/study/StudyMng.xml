@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.lnworks.monitor.mapper.study.StudyMng">
+
+    <select id="selectMainStudyList" parameterType="net.lnworks.monitor.domain.LoginVO" resultType="net.lnworks.monitor.domain.StudyInfoMngVO">
+        <!-- 상위 연구과제 -->
+        <![CDATA[
+        SELECT T1.STUDY_ID AS studyId,
+               T1.STUDY_NO AS studyNo,
+               CONCAT(IF(T1.STUDY_STTUS_CODE != '20',CONCAT('[',TCST.CODE_NM,']'),''), T1.STUDY_NAME) AS studyNm,
+               T1.CTCAE_VER AS ctcaeVer,
+               T1.CAUSALITY_KIND_TYPE AS causalityKindType,
+               #{uniqId} AS uniqId
+        FROM AEMSTUDY T1
+                 JOIN (SELECT STUDY_ID FROM AEMCLINCINST GROUP BY STUDY_ID) TCHK
+                      ON T1.STUDY_ID = TCHK.STUDY_ID
+                 JOIN COMTCCMMNDETAILCODE TCST ON TCST.CODE_ID = 'AEM002' AND TCST.CODE = T1.STUDY_STTUS_CODE
+                 LEFT JOIN AEMSTDYUSER T2 ON T1.STUDY_ID = T2.STUDY_ID AND T2.ESNTL_ID = #{uniqId},
+             (SELECT COUNT(*) AS CNT
+              FROM SYSMEMBAUTHORINFO TA
+              WHERE TA.ESNTL_ID = #{uniqId}
+                AND TA.AUTHOR_CODE IN ('ROLE_ADMIN')) TA
+        WHERE (TA.CNT > 0 OR (TA.CNT = 0 AND T1.STUDY_STTUS_CODE IN ('10', '20') AND T2.ESNTL_ID = #{uniqId}))
+        ORDER BY TCST.CODE_NM DESC, T1.STUDY_NAME, T1.STUDY_NO
+        ]]>
+    </select>
+
+    <select id="selectMainInstList" parameterType="net.lnworks.monitor.domain.StudyInfoMngVO" resultType="net.lnworks.monitor.domain.InstMngVO">
+	    <!--하위 연구과제-->
+        <![CDATA[
+        SELECT T1.STDYINST_ID AS stdyInstId,
+               CONCAT(IF(T2.MNNST_AT='Y','*주관* ',''),T1.STDYINST_NAME) AS stdyInstName,
+               #{studyId} AS studyId,
+               #{uniqId} AS uniqId
+        FROM AEMSTDYINST T1 LEFT
+                                JOIN AEMCLINCINST T2 ON T1.STDYINST_ID = T2.STDYINST_ID,
+             (SELECT COUNT(*) AS CNT
+              FROM SYSMEMBAUTHORINFO TAI
+              WHERE TAI.ESNTL_ID = #{uniqId} AND TAI.AUTHOR_CODE IN ('ROLE_ADMIN', 'SUB_ADMIN')) TC,
+             (SELECT COUNT(*) AS CNT
+              FROM AEMSTDYUSER TSU
+              WHERE TSU.ESNTL_ID = #{uniqId} and TSU.STUDY_ID = #{studyId} AND (TSU.STUDY_CI_AT = 'Y' OR TSU.STUDY_GRM_AT = 'Y')) TC2
+        WHERE T2.STUDY_ID = #{studyId}
+          AND (TC.CNT > 0 OR TC2.CNT > 0 OR (TC.CNT = 0
+            AND T1.STDYINST_ID IN (SELECT TSU.CLINCINST_ID
+                                   FROM AEMSTDYUSER TSU
+                                   WHERE TSU.ESNTL_ID = #{uniqId})))
+        ORDER BY T2.MNNST_AT DESC, T1.STDYINST_NAME
+        ]]>
+	</select>
+
+</mapper>

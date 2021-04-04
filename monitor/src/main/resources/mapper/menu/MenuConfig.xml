@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.lnworks.monitor.mapper.menu.MenuConfig">
+    <resultMap type="net.lnworks.monitor.util.DataListMap" id="DataMapVO" />
+
+    <select id="getLevelOneMenuList" parameterType="net.lnworks.monitor.domain.MenuManageVO" resultMap="DataMapVO">
+        <!-- 상단 대메뉴(1레벨) 리스트. 사용자메뉴 -->
+        <![CDATA[
+        SELECT menuNo, menuOrdr, menuNm, upperMenuId, menuDc, relateImagePath, relateImageNm, progrmFileNm,
+               (SELECT C.URL FROM COMTNPROGRMLIST C WHERE TV.progrmFileNm = C.PROGRM_FILE_NM) AS chkURL,
+               (SELECT C.URL_TYPE FROM COMTNPROGRMLIST C WHERE TV.progrmFileNm = C.PROGRM_FILE_NM) AS urlType,
+               MAX(menuCtrlType) AS menuCtrlType,
+               GET_SUBMENU_CNT(menuNo) as cntSubmenu
+        FROM (SELECT  B.MENU_NO AS menuNo
+                    , B.MENU_ORDR AS menuOrdr
+                    , B.MENU_NM AS menuNm
+                    , B.UPPER_MENU_NO AS upperMenuId
+                    , B.MENU_DC AS menuDc
+                    , B.RELATE_IMAGE_PATH AS relateImagePath
+                    , B.RELATE_IMAGE_NM AS relateImageNm
+                    , B.PROGRM_FILE_NM AS progrmFileNm
+                    , (SELECT C.URL FROM COMTNPROGRMLIST C WHERE B.PROGRM_FILE_NM = C.PROGRM_FILE_NM) AS chkURL
+                    , IFNULL(A.MENU_CTRL_TYPE,'R') AS menuCtrlType /* W or R */
+              FROM COMTNMENUCREATDTLS A,
+                   COMTNMENUINFO B
+              WHERE B.UPPER_MENU_NO = '1000000' /*사용자메뉴*/
+                AND IF(UPPER(#{intnetSysAt}) = 'Y'
+                     , IF((SELECT IFNULL(MAX(1),0) FROM SYSMEMBAUTHORINFO WHERE AUTHOR_CODE = 'ROLE_ADMIN' AND ESNTL_ID = #{tmpUniqId})=1,'Y',B.INTNET_OPEN_AT)
+                     , 'Y'
+                    ) = 'Y'
+                AND A.MENU_NO  = B.MENU_NO
+                AND A.AUTHOR_CODE IN (SELECT C.AUTHOR_CODE FROM SYSMEMBAUTHORINFO C
+                                      WHERE C.ESNTL_ID = #{tmpUniqId})
+              ) TV
+        GROUP BY menuNo, menuOrdr, menuNm, upperMenuId, menuDc, relateImagePath, relateImageNm, progrmFileNm, chkURL, urlType, cntSubmenu
+        ORDER BY menuOrdr
+		]]>
+    </select>
+
+    <select id="getLevelAllMenuList" parameterType="net.lnworks.monitor.domain.MenuManageVO" resultMap="DataMapVO">
+        <!-- 상단 세부메뉴(2레벨) 리스트. 관리자메뉴 -->
+        <![CDATA[
+        SELECT   B.MENU_NO AS menuNo,
+             B.MENU_ORDR AS menuOrdr,
+             B.MENU_NM AS menuNm,
+             C.UPMENU_ORDR AS upperMenuOrdr,
+             B.UPPER_MENU_NO AS upperMenuId,
+             B.MENU_DC AS menuDc,
+             B.RELATE_IMAGE_PATH AS relateImagePath,
+             B.RELATE_IMAGE_NM AS relateImageNm,
+             B.PROGRM_FILE_NM AS progrmFileNm,
+             (SELECT CONCAT(C.URL,IF(LOCATE(CHAR(63),LOWER(URL))=0,CHAR(63),'&'),'authMenuNo=',B.MENU_NO) AS URL
+              FROM   COMTNPROGRMLIST C
+              WHERE  B.PROGRM_FILE_NM = C.PROGRM_FILE_NM
+             ) AS chkURL,
+             (SELECT C.URL_TYPE FROM COMTNPROGRMLIST C WHERE B.PROGRM_FILE_NM = C.PROGRM_FILE_NM) AS urlType,
+             IFNULL(A.MENU_CTRL_TYPE, 'R') AS menuCtrlType /* W or R */
+        FROM (SELECT MENU_NO,
+                     MAX(IFNULL(MENU_CTRL_TYPE,'R')) AS MENU_CTRL_TYPE
+              FROM COMTNMENUCREATDTLS
+              WHERE AUTHOR_CODE IN (SELECT C.AUTHOR_CODE FROM SYSMEMBAUTHORINFO C
+                                      WHERE  C.ESNTL_ID = #{tmpUniqId})
+              GROUP BY MENU_NO
+             ) A,
+             COMTNMENUINFO B,
+             VW_MENU_TREE C
+        WHERE B.UPPER_MENU_NO <> '0'
+          AND B.MENU_GROUP_SE = 'USR'
+          AND IF(UPPER(#{intnetSysAt}) = 'Y'
+                 , IF((SELECT IFNULL(MAX(1),0) FROM SYSMEMBAUTHORINFO WHERE AUTHOR_CODE = 'ROLE_ADMIN' AND ESNTL_ID = #{tmpUniqId})=1,'Y',B.INTNET_OPEN_AT)
+                 , 'Y'
+              ) = 'Y'
+          AND A.MENU_NO = B.MENU_NO
+          AND B.MENU_NO = C.NO
+          AND C.STARTNO = 0
+        ORDER BY C.LVL, MENU_ORDR
+		]]>
+    </select>
+
+</mapper>

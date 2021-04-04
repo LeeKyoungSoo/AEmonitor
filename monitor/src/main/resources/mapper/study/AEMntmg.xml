@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.lnworks.monitor.mapper.study.AEMntmg">
+
+    <select id="selectPrtcpntList" parameterType="net.lnworks.monitor.domain.study.AEMntrngParamVO" resultType="net.lnworks.monitor.domain.study.AEMStdyPrtcpntVO">
+        <![CDATA[
+        SELECT studyId, prtcpntId, enrlNo, initial
+               ,CONCAT(symptmsCnt,' ',IF(visitScheduledDe1 IS NOT NULL,'방문','')) AS newSymptms
+               ,sexdstnCode, telno, birthday, pcnAppId
+               ,IFNULL(visitScheduledDe1, visitScheduledDe2) AS visitForecastDe
+               ,cnfrmrNm
+        FROM (
+                SELECT TD.STUDY_ID AS studyid
+                    , TD.PRTCPNT_ID AS prtcpntId
+                    , TD.ENRL_NO AS enrlNo
+                    , TP.INITIAL AS initial
+                    , CONCAT(IFNULL(TS.SCNT,0),'(',IFNULL(TS.SCNTALL,0),')') AS symptmsCnt
+                    , TP.SEXDSTN_CODE AS sexdstnCode
+                    , TP.TELNO AS telno
+                    , CONCAT_WS('-', LPAD(TP.BRTHDY_YEAR, 4, '0'), LPAD(TP.BRTHDY_MONTH, 2, '0'), LPAD(IFNULL(TP.BRTHDY_DATE,''), 2, '0')) AS birthday
+                    , TP.PCN_APP_ID AS pcnAppId
+                    , (SELECT MIN(DATE_FORMAT(DATE_ADD(TD.MDCTN_STRTDE, INTERVAL TVS.TERM_DAYS DAY), '%Y%m%d'))
+                        FROM AEMVISITRULE TVS
+                        WHERE STUDY_ID = #{studyId}
+                          AND DATEDIFF(DATE(NOW()), TD.MDCTN_STRTDE) BETWEEN (TERM_DAYS - ALWNC_DAYS) AND (TERM_DAYS + ALWNC_DAYS)
+                    ) AS visitScheduledDe1
+                    , TU.USER_NM AS cnfrmrNm
+                    , (SELECT DATE_FORMAT(MIN(DATE_ADD(TD.MDCTN_STRTDE, INTERVAL TVS.TERM_DAYS DAY)), '%Y%m%d')
+                        FROM AEMVISITRULE TVS
+                        WHERE STUDY_ID = #{studyId}
+                          AND DATE_ADD(TD.MDCTN_STRTDE, INTERVAL TVS.TERM_DAYS DAY) > IFNULL(LAST_VISITDE, NOW())
+                    ) AS visitScheduledDe2
+                FROM AEMSTDYPRTCPNT TD
+                     JOIN AEMPRTCPNT TP ON TP.PRTCPNT_ID = TD.PRTCPNT_ID
+                     LEFT JOIN (
+                        SELECT PRTCPNT_ID
+                            ,  SUM(IF(DATE_FORMAT(SYMPTMS_REGIST_DE, '%Y%m%d') BETWEEN IFNULL(NULLIF(#{startDe},''),'00000000') AND IFNULL(NULLIF(#{endDe},''),'99991231'), 1,0)) AS SCNT
+                            ,  COUNT(*) AS SCNTALL
+                        FROM AEMPRTCPNTSYMPTMS TPS
+                        WHERE STUDY_ID = #{studyId}
+                          AND NOT EXISTS (SELECT 1 FROM AEMMNTRNGSYMPTMS TMS
+                                          WHERE TMS.STUDY_ID = TPS.STUDY_ID
+                                            AND TMS.PRTCPNT_ID = TPS.PRTCPNT_ID
+                                            AND TMS.SYMPTMS_SEQ = TPS.SYMPTMS_SEQ)
+                        GROUP BY PRTCPNT_ID
+                     ) TS
+                     ON TS.PRTCPNT_ID = TD.PRTCPNT_ID
+                     LEFT JOIN (
+                        SELECT PRTCPNT_ID, MAX(SYMPTMS_STRTDE) AS LAST_VISITDE
+                        FROM AEMPRTCPNTSYMPTMS
+                        WHERE STUDY_ID = #{studyId}
+                          AND SYMPTMS_REGTYPE_CODE = '400'
+                        GROUP BY PRTCPNT_ID
+                     ) TV
+                     ON TV.PRTCPNT_ID = TD.PRTCPNT_ID
+                     LEFT JOIN COMTNUSERINFO TU ON TU.ESNTL_ID = TD.CNFRMR_ESNTL_ID
+                WHERE TD.STUDY_ID = #{studyId}
+                  AND TD.STDYINST_ID = #{stdyInstId}
+                  AND TD.PRTCPNT_END_CODE IS NULL
+                  AND TD.CNFRMR_ESNTL_ID IS NOT NULL
+                  AND TD.MDCTN_STRTDE IS NOT NULL
+        ]]>
+        <if test='allAt != "Y"'>
+            <if test='searchCnd == "1"'>
+                AND TP.INITIAL LIKE CONCAT('%', #{searchWrd}, '%')
+            </if>
+            <if test='searchCnd == "2"'>
+                AND TP.TELNO LIKE CONCAT('%', #{searchWrd}, '%')
+            </if>
+            <if test='searchCnd == "3"'>
+                AND TP.PCN_APP_ID LIKE CONCAT('%', #{searchWrd}, '%')
+            </if>
+        </if>
+        <![CDATA[
+             ) TDATA
+        WHERE 1=1
+        ]]>
+        <if test='allAt != "Y"'>
+            AND NOT(symptmsCnt IS NULL AND visitScheduledDe1 IS NULL) /* 전체일 경우 블럭 */
+        </if>
+        <if test='todayAt == "Y"'>
+            AND visitScheduledDe1 IS NOT NULL /* 오늘방문예정일 경우 */
+        </if>
+        <![CDATA[
+        ORDER BY enrlNo
+        ]]>
+    </select>
+
+</mapper>
