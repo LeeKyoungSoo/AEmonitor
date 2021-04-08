@@ -5,8 +5,7 @@ import net.lnworks.monitor.domain.InstMngVO;
 import net.lnworks.monitor.domain.LoginVO;
 import net.lnworks.monitor.domain.MenuManageVO;
 import net.lnworks.monitor.domain.StudyInfoMngVO;
-import net.lnworks.monitor.domain.study.AEMStdyPrtcpntVO;
-import net.lnworks.monitor.domain.study.AEMntrngParamVO;
+import net.lnworks.monitor.domain.study.*;
 import net.lnworks.monitor.service.member.MemberLoginService;
 import net.lnworks.monitor.service.menu.MenuConfigService;
 import net.lnworks.monitor.service.study.AEMntmgService;
@@ -16,7 +15,10 @@ import net.lnworks.monitor.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,18 +47,81 @@ public class StartController {
     @Value("${Globals.IntnetSys}")
     private String intnetSys;
 
-    @RequestMapping(value = "/examlist")
-    public ModelAndView goHome(HttpServletRequest request, Principal principal) throws Exception {
+    @RequestMapping(value = "/aeChartView")
+    public ModelAndView goAEChartView(@RequestParam (value = "studyId") String studyId,
+                                      @RequestParam (value = "prtcpntId") String prtcpntId,
+                                      @RequestParam (value = "sumrySeq") int sumrySeq,
+                                      @RequestParam (value = "mntrngSeq") int mntrngSeq) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        AEMMntrngVO inAemMntrngVO = new AEMMntrngVO();
+        inAemMntrngVO.setStudyId(studyId);
+        inAemMntrngVO.setPrtcpntId(prtcpntId);
+        inAemMntrngVO.setSumrySeq(sumrySeq);
+        inAemMntrngVO.setMntrngSeq(mntrngSeq);
+
+        AEMMntrngVO  OutAemMntrngVO =  aeMntmgService.selectAEMntrngView(inAemMntrngVO);
+
+        mav.addObject("aemMntrngVO", OutAemMntrngVO);
+        mav.setViewName("content/study/aeChartUI.html");
+
+        return mav;
+    }
+
+    @RequestMapping(value = "/symptms")
+    public ModelAndView goSymptms(@RequestParam (value = "studyId") String studyId,
+                                  @RequestParam (value = "prtcpntId") String prtcpntId,
+                                  @RequestParam (value = "symptmsSeq") int symptmsSeq) throws Exception {
+
         ModelAndView mav = new ModelAndView();
 
+        //참여자 증상 목록
+        AEMntrngSymptmsParamVO aeMntrngSymptmsParamVO = new AEMntrngSymptmsParamVO();
+
+        aeMntrngSymptmsParamVO.setStudyId(studyId);
+        aeMntrngSymptmsParamVO.setPrtcpntId(prtcpntId);
+        aeMntrngSymptmsParamVO.setSymptmsSeq(symptmsSeq);
+        AEMPrtcpntSymptmsVO aemPrtcpntSymptmsVO = aeMntmgService.selectSymptms(aeMntrngSymptmsParamVO);
+
+        if ( aemPrtcpntSymptmsVO != null ) {
+            if ( aemPrtcpntSymptmsVO.getSymptmsRegtypeCode().equals("110") ||
+                    aemPrtcpntSymptmsVO.getSymptmsRegtypeCode().equals("120") ||
+                    aemPrtcpntSymptmsVO.getSymptmsRegtypeCode().equals("130") ){
+                List<DataListMap> fileDetailList = aeMntmgService.fileDetailList(aemPrtcpntSymptmsVO);
+
+                mav.addObject("fileDetailList", fileDetailList);
+
+                List<DataListMap> filepathMap = aeMntmgService.getSysSetupFileList();
+                if ( filepathMap.size() > 0 ) {
+                    for (DataListMap filepath : filepathMap) {
+                       if ( filepath.get("setupitemCode").toString().equals("FILE_UPLOAD_DIR")) {
+                           mav.addObject("filepath", filepath.get("setupitemVal").toString());
+                           break;
+                       }
+                    }
+                }
+            }
+        }
+
+        mav.addObject("aemPrtcpntSymptmsVO", aemPrtcpntSymptmsVO);
+        mav.setViewName("content/study/aemPrtcpntSymptmsVO.html");
+
+        return mav;
+    }
+
+    @RequestMapping(value = "/examlist")
+    public ModelAndView goExamlist(HttpServletRequest request, Principal principal) throws Exception {
+        ModelAndView mav = new ModelAndView();
+
+        //사용자의 uniqId를 이용하여 처리 (AS-IS는 userId와 사용이 혼제되어 있음)
         log.info(TAG_USER + " : " +  principal.getName());
         LoginVO userVo = new LoginVO();
-        userVo.setId(principal.getName());
+        userVo.setUniqId(principal.getName());
 
         //사용자정보
         DataListMap userInfoMap = memberLoginService.getUserInfo(userVo);
         DataListMap userAuthorityMap = memberLoginService.getUserauthority(userVo);
-        userVo.setUniqId(userInfoMap.get("esntlId").toString());
+        //userVo.setUniqId(userInfoMap.get("esntlId").toString());
 
         //메뉴정보
         MenuManageVO menuManageVO = new MenuManageVO();

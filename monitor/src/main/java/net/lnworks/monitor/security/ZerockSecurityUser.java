@@ -16,7 +16,7 @@ public class ZerockSecurityUser extends User {
     private static final String ROLE_PREFIX = "ROLE_";
 
     public ZerockSecurityUser(LoginVO vo) {
-        super(vo.getId(), vo.getPassword(), makeGrantedAuthority(vo.getRoleList()));
+        super(vo.getUniqId(), vo.getPassword(), makeGrantedAuthority(vo.getRoleList()));
     }
 
     private static List<GrantedAuthority> makeGrantedAuthority(List<MemberRole> roles) {

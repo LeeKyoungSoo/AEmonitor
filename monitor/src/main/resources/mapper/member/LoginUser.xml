@@ -30,7 +30,7 @@
                  GROUP BY T1.ESNTL_ID
              ) TA
         WHERE M.ESNTL_ID = TA.ESNTL_ID
-          AND M.USER_ID = #{id}
+          AND M.ESNTL_ID = #{uniqId}
         ]]>
     </select>
 
@@ -41,7 +41,7 @@
         FROM SYSMEMBAUTHORINFO A
            , COMVNUSERMASTER B
         WHERE A.ESNTL_ID = B.ESNTL_ID
-          AND B.USER_ID = #{id}
+          AND B.ESNTL_ID = #{uniqId}
         ]]>
     </select>
 

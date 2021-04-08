@@ -24,7 +24,7 @@
                 <div class="card-body p-0">
                     <!-- Nested Row within Card Body -->
                     <div class="row">
-                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                        <div class="col-lg-6 d-none d-lg-block bg-login-image" ></div>
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
@@ -54,13 +54,13 @@
 
                                     <div th:if="${param.error != null}">
                                         <hr>
-                                        <h2>Invalid Username or password</h2>
+                                        <h2>사용자정보를 확인해 주십시오.</h2>
                                         <h2 th:value="${param.error}"></h2>
                                     </div>
 
                                     <div th:if="${param.logout != null}">
                                         <hr>
-                                        <h2>You have been logged out.</h2>
+                                        <h2>로그아웃되었습니다.</h2>
                                     </div>
 
                                     <!--
@@ -74,7 +74,7 @@
                                 </form>
 
                                 <div class="text-center">
-                                    <a class="small" href="forgot-password.html">아이디찾기</a>
+                                    <a class="small" href='javascript:alert("준비중입니다.");'>아이디찾기</a>
                                 </div>
                                 <!--
                                 <div class="text-center">

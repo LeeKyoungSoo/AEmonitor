@@ -35,7 +35,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         User user = null;
-        Collection<GrantedAuthority> authorities = null;
+        //Collection<GrantedAuthority> authorities = null;
 
         try {
             user = (User)zerockUserService.loadUserByUsername(username);
@@ -47,7 +47,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             if (!enpassword.equals(user.getPassword()))
                 throw new BadCredentialsException("비밀번호 불일치");
 
-            authorities = user.getAuthorities();
+            //authorities = user.getAuthorities();
 
         } catch(UsernameNotFoundException e) {
             e.printStackTrace();
@@ -61,7 +61,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new UsernameNotFoundException(e.getMessage());
         }
 
-        return new UsernamePasswordAuthenticationToken(username, password, authorities);
+        return new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
     }
 
     @Override

@@ -3,7 +3,307 @@
 
 <mapper namespace="net.lnworks.monitor.mapper.study.AEMntmg">
 
+    <resultMap type="net.lnworks.monitor.util.DataListMap" id="DataMapVO" />
+
+    <select id="selectAEMntrngView" parameterType="net.lnworks.monitor.domain.study.AEMMntrngVO" resultType="net.lnworks.monitor.domain.study.AEMMntrngVO">
+	<![CDATA[
+        SELECT TS.STUDY_ID AS studyId, TS.PRTCPNT_ID AS prtcpntId, TS.SUMRY_SEQ AS sumrySeq, TM.MNTRNG_SEQ AS mntrngSeq, TS.AE_NO AS aeNo, TM.REVISN_NO AS revisnNo,
+               TM.MEDDRA_CODE AS medDraCode, TM.AE_TERM_CTCAE AS aeTermCtcae, TM.AE_TERM_OTHER AS aeTermOther, TM.AE_GRADE AS aeGrade,
+               DATE_FORMAT(TM.AE_STRT_DE, '%Y%m%d') AS aeStrtDe, DATE_FORMAT(TM.AE_END_DE, '%Y%m%d') AS aeEndDe, TM.MNTRNG_MEMO AS mntrngMemo,
+               DATE_FORMAT(TM.MNTRNG_REGIST_DE, '%Y%m%d') AS mntrngRegistDe,
+               DATE_FORMAT(TM.VISIT_RESVE_DE, '%Y%m%d') AS visitResveDe, TM.MNTRNG_DCSN_AT AS mntrngDcsnAt, TM.MNTRNG_DCSN_ESNTL_ID AS mntrngDcsnEsntlId,
+               (SELECT CONCAT(TU.USER_NM, '(', TU.EMAIL_ADRES, ')') FROM COMTNUSERINFO TU WHERE TU.ESNTL_ID = TM.MNTRNG_DCSN_ESNTL_ID) AS mntrngDcsnUser,
+               TM.SAE_AT AS saeAt, TM.SAE_DEATH AS saeDeath, TM.SAE_LIFE_THRT AS saeLifeThrt, TM.SAE_HSPTLZ_NEED AS saeHsptleNeed,
+               TM.SAE_CSMALFNC AS saeCsmalfnc, TM.SAE_CSDEFORM AS saeCsdeform, TM.SAE_ETC_SITTN AS saeEtcSittn,
+               TM.CAUSALITY_CODE AS causalityCode, TM.PREDICT_AT AS predictAt, TM.AE_ACTION_CODE AS aeActionCode,
+               TM.ETC_ACTION_CODE AS etcActionCode, DATE_FORMAT(TM.MEDCIN_STOP_DE, '%Y%m%d') AS medcinStopDe, TM.AE_RSLT_CODE AS aeRsltCode,
+               DATE_FORMAT(TM.ACTION_DE, '%Y%m%d') AS actionDe, TM.ACTION_MEMO AS actionMemo, TM.ACTION_DCSN_AT AS actionDcsnAt, TM.ACTION_DCSN_ESNTL_ID AS actionDcsnEsntlId,
+               (SELECT CONCAT(TU.USER_NM, '(', TU.EMAIL_ADRES, ')') FROM COMTNUSERINFO TU WHERE TU.ESNTL_ID = IFNULL(TM.ACTION_DCSN_ESNTL_ID, T3.CNFRMR_ESNTL_ID)) AS actionDcsnUser,
+               IF(TM.MNTRNG_SEQ = T2.MAXSEQ, 'Y', 'N') AS maxRevisnAt,
+               (SELECT CONCAT(IF(IFNULL(TC.GRADE1, '-') = '-', '', CONCAT('1 ',TC.GRADE1, '\\n')), IF(IFNULL(TC.GRADE2, '-') = '-', '', CONCAT('2 ',TC.GRADE2, '\\n'))
+                           , IF(IFNULL(TC.GRADE3, '-') = '-', '', CONCAT('3 ',TC.GRADE3, '\\n')), IF(IFNULL(TC.GRADE4, '-') = '-', '', CONCAT('4 ',TC.GRADE4, '\\n'))
+                           , IF(IFNULL(TC.GRADE5, '-') = '-', '', CONCAT('5 ',TC.GRADE5))) AS gradeTitle
+                FROM AEMSTUDY TS LEFT JOIN PCNCTCAE TC ON TS.CTCAE_VER = TC.CTCAE_VER
+                WHERE TS.STUDY_ID = #{studyId}
+                  AND TC.MEDDRA_CODE = TM.MEDDRA_CODE) AS gradeDc
+        FROM AEMSUMRY TS
+                 LEFT JOIN AEMMNTRNG TM
+                           ON TS.STUDY_ID = TM.STUDY_ID
+                               AND TS.PRTCPNT_ID = TM.PRTCPNT_ID
+                               AND TS.SUMRY_SEQ = TM.SUMRY_SEQ,
+             (SELECT MAX(TM0.MNTRNG_SEQ) AS MAXSEQ
+              FROM AEMMNTRNG TM0
+              WHERE TM0.STUDY_ID = #{studyId}
+                AND TM0.PRTCPNT_ID = #{prtcpntId}
+                AND TM0.SUMRY_SEQ = #{sumrySeq}
+              GROUP BY TM0.STUDY_ID, TM0.PRTCPNT_ID, TM0.SUMRY_SEQ) T2,
+             (SELECT TP.CNFRMR_ESNTL_ID
+              FROM AEMSTDYPRTCPNT TP
+              WHERE TP.STUDY_ID = #{studyId}
+                AND TP.PRTCPNT_ID = #{prtcpntId}) T3
+        WHERE TS.STUDY_ID = #{studyId}
+          AND TS.PRTCPNT_ID = #{prtcpntId}
+          AND TS.SUMRY_SEQ = #{sumrySeq}
+          AND TM.MNTRNG_SEQ = IFNULL(#{mntrngSeq}, T2.MAXSEQ)
+        ]]>
+	</select>
+
+
+    <select id="getSysSetupFileList" resultMap="DataMapVO" >
+    	<![CDATA[
+        SELECT SETUPITEM_CODE AS setupitemCode
+             ,CASE WHEN SETUPITEM_CODE = 'FILE_UPLOAD_EXT' THEN  LOWER(SETUPITEM_VAL) ELSE SETUPITEM_VAL END AS setupitemVal
+             ,SETUPITEM_DC AS setupitemDc
+             ,SETUPITEM_ETCINFO AS setupitemEtcinfo
+        FROM SYSSETUP
+        WHERE SETUPITEM_GRP = 'CMM'
+        ]]>
+	</select>
+
+    <select id="fileDetailList" parameterType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO" resultMap="DataMapVO" >
+        <!-- 증세 첨부 -->
+        <![CDATA[
+        SELECT
+            ATCH_FILE_ID, FILE_CN, FILE_SN, FILE_STRE_COURS, STRE_FILE_NM,
+            FILE_EXTSN, ORIGNL_FILE_NM, FILE_SIZE, SORT_ORDR, SORT_ORDR AS OLD_SORT_ORDR, ENCRYPT_VAL,
+            IFNULL(STR_TO_DATE(LEFT(RIGHT(STRE_FILE_NM,17),12),'%Y%m%d%H%i%s'),
+            (SELECT M.CREAT_DT FROM COMTNFILE M WHERE M.ATCH_FILE_ID = COMTNFILEDETAIL.ATCH_FILE_ID)) CREAT_DT
+        FROM COMTNFILEDETAIL
+        WHERE ATCH_FILE_ID = #{atchFileId}
+        ORDER BY SORT_ORDR ASC, FILE_SN ASC
+        ]]>
+    </select>
+
+    <select id="selectSymptms" parameterType="net.lnworks.monitor.domain.study.AEMntrngSymptmsParamVO" resultType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
+	    <!-- 증세 상세 -->
+        <![CDATA[
+        SELECT TPS.STUDY_ID AS studyId, TPS.PRTCPNT_ID AS prtcpntId, TPS.SYMPTMS_SEQ AS symptmsSeq, TPS.SYMPTMS_REGTYPE_CODE AS symptmsRegtypeCode,
+               DATE_FORMAT(TPS.SYMPTMS_REGIST_DE, '%Y%m%d') AS symptmsRegistDe, TPS.SYMPTMS_TITLE AS symptmsTitle,
+               DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y%m%d') AS symptmsStrtDe,
+               DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y%m%d') AS symptmsEndDe,
+               CONCAT_WS('~',DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d'), IFNULL(DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y-%m-%d'),'')) AS symptmsDe,
+               TPS.SYMPTMS_CN AS symptmsCn, TPS.ATCH_FILE_ID AS atchFileId,
+               TPS.OUTBND_CALL_AT AS outbndCallAt, TPS.CALL_PARTNER AS callPartner, TPS.VISIT_TYPE_CODE AS visitTypeCode, TPS.VISITRULE_SEQ AS visitRuleSeq,
+               (SELECT TRMT_STEP
+                FROM AEMVISITRULE TVR
+                WHERE TVR.STUDY_ID = TPS.STUDY_ID
+                  AND TVR.VISITRULE_SEQ = TPS.VISITRULE_SEQ) AS trmtStep,
+               (SELECT TU.USER_NM FROM COMTNUSERINFO TU WHERE TU.ESNTL_ID = TPS.FRST_REGISTER_ID) AS registerNm,
+               IF(T1.CNT > 0, 'Y', 'N') AS useAt
+        FROM AEMPRTCPNTSYMPTMS TPS
+                 LEFT JOIN (
+            SELECT TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ, COUNT(*) AS CNT
+            FROM AEMMNTRNGSYMPTMS TMS
+            GROUP BY TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ) T1
+                           ON TPS.STUDY_ID = T1.STUDY_ID
+                               AND TPS.PRTCPNT_ID = T1.PRTCPNT_ID
+                               AND TPS.SYMPTMS_SEQ = T1.SYMPTMS_SEQ
+        WHERE TPS.STUDY_ID = #{studyId}
+          AND TPS.PRTCPNT_ID = #{prtcpntId}
+          AND TPS.SYMPTMS_SEQ = #{symptmsSeq}
+        ]]>
+	</select>
+
+    <select id="selectAETree" parameterType="net.lnworks.monitor.domain.study.AEMntrngTreeParamVO" resultType="net.lnworks.monitor.domain.study.AEMntrngTreeVO">
+        <!-- 참여자 AE Tree -->
+        <![CDATA[
+        SELECT studyId, prtcpntId, sumrySeq, mntrngSeq, symptmsSeq, treeKey, level, code, treeItem
+        FROM
+        (
+        SELECT TMS.STUDY_ID AS studyId
+            ,  TMS.PRTCPNT_ID AS prtcpntId
+            ,  TMS.SUMRY_SEQ AS sumrySeq
+            ,  TMS.MNTRNG_SEQ AS mntrngSeq
+            ,  TMS.SYMPTMS_SEQ AS symptmsSeq
+            ,  CONCAT_WS('|',TMS.STUDY_ID,TMS.PRTCPNT_ID,TMS.SUMRY_SEQ,TMS.MNTRNG_SEQ,TMS.SYMPTMS_SEQ) AS treeKey
+            ,  3 AS level
+            ,  '' AS code
+            ,  CONCAT('[',CONCAT_WS('][', CMMCD.CODE_NM, TPS.SYMPTMS_TITLE, CONCAT_WS('~',DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d'),IFNULL(DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y-%m-%d'), ''))),']')
+            AS treeItem
+        FROM AEMMNTRNGSYMPTMS TMS
+             JOIN AEMPRTCPNTSYMPTMS TPS
+             ON TPS.STUDY_ID = TMS.STUDY_ID AND TPS.PRTCPNT_ID = TMS.PRTCPNT_ID AND TPS.SYMPTMS_SEQ = TMS.SYMPTMS_SEQ
+             JOIN AEMSUMRY TSJ
+             ON TSJ.STUDY_ID = TMS.STUDY_ID AND TSJ.PRTCPNT_ID = TMS.PRTCPNT_ID AND TSJ.SUMRY_SEQ = TMS.SUMRY_SEQ
+             JOIN AEMMNTRNG TM
+             ON TM.STUDY_ID = TMS.STUDY_ID AND TM.PRTCPNT_ID = TMS.PRTCPNT_ID AND TM.SUMRY_SEQ = TMS.SUMRY_SEQ AND TM.MNTRNG_SEQ = TMS.MNTRNG_SEQ
+             LEFT JOIN COMTCCMMNDETAILCODE CMMCD
+             ON CMMCD.CODE_ID = 'AEM007'  AND CMMCD.CODE = TPS.SYMPTMS_REGTYPE_CODE
+        WHERE TMS.STUDY_ID = #{studyId}
+          AND TMS.PRTCPNT_ID = #{prtcpntId}
+          AND TM.MNTRNG_DCSN_AT = 'Y'
+        ]]>
+        <if test='onGoingAt == "Y"'>
+            AND TSJ.AE_END_DE IS NULL
+        </if>
+        <if test='actionAt != "All"'>
+            <if test='actionAt == "nonAction"'>
+                AND TM.ACTION_DCSN_AT = 'N'
+            </if>
+            <if test='actionAt == "Action"'>
+                AND TM.ACTION_DCSN_AT = 'Y'
+            </if>
+        </if>
+        <![CDATA[
+        UNION ALL
+        SELECT TM.STUDY_ID
+            ,  TM.PRTCPNT_ID
+            ,  TM.SUMRY_SEQ
+            ,  TM.MNTRNG_SEQ AS mntrngSeq
+            ,  NULL AS symptmsSeq
+            ,  CONCAT_WS('|',TM.STUDY_ID,TM.PRTCPNT_ID,TM.SUMRY_SEQ,TM.MNTRNG_SEQ,'') AS treeKey
+            ,  2 AS level
+            ,  TM.ACTION_DCSN_AT AS code
+            ,  CONCAT('[',CONCAT_WS('][', CONCAT('RV##',TM.REVISN_NO)
+                    , CONCAT_WS('~',DATE_FORMAT(TM.AE_STRT_DE, '%Y-%m-%d'),IFNULL(DATE_FORMAT(TM.AE_END_DE, '%Y-%m-%d'), ''))
+                    , IFNULL(TGD.CODE_NM,'-')
+                    , IF(TM.ACTION_DCSN_AT='Y','조치확정','조치미확정')
+            ),']') AS treeItem
+        FROM AEMMNTRNG TM
+             JOIN AEMSUMRY TSJ
+             ON TSJ.STUDY_ID = TM.STUDY_ID AND TSJ.PRTCPNT_ID = TM.PRTCPNT_ID AND TSJ.SUMRY_SEQ = TM.SUMRY_SEQ
+             LEFT JOIN COMTCCMMNDETAILCODE TGD
+             ON TGD.CODE_ID = 'AEM009' AND
+                TGD.CODE = TM.AE_GRADE
+        WHERE TM.STUDY_ID = #{studyId}
+          AND TM.PRTCPNT_ID = #{prtcpntId}
+          AND TM.MNTRNG_DCSN_AT = 'Y'
+        ]]>
+        <if test='onGoingAt == "Y"'>
+            AND TSJ.AE_END_DE IS NULL
+        </if>
+        <if test='actionAt != "All"'>
+            <if test='actionAt == "nonAction"'>
+                AND TM.ACTION_DCSN_AT = 'N'
+            </if>
+            <if test='actionAt == "Action"'>
+                AND TM.ACTION_DCSN_AT = 'Y'
+            </if>
+        </if>
+        <![CDATA[
+        UNION ALL
+        SELECT TS.STUDY_ID
+            ,  TS.PRTCPNT_ID
+            ,  TS.SUMRY_SEQ
+            ,  NULL AS mntrngSeq
+            ,  NULL AS symptmsSeq
+            ,  CONCAT_WS('|',TS.STUDY_ID,TS.PRTCPNT_ID,TS.SUMRY_SEQ,'','') AS treeKey
+            ,  1 AS level
+            ,  '' AS code
+            ,  CONCAT('[',CONCAT_WS('][', CONCAT('AE##',AE_NO), TS.AE_TERM_CTCAE, CONCAT_WS('~',DATE_FORMAT(TS.AE_STRT_DE, '%Y-%m-%d'),IFNULL(DATE_FORMAT(TS.AE_END_DE, '%Y-%m-%d'), '')), IFNULL(TGD.CODE_NM,'-'), IF(TS.AE_END_DE IS NULL,'OnGoing','Stopped')),']')
+            AS treeItem
+        FROM AEMSUMRY TS
+             JOIN (
+                SELECT TM.STUDY_ID, TM.PRTCPNT_ID, TM.SUMRY_SEQ, COUNT(*) AS CNT
+                FROM AEMMNTRNG TM
+                WHERE TM.STUDY_ID = #{studyId}
+                  AND TM.PRTCPNT_ID = #{prtcpntId}
+                  AND TM.MNTRNG_DCSN_AT = 'Y'
+        ]]>
+        <if test='actionAt != "All"'>
+            <if test='actionAt == "nonAction"'>
+                AND TM.ACTION_DCSN_AT = 'N'
+            </if>
+            <if test='actionAt == "Action"'>
+                AND TM.ACTION_DCSN_AT = 'Y'
+            </if>
+        </if>
+        <![CDATA[
+                GROUP BY TM.STUDY_ID, TM.PRTCPNT_ID, TM.SUMRY_SEQ
+             ) TJ
+             ON TJ.STUDY_ID = TS.STUDY_ID AND
+                TJ.PRTCPNT_ID = TS.PRTCPNT_ID AND
+                TJ.SUMRY_SEQ = TS.SUMRY_SEQ
+             LEFT JOIN COMTCCMMNDETAILCODE TGD
+             ON TGD.CODE_ID = 'AEM009' AND
+                TGD.CODE = TS.AE_GRADE
+        WHERE TS.STUDY_ID = #{studyId}
+          AND TS.PRTCPNT_ID = #{prtcpntId}
+        ]]>
+        <if test='onGoingAt == "Y"'>
+            AND TS.AE_END_DE IS NULL
+        </if>
+        <![CDATA[
+
+        ) AA
+        WHERE mntrngSeq is not null
+            and symptmsSeq is null
+        ORDER BY sumrySeq, mntrngSeq, symptmsSeq
+                ]]>
+    </select>
+
+    <select id="selectSymptmsList" parameterType="net.lnworks.monitor.domain.study.AEMntrngSymptmsParamVO" resultType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
+        <!-- 참여자 증상 목록 -->
+        <![CDATA[
+	    SELECT TPS.STUDY_ID AS studyId, TPS.PRTCPNT_ID AS prtcpntId, TPS.SYMPTMS_SEQ AS symptmsSeq, TPS.SYMPTMS_REGTYPE_CODE AS symptmsRegtypeCode,
+	           CASE
+				WHEN TPS.SYMPTMS_REGTYPE_CODE ='110' THEN '사진'
+                WHEN TPS.SYMPTMS_REGTYPE_CODE ='120' THEN '동영상'
+                WHEN TPS.SYMPTMS_REGTYPE_CODE ='130' THEN '음성'
+                WHEN TPS.SYMPTMS_REGTYPE_CODE ='140' THEN 'TEXT'
+                WHEN TPS.SYMPTMS_REGTYPE_CODE ='300' THEN '전화'
+                WHEN TPS.SYMPTMS_REGTYPE_CODE ='400' THEN '외래'
+				ELSE 'IOT'
+           END AS symRegTxt,
+               DATE_FORMAT(TPS.SYMPTMS_REGIST_DE, '%Y%m%d') AS symptmsRegistDe,
+               TPS.SYMPTMS_TITLE AS symptmsTitle,
+               CONCAT_WS('~',DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d'), IFNULL(DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y-%m-%d'),'')) AS symptmsDe,
+               (SELECT TU.USER_NM FROM COMTNUSERINFO TU WHERE TU.ESNTL_ID = TPS.FRST_REGISTER_ID) AS registerNm,
+               IF(IFNULL(T1.CNT,0) > 0, '1', '0') AS useAt,
+               IF(IFNULL(T2.CNT,0) > 0, 'Y', 'N') AS otherAEUseAt
+	    FROM AEMPRTCPNTSYMPTMS TPS
+		   LEFT JOIN (
+			SELECT TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ, COUNT(*) AS CNT
+			  FROM AEMMNTRNGSYMPTMS TMS
+			 WHERE 1=1
+	    ]]>
+        <if test='sumrySeq!=null and !sumrySeq.equals("")'>
+            AND TMS.SUMRY_SEQ = #{sumrySeq}
+        </if>
+        <if test='mntrngSeq!=null and !mntrngSeq.equals("")'>
+            AND TMS.SUMRY_SEQ = #{mntrngSeq}
+        </if>
+        <![CDATA[
+			 GROUP BY TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ
+		   ) T1
+		   ON TPS.STUDY_ID = T1.STUDY_ID
+		   AND TPS.PRTCPNT_ID = T1.PRTCPNT_ID
+		   AND TPS.SYMPTMS_SEQ = T1.SYMPTMS_SEQ
+		   LEFT JOIN (
+			SELECT TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ, COUNT(*) AS CNT
+			  FROM AEMMNTRNGSYMPTMS TMS
+			 WHERE 1=1
+	    ]]>
+        <if test='sumrySeq!=null and !sumrySeq.equals("")'>
+            AND TMS.SUMRY_SEQ != #{sumrySeq}
+        </if>
+        <if test='mntrngSeq!=null and !mntrngSeq.equals("")'>
+            AND TMS.SUMRY_SEQ != #{mntrngSeq}
+        </if>
+        <![CDATA[
+                 GROUP BY TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ
+               ) T2
+               ON TPS.STUDY_ID = T2.STUDY_ID
+               AND TPS.PRTCPNT_ID = T2.PRTCPNT_ID
+               AND TPS.SYMPTMS_SEQ = T2.SYMPTMS_SEQ
+         WHERE TPS.STUDY_ID = #{studyId}
+           AND TPS.PRTCPNT_ID = #{prtcpntId}
+        ]]>
+        <if test='viewType!=null and !viewType.equals("")'>
+            AND TPS.SYMPTMS_REGTYPE_CODE IN (#{viewType})
+        </if>
+        <if test='sumrySeq!=null and !sumrySeq.equals("")'>
+            <if test='useIncludeAt != "Y"'>
+                AND IF(IFNULL(T1.CNT,0) > 0, 'Y', 'N') = IF(#{useIncludeAt} = '', 'N', #{useIncludeAt})
+            </if>
+        </if>
+        <![CDATA[
+         ORDER BY TPS.SYMPTMS_SEQ DESC
+        ]]>
+    </select>
+
     <select id="selectPrtcpntList" parameterType="net.lnworks.monitor.domain.study.AEMntrngParamVO" resultType="net.lnworks.monitor.domain.study.AEMStdyPrtcpntVO">
+        <!-- 참여자 목록 -->
         <![CDATA[
         SELECT studyId, prtcpntId, enrlNo, initial
                ,CONCAT(symptmsCnt,' ',IF(visitScheduledDe1 IS NOT NULL,'방문','')) AS newSymptms

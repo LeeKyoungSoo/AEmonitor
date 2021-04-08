@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         log.info("security config........");
 
         http.authorizeRequests()
-                .antMatchers("/accounts/**")
+                .antMatchers("/accounts/**", "/aemonitorapi/**")
                 .permitAll();
 
         http.authorizeRequests()
@@ -75,6 +75,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(zerockUserService)
                 .tokenRepository(getTokenSeries())
                 .tokenValiditySeconds(60*60*24);
+
+        //http.cors().and();
+        //http.csrf().disable();
     }
 
     private PersistentTokenRepository getTokenSeries() {
