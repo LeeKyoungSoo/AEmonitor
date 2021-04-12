@@ -47,17 +47,13 @@
             <td class="tdTextLeft">
                 <div>
                     <div>
-                        <input type="text" id="symptmsStrtDe" name="symptmsStrtDe" readonly="readonly" style="width:76px;"
-                               class="form-control form-control-sm dis_inline"
+                        <input type="text" id="symptmsStrtDe" name="symptmsStrtDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                                th:value="${aemPrtcpntSymptmsVO.symptmsStrtDe}">
-                        <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">달력</button>
-
-
+                        <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                         <span>~</span>
-                        <input type="text" id="symptmsEndDe" name="symptmsEndDe" readonly="readonly" style="width:76px;"
-                               class="form-control form-control-sm dis_inline"
+                        <input type="text" id="symptmsEndDe" name="symptmsEndDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                                th:value="${aemPrtcpntSymptmsVO.symptmsEndDe}">
-                        <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">달력</button>
+                        <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                     </div>
                 </div>
             </td>
@@ -65,10 +61,9 @@
             <td class="tdTextLeft">
                 <div>
                     <div>
-                        <input type="text" id="symptmsRegistDe" name="symptmsRegistDe" readonly="readonly" style="width:76px;"
-                               class="form-control form-control-sm dis_inline"
+                        <input type="text" id="symptmsRegistDe" name="symptmsRegistDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                                th:value="${aemPrtcpntSymptmsVO.symptmsRegistDe}">
-                        <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">달력</button>
+                        <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                     </div>
                 </div>
             </td>
@@ -133,15 +128,13 @@
             <td class="tdTextLeft">
                 <div>
                     <div>
-                        <input type="text" id="symptmsStrtDe" name="symptmsStrtDe" readonly="readonly" style="width:76px;"
-                               class="form-control form-control-sm dis_inline"
+                        <input type="text" id="symptmsStrtDe" name="symptmsStrtDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                                th:value="${aemPrtcpntSymptmsVO.symptmsStrtDe}">
-                        <button type="button" id="ic_sStrtDeV_img" class="btn_right dis_inline">달력</button>
+                        <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                         <span>~</span>
-                        <input type="text" id="symptmsEndDe" name="symptmsEndDe" readonly="readonly" style="width:76px;"
-                               class="form-control form-control-sm dis_inline"
+                        <input type="text" id="symptmsEndDe" name="symptmsEndDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                                th:value="${aemPrtcpntSymptmsVO.symptmsEndDe}">
-                        <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">달력</button>
+                        <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                     </div>
                 </div>
             </td>
@@ -149,10 +142,9 @@
             <td class="tdTextLeft">
                 <div>
                     <div>
-                        <input type="text" id="symptmsRegistDe" name="symptmsRegistDe" readonly="readonly" style="width:76px;"
-                               class="form-control form-control-sm dis_inline"
+                        <input type="text" id="symptmsRegistDe" name="symptmsRegistDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                                th:value="${aemPrtcpntSymptmsVO.symptmsRegistDe}">
-                        <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">달력</button>
+                        <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                     </div>
                 </div>
             </td>
@@ -258,4 +250,23 @@
 
         </tbody>
     </table>
+</th:block>
+
+<th:block th:if="${aemPrtcpntSymptmsVO.symptmsRegtypeCode} == '400' or  ${aemPrtcpntSymptmsVO.symptmsRegtypeCode} == '300'" >
+<script>
+  $('#symptmsStrtDe').datepicker({
+        format : "yyyy-mm-dd",
+        language : "kr"
+    });
+
+    $('#symptmsEndDe').datepicker({
+        format : "yyyy-mm-dd",
+        language : "kr"
+    });
+
+    $('#symptmsRegistDe').datepicker({
+        format : "yyyy-mm-dd",
+        language : "kr"
+    });
+</script>
 </th:block>

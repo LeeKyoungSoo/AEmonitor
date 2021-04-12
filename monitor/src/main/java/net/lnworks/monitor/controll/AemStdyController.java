@@ -50,15 +50,35 @@ public class AemStdyController {
 
     @GetMapping("/aemStdyPrtcpnt")
     public List<AEMStdyPrtcpntVO> goAemStdyPrtcpnt(@RequestParam (value = "studyId") String studyId,
-                                                   @RequestParam (value = "studyInstId") String studyInstId) throws Exception {
+                                                   @RequestParam (value = "studyInstId") String studyInstId,
+                                                   @RequestParam (value = "setAllAt") String setAllAt,
+                                                   @RequestParam (value = "setTodayAt") String setTodayAt,
+                                                   @RequestParam (value = "setStartDe") String setStartDe,
+                                                   @RequestParam (value = "setEndDe") String setEndDe) throws Exception {
+        if (setAllAt == null || setAllAt.equals("")) {
+            setAllAt = "N";
+        }
+
+        if (setTodayAt == null || setTodayAt.equals("")) {
+            setTodayAt = "N";
+        }
+
+        if (setStartDe == null || setStartDe.equals("")) {
+            setStartDe = DateTimeUtil.getNowDate();
+        }
+
+        if (setEndDe == null || setEndDe.equals("")) {
+            setEndDe = DateTimeUtil.getNowDate();
+        }
+
         //참여자목록
         AEMntrngParamVO aeMntrngParamVO = new AEMntrngParamVO();
-        aeMntrngParamVO.setAllAt("Y"); //전체검색
-        aeMntrngParamVO.setTodayAt("N"); //당일방문예정
+        aeMntrngParamVO.setAllAt(setAllAt); //전체검색
+        aeMntrngParamVO.setTodayAt(setTodayAt); //당일방문예정
         aeMntrngParamVO.setSearchCnd(""); //구분
         aeMntrngParamVO.setSearchWrd(""); //검색어
-        aeMntrngParamVO.setStartDe(DateTimeUtil.getNowDate());
-        aeMntrngParamVO.setEndDe(DateTimeUtil.getNowDate());
+        aeMntrngParamVO.setStartDe(setStartDe.replaceAll("-", ""));
+        aeMntrngParamVO.setEndDe(setEndDe.replaceAll("-", ""));
         aeMntrngParamVO.setStudyId(studyId);
         aeMntrngParamVO.setStdyInstId(studyInstId);
         List<AEMStdyPrtcpntVO> aemStdyPrtcpntVOList = aeMntmgService.selectPrtcpntList(aeMntrngParamVO);

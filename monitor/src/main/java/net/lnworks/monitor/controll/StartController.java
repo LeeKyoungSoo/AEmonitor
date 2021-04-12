@@ -153,6 +153,8 @@ public class StartController {
 
         mav.addObject("userinfo", userInfoMap);
         mav.addObject("menuTitle", "AE모니터링");
+        mav.addObject("sdate", DateTimeUtil.getNowDateHb());
+        mav.addObject("edate", DateTimeUtil.getNowDateHb());
         mav.addObject("userAuthority", userAuthorityMap);
         mav.addObject("menuOneDepth", menuOneDepthMap);
         mav.addObject("menuAllDepth", menuAllDepthMap);

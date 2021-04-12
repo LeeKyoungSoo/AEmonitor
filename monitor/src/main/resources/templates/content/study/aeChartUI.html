@@ -76,10 +76,9 @@
         <td class="tdTextLeft">
             <div>
                 <div>
-                    <input type="text" id="mntrngRegistDe" name="mntrngRegistDe" readonly="readonly" style="width:76px;"
-                           class="form-control form-control-sm dis_inline"
+                    <input type="text" id="mntrngRegistDe" name="mntrngRegistDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                            th:value="${aemMntrngVO.mntrngRegistDe}">
-                    <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">달력</button>
+                    <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                 </div>
             </div>
         </td>
@@ -87,10 +86,9 @@
         <td class="tdTextLeft">
             <div>
                 <div>
-                    <input type="text" id="visitResveDe" name="visitResveDe" readonly="readonly" style="width:76px;"
-                           class="form-control form-control-sm dis_inline"
+                    <input type="text" id="visitResveDe" name="visitResveDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                            th:value="${aemMntrngVO.visitResveDe}">
-                    <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">달력</button>
+                    <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                 </div>
             </div>
         </td>
@@ -174,10 +172,9 @@
         </td>
         <th class="tdTextRight"><div>임상약종료 :</div></th>
         <td class="tdTextLeft">
-            <input type="text" id="medcinStopDe" name="medcinStopDe" readonly="readonly" style="width:76px;"
-                   class="form-control form-control-sm dis_inline"
+            <input type="text" id="medcinStopDe" name="medcinStopDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                    th:value="${aemMntrngVO.medcinStopDe}">
-            <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">달력</button>
+            <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
         </td>
     </tr>
     <tr>
@@ -211,10 +208,9 @@
         </td>
         <th class="tdTextRight"><div>조치일자 :</div></th>
         <td class="tdTextLeft">
-            <input type="text" id="actionDe" name="actionDe" readonly="readonly" style="width:76px;"
-                   class="form-control form-control-sm dis_inline"
+            <input type="text" id="actionDe" name="actionDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
                    th:value="${aemMntrngVO.actionDe}">
-            <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">달력</button>
+            <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
         </td>
     </tr>
     <tr>
@@ -226,3 +222,25 @@
     </tr>
     </tbody>
 </table>
+
+<script>
+    $('#actionDe').datepicker({
+        format : "yyyy-mm-dd",
+        language : "kr"
+    });
+
+    $('#mntrngRegistDe').datepicker({
+        format : "yyyy-mm-dd",
+        language : "kr"
+    });
+
+    $('#visitResveDe').datepicker({
+        format : "yyyy-mm-dd",
+        language : "kr"
+    });
+
+    $('#medcinStopDe').datepicker({
+        format : "yyyy-mm-dd",
+        language : "kr"
+    });
+</script>
