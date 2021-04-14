@@ -40,4 +40,16 @@ public class AEMntmgService {
     public AEMMntrngVO selectAEMntrngView(AEMMntrngVO vo) throws Exception {
         return aEMntmg.selectAEMntrngView(vo);
     }
+
+    public int insertSymptms(AEMPrtcpntSymptmsVO vo) throws Exception {
+        return aEMntmg.insertSymptms(vo);
+    }
+
+    public int updateSymptms(AEMPrtcpntSymptmsVO vo) throws Exception {
+        return aEMntmg.updateSymptms(vo);
+    }
+
+    public int deleteSymptms(AEMPrtcpntSymptmsVO vo) throws Exception {
+        return aEMntmg.deleteSymptms(vo);
+    }
 }

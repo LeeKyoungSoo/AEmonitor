@@ -66,4 +66,6 @@ public class AEMStdyPrtcpntVO extends AEMPrtvpntVO {
     private String crfSubjId;		// CRF대상자ID
     //	20200327 타연구참여여부추가(김재성)
     private String otherStudyCheck;
+
+    private String regDt;   //최근 등록일
 }

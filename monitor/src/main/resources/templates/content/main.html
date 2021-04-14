@@ -5,7 +5,7 @@
       layout:decorator="layout/defaultLayoutNoFooter">
 
 <head>
-    <title>MEMBER</title>
+    <title>AE모니터링</title>
 </head>
 
 <body id="page-top">
@@ -108,7 +108,7 @@
                                 <option th:value="${studyInfo.studyId}" th:text="${studyInfo.studyNm}" />
                                 </th:block>
                             </select>
-                            <select name="dataTable_length" id="studyInstId" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm" onchange="aemStdyPrtcpntDataChange();">
+                            <select name="dataTable_length" id="studyInstId" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm" onchange="aemStdyPrtcpntDataChange(1);">
                                 <th:block th:each="studyInstInfo : ${studyInstInfoList}"  >
                                     <option th:value="${studyInstInfo.stdyInstId}" th:text="${studyInstInfo.stdyInstName}" />
                                 </th:block>
@@ -309,7 +309,7 @@
                                    참여자정보
                                 </div>
 
-                                <div style="float: right">
+                                <div class="layout940" style="float: right">
                                     <table style="font-size:12px">
                                         <tr>
                                             <td valign="middle" style="padding: 4px;">
@@ -321,11 +321,11 @@
                                             <td valign="middle" style="padding: 4px;">
                                                 <input type="checkbox" id="setTodayAt" name="setTodayAt" index="0" value="Y" style="width: 20px;height: 20px">
                                             </td>
-                                            <td valign="middle" style="padding: 4px;width:110px;color:#858796">
+                                            <td valign="middle" style="padding: 4px;width:94px;color:#858796">
                                                 오늘방문예정
                                             </td>
                                             <td valign="middle" style="padding: 4px;color:#858796">
-                                                증상등록일자
+                                                증상등록일
                                             </td>
                                             <td valign="middle" style="padding: 4px;">
                                                 <input type="text" id="sdate" name="sdate" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
@@ -341,10 +341,10 @@
                                                 <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-24px">
                                             </td>
                                             <td valign="middle" style="padding: 4px;">
-                                                <a href="javascript:aemStdyPrtcpntDataChange();" class="btn btn-primary btn-icon-split btn-sm">
+                                                <a href="javascript:aemStdyPrtcpntDataChange(1);" class="btn btn-primary btn-icon-split btn-sm">
                                                 <span class="icon text-white-50">
                                                     <i class="fas fa-search fa-sm"></i>
-                                                </span><span class="text">검 색</span>
+                                                </span><span class="text">검색</span>
                                                 </a>
                                             </td>
                                         </tr>
@@ -354,7 +354,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="font-size:12px;">
+                                <table class="table table-bordered display nowrap" id="dataTable" width="100%" cellspacing="0" style="font-size:12px;">
                                     <thead>
                                     <tr>
                                         <th>NO</th>
@@ -362,12 +362,13 @@
                                         <th>studyInstId</th>
                                         <th>ENR_NO</th>
                                         <th>이니셜</th>
-                                        <th>신규증상</th>
+                                        <th>증상</th>
                                         <th>성별</th>
                                         <th>전화번호</th>
                                         <th>생년월일</th>
                                         <th>앱아이디</th>
                                         <th>방문예정일</th>
+                                        <th>최근등록일</th>
                                         <th>확인자</th>
                                     </tr>
                                     </thead>
@@ -384,6 +385,7 @@
                                             <td>[[${aemStdyPrtcpntVO.birthday}]]</td>
                                             <td>[[${aemStdyPrtcpntVO.pcnAppId}]]</td>
                                             <td>[[${aemStdyPrtcpntVO.visitForecastDe}]]</td>
+                                            <td>[[${aemStdyPrtcpntVO.regDt}]]</td>
                                             <td>[[${aemStdyPrtcpntVO.cnfrmrNm}]]</td>
                                         </tr>
                                     </tbody>
@@ -394,66 +396,108 @@
                     <!-- End of 참여자목록  -->
 
                     <!-- 증상 -->
-                    <div class="card shadow mb-4" id="SymptmsUi">
-                        <div class="card-header py-3" >
-                            <h6 class="m-0 font-weight-bold text-primary">
-                                <div style="float: left">
-                                증상정보 :
-                                <select name="dataTable_length" id="selSymptmsSeq" aria-controls="dataTable"
-                                        class="custom-select custom-select-sm form-control form-control-sm"
-                                        style="width:120px;"
-                                        onchange="symptmsListDataChangeSelect();">
-                                    <option value="">전체</option>
-                                    <option value="110">사진</option>
-                                    <option value="120">동영상</option>
-                                    <option value="130">음성</option>
-                                    <option value="140">TEXT</option>
-                                    <option value="300">전화</option>
-                                    <option value="400">외래</option>
-                                </select>
+                    <div id="SymptmsUi">
+                        <!-- 참여자 증상 Start -->
+                        <div class="leftLayout">
+                            <div class="card shadow mb-4" id="SymptmsUiLeft" style="margin-right:4px;">
+                                <div class="card-header py-3" style="height:70px">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <div style="float: left;margin-top:12px">
+                                            증상정보
+                                        </div>
+
+                                        <div style="float: right">
+                                            <table style="font-size:12px">
+                                                <tr>
+                                                    <td valign="middle" style="padding: 4px;">
+                                                        <input type="checkbox" id="selSymptmsSeq100" name="selSymptmsSeq" index="0" style="width: 20px;height: 20px"
+                                                               onchange="symptmsListDataChangeSelect();" checked>
+                                                    </td>
+                                                    <td valign="middle" style="padding: 4px;color:#858796">
+                                                        앱
+                                                    </td>
+                                                    <td valign="middle" style="padding: 4px;">
+                                                        <input type="checkbox" id="selSymptmsSeq300" name="selSymptmsSeq" index="0" value="Y" style="width: 20px;height: 20px"
+                                                               onchange="symptmsListDataChangeSelect();" checked>
+                                                    </td>
+                                                    <td valign="middle" style="padding: 4px;color:#858796">
+                                                        전화
+                                                    </td>
+                                                    <td valign="middle" style="padding: 4px;">
+                                                        <input type="checkbox" id="selSymptmsSeq400" name="selSymptmsSeq" index="0" value="Y" style="width: 20px;height: 20px"
+                                                               onchange="symptmsListDataChangeSelect();" checked>
+                                                    </td>
+                                                    <td valign="middle" style="padding: 4px;color:#858796">
+                                                        대면
+                                                    </td>
+                                                    <td valign="middle" style="padding: 4px;">
+                                                        <a href="javascript:SymptomDetailNew();" class="btn btn-primary btn-icon-split btn-sm">
+                                                            <span class="icon text-white-50">
+                                                                <i class="fas fa-arrow-right"></i>
+                                                            </span>
+                                                            <span class="text">입력</span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                    </h6>
                                 </div>
-
-                                <div style="float: right">
-                                    <a href="#" class="btn btn-primary btn-icon-split btn-sm">
-                                            <span class="icon text-white-50">
-                                                <i class="fas fa-arrow-right"></i>
-                                            </span>
-                                        <span class="text">결과입력</span>
-                                    </a>
+                                <div class="card-body" style="position:relative">
+                                    <div id="symptomChart" class="table-responsive">
+                                        <div id="symptomChartLeft" style="overflow-x:hidden;">
+                                            <table class="table table-bordered" id="SymptomTable" width="100%" cellspacing="0"  style="font-size:12px;">
+                                                <thead>
+                                                <tr>
+                                                    <th width="16%">NO</th>
+                                                    <th width="0%">studyId</th>
+                                                    <th width="0%">prtcpntId</th>
+                                                    <th width="0%">symptmsSeq</th>
+                                                    <th width="0%">symptmsRegtypeCode</th>
+                                                    <th width="16%">구분</th>
+                                                    <th width="18%">등록일</th>
+                                                    <th width="20%">확인여부</th>
+                                                    <th width="30%">내용</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <div id="aeTree" style="float: right;margin-right: 20px;"></div>
-
-                            </h6>
-                        </div>
-                        <div class="card-body" style="position:relative">
-                            <div id="aeChart" class="card-body aeChartUI"></div>
-                            <div id="symptomChart" class="table-responsive">
-                                <table class="table table-bordered" id="SymptomTable" width="100%" cellspacing="0"  style="font-size:12px;">
-                                    <thead>
-                                    <tr>
-                                        <th>NO</th>
-                                        <th>studyId</th>
-                                        <th>prtcpntId</th>
-                                        <th>symptmsSeq</th>
-                                        <th>symptmsRegtypeCode</th>
-                                        <th>구분</th>
-                                        <th>제목</th>
-                                        <th>증상기간</th>
-                                        <th>등록일자</th>
-                                        <th>타AE등록</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                                <div id="SymptomDetail" class="card-body"></div>
+                                <div id="SymptomDetail" class="card-body">dfsdfs</div>
                             </div>
                         </div>
-
+                        <!-- 참여자 증상 End -->
+                        <!-- AE 모니터링 Start -->
+                        <div class="rightLayout" >
+                            <div class="card shadow mb-4" id="SymptmsUiRight" style="margin-left:4px;">
+                                <div class="card-header py-3" style="height:70px">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <div style="float: left;margin-top:12px">
+                                            AE모니터링
+                                        </div>
+                                        <div style="float: right">
+                                            <a href="#" class="btn btn-primary btn-icon-split btn-sm">
+                                                <span class="icon text-white-50">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </span>
+                                                <span class="text">입력</span>
+                                            </a>
+                                        </div>
+                                    </h6>
+                                </div>
+                                <div class="card-body" style="position:relative">
+                                    <div id="aeTree"></div>
+                                </div>
+                                <div id="aeChart" class="card-body aeChartUI"></div>
+                            </div>
+                        </div>
+                        <!-- AE 모니터링 End -->
                     </div>
                     <!-- End of 증상 -->
-
                 </div>
                 <!-- /.container-fluid -->
             </div>
@@ -468,10 +512,8 @@
                 </div>
             </footer>
             <!-- End of Footer -->
-
         </div>
         <!-- End of Content Wrapper -->
-
     </div>
     <!-- End of Page Wrapper -->
 
@@ -560,6 +602,7 @@
         var gStudyId;
         var gPrtcpntId;
         var gStudyInstId;
+        var gSymptmsSeq;
 
         $(document).ready(function() {
             var events = $('#events');
@@ -567,10 +610,10 @@
             $('#aeChart').hide();
 
             $('#dataTable').DataTable( {
-                "scrollY":        "176px",
-                "scrollCollapse": true,
-                "paging":         true,
-                "columnDefs": [
+                scrollY:        "176px",
+                scrollCollapse: true,
+                paging:         true,
+                columnDefs: [
                     {
                         "targets": [1],
                         "visible": false,
@@ -579,15 +622,27 @@
                     {
                         "targets": [2],
                         "visible": false
+                    },
+                    {
+                        "targets": [9],
+                        "visible": false
+                    },
+                    {
+                        "targets": [10],
+                        "visible": false
                     }
-                ]
+
+                ],
+                responsive: true,
+                bInfo : false
             } );
 
+
             $('#SymptomTable').DataTable( {
-                "scrollY":        "176px",
-                "scrollCollapse": true,
-                "paging":         true,
-                "columnDefs": [
+                scrollY:        "176px",
+                scrollCollapse: true,
+                paging:         true,
+                columnDefs: [
                     {
                         "targets": [1],
                         "visible": false,
@@ -605,9 +660,10 @@
                         "targets": [4],
                         "visible": false
                     }
-                ]
+                ],
+                responsive: true,
+                bInfo : false
             } );
-
         } );
 
         /*
@@ -634,9 +690,8 @@
 
         $('#dataTable tbody').on('click', 'tr', function () {
             var data = $('#dataTable').DataTable().row( this ).data();
-            var viewType = $("#selSymptmsSeq").val();
 
-            symptmsListDataChange(data[1], data[2], viewType);
+            symptmsListDataChange(data[1], data[2], 1);
             aeTreeDataChange(data[1], data[2], 'All');
 
             $("#aeChart").empty();
@@ -675,7 +730,7 @@
                     [[${_csrf.parameterName}]] : '[[${_csrf.token}]]'
                 },
                 success:function(data){
-                    $('#symptomChart').hide();
+                    //$('#symptomChart').hide();
                     $("#aeChart").empty();
                     $('#aeChart').show();
                     $("#aeChart").html(data);
@@ -683,11 +738,123 @@
             });
         }
 
+        function SymptmsInsert() {
+            if ($("#symptmsCn").val() == "") {
+                alert("내용을 입력해 주십시오");
+                $("#symptmsCn").focus();
+                return;
+            }
+
+            var param = $("form[name=aemPrtcpntSymptmsVOForm]").serialize();
+            $.ajax({
+                url:'[[@{/aemonitorapi/symptmsInsert}]]',
+                type:'post',
+                data: param,
+                success:function(data){
+                    console.log(data);
+                    modal({
+                        type: 'success',
+                        title: 'Success',
+                        text: '등록되었습니다.'
+                    });
+                    aemStdyPrtcpntDataChange(4);
+                    $('#symptomChart').show();
+                    $('#SymptmsUi').show();
+                },
+                error:function(data){
+                    console.log(data);
+                }
+            });
+        }
+
+        function SymptmsUpdate() {
+            if ($("#symptmsCn").val() == "") {
+                alert("내용을 입력해 주십시오");
+                $("#symptmsCn").focus();
+                return;
+            }
+
+            var param = $("form[name=aemPrtcpntSymptmsVOForm]").serialize();
+            $.ajax({
+                url:'[[@{/aemonitorapi/symptmsUpdate}]]',
+                type:'post',
+                data: param,
+                success:function(data){
+                    console.log(data);
+                    modal({
+                        type: 'success',
+                        title: 'Success',
+                        text: '수정되었습니다.'
+                    });
+                    aemStdyPrtcpntDataChange(2);
+                    $('#symptomChart').show();
+                    $('#SymptmsUi').show();
+                },
+                error:function(data){
+                    console.log(data);
+                }
+            });
+        }
+
+        function SymptmsDelete() {
+            var param = $("form[name=aemPrtcpntSymptmsVOForm]").serialize();
+            modal({
+                type: 'confirm',
+                title: '주의',
+                text: '삭제 하시겠습니까?',
+                callback: function(result) {
+                    if ( result == true) {
+                        $.ajax({
+                            url:'[[@{/aemonitorapi/symptmsDelete}]]',
+                            type:'post',
+                            data: param,
+                            success:function(data){
+                                console.log(data);
+                                modal({
+                                    type: 'success',
+                                    title: 'Success',
+                                    text: '삭제되었습니다.'
+                                });
+                                aemStdyPrtcpntDataChange(3);
+                                $('#symptomChart').show();
+                                $('#SymptmsUi').show();
+                            },
+                            error:function(data){
+                                console.log(data);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function  SymptomDetailNew() {
+            console.log("SymptomDetailNew-studyId : " + gStudyId);
+            console.log("SymptomDetailNew-prtcpntId : " + gPrtcpntId);
+
+            $.ajax({
+                url:'[[@{/aemonitor/symptmsNew}]]',
+                type:'get',
+                dataType: 'html',
+                data:{
+                    studyId : gStudyId,
+                    prtcpntId : gPrtcpntId,
+                    [[${_csrf.parameterName}]] : '[[${_csrf.token}]]'
+                },
+                success:function(data){
+                    $("#SymptomDetail").empty();
+                    $("#SymptomDetail").html(data);
+                }
+            });
+        }
+
         function  SymptomDetail(studyId, prtcpntId, symptmsSeq) {
             var counter = 1;
-            console.log("studyId : " + studyId);
-            console.log("prtcpntId : " + prtcpntId);
-            console.log("symptmsSeq : " + symptmsSeq);
+            console.log("SymptomDetail-studyId : " + studyId);
+            console.log("SymptomDetail-prtcpntId : " + prtcpntId);
+            console.log("SymptomDetail-symptmsSeq : " + symptmsSeq);
+
+            gSymptmsSeq = symptmsSeq;
 
             $.ajax({
                 url:'[[@{/aemonitor/symptms}]]',
@@ -708,8 +875,8 @@
 
         function  aeTreeDataChange(studyId, prtcpntId, viewType) {
             var counter = 1;
-            console.log("studyId : " + studyId);
-            console.log("prtcpntId : " + prtcpntId);
+            console.log("aeTreeDataChange-studyId : " + studyId);
+            console.log("aeTreeDataChange-prtcpntId : " + prtcpntId);
 
             $.ajax({
                 url:'[[@{/aemonitorapi/aeTreeList}]]',
@@ -725,22 +892,20 @@
                     $("#aeTree").empty();
                     $.each(data, function(key) {
                         if ( data[key].code == "Y") {
-                            $('#aeTree').prepend('&nbsp;<a href="javascript:aeChartView(\''
+                            $('#aeTree').prepend('<div class="aeTree" style="padding-top:2px;padding-bottom:2px;cursor:pointer;" onclick="aeChartView(\''
                                 + data[key].studyId + '\',\''
                                 + data[key].prtcpntId + '\',\''
                                 + data[key].sumrySeq + '\',\''
-                                + data[key].mntrngSeq + '\');" class="btn btn-success btn-circle btn-sm" title="' + data[key].treeItem + '">' +
-                                '<i class="fas fa-check"></i></a>' +
-                                '&nbsp;<i class="fas fa-arrow-right"></i>');
+                                + data[key].mntrngSeq + '\'); aeTreeSet($(this));" ><img src="/img/bluechip.png" style="width:18px;height:18px;">' +
+                                '&nbsp;' + data[key].treeItem + '</div>');
                         }
                         else {
-                            $('#aeTree').prepend('&nbsp;<a href="javascript:aeChartView(\''
+                            $('#aeTree').prepend('<div class="aeTree" style="padding-top:2px;padding-bottom:2px;cursor:pointer;" onclick="aeChartView(\''
                                 + data[key].studyId + '\',\''
                                 + data[key].prtcpntId + '\',\''
                                 + data[key].sumrySeq + '\',\''
-                                + data[key].mntrngSeq + '\');" class="btn btn-warning btn-circle btn-sm" title="' + data[key].treeItem + '">' +
-                                '<i class="fas fa-check"></i></a>' +
-                                '&nbsp;<i class="fas fa-arrow-right"></i>');
+                                + data[key].mntrngSeq + '\'); aeTreeSet($(this));" ><img src="/img/graychip.png" style="width:18px;height:18px;">' +
+                                '&nbsp;' + data[key].treeItem + '</div>');
                         }
                         counter++;
                     });
@@ -748,12 +913,25 @@
             });
         }
 
-        function  symptmsListDataChange(studyId, prtcpntId, viewType) {
+        function aeTreeSet(item) {
+            $(".aeTree").css("color", "#858796");
+            $(".aeTree").css("font-weight", "normal");
+            item.css("color", "#1e73be");
+            item.css("font-weight", "700");
+        }
+
+        function  symptmsListDataChange(studyId, prtcpntId, gubun) {
             var tableGrid = $('#SymptomTable').DataTable();
             var counter = 1;
+            var viewType = "900";
 
-            console.log("studyId : " + studyId);
-            console.log("prtcpntId : " + prtcpntId);
+            if ( $("#selSymptmsSeq100").is(":checked") == true ) viewType = viewType + ",110,120,130,140";
+            if ( $("#selSymptmsSeq300").is(":checked") == true ) viewType = viewType + ",300";
+            if ( $("#selSymptmsSeq400").is(":checked") == true ) viewType = viewType + ",400";
+
+            console.log("symptmsListDataChange-studyId : " + studyId);
+            console.log("symptmsListDataChange-prtcpntId : " + prtcpntId);
+            console.log("symptmsListDataChange-viewType : " + viewType);
             gStudyId = studyId;
             gPrtcpntId = prtcpntId;
 
@@ -770,7 +948,11 @@
                 success:function(data){
                     $("#SymptomDetail").empty();
                     tableGrid.clear().draw();
+
                     $.each(data, function(key) {
+                        if ( gubun == 4 && key == 0 ) {
+                            gSymptmsSeq =  data[key].symptmsSeq;
+                        }
                         tableGrid.row.add([
                             counter,
                             data[key].studyId,
@@ -778,24 +960,25 @@
                             data[key].symptmsSeq,
                             data[key].symptmsRegtypeCode,
                             data[key].symRegTxt,
-                            data[key].symptmsTitle,
-                            data[key].symptmsDe,
                             data[key].symptmsRegistDe,
-                            data[key].otherAEUseAt
+                            data[key].symptmsConfirm,
+                            data[key].symptmsCn
                         ]).draw(false);
-
                         counter++;
                     });
+
+                    if (gubun == 2 || gubun == 4) {
+                        SymptomDetail(gStudyId, gPrtcpntId, gSymptmsSeq);
+                    }
                 }
             });
         }
 
         function symptmsListDataChangeSelect() {
-            var viewType = $("#selSymptmsSeq").val();
-            symptmsListDataChange(gStudyId, gPrtcpntId, viewType);
+            symptmsListDataChange(gStudyId, gPrtcpntId, 1);
         }
 
-        function aemStdyPrtcpntDataChange() {
+        function aemStdyPrtcpntDataChange(gubun) {
             var tableGrid = $('#dataTable').DataTable();
             var symptomTable = $('#SymptomTable').DataTable();
             var counter = 1;
@@ -828,10 +1011,13 @@
                     [[${_csrf.parameterName}]] : '[[${_csrf.token}]]'
                 },
                 success:function(data){
-                    $("#aeChart").empty();
-                    $('#aeChart').hide();
-                    $('#SymptmsUi').hide();
-                    $("#SymptomDetail").empty();
+
+                    if ( gubun == 1 ) {
+                        $("#aeChart").empty();
+                        $('#aeChart').hide();
+                        $('#SymptmsUi').hide();
+                        $("#SymptomDetail").empty();
+                    }
                     tableGrid.clear().draw();
                     symptomTable.clear().draw();
                     $.each(data, function(key) {
@@ -848,11 +1034,16 @@
                             data[key].birthday,
                             data[key].pcnAppId,
                             data[key].visitForecastDe,
+                            data[key].regDt,
                             data[key].cnfrmrNm,
                         ]).draw(false);
 
                         counter++;
                     });
+
+                    if (gubun != 1) {
+                        symptmsListDataChange(gStudyId, gPrtcpntId, gubun);
+                    }
                 }
             });
         }

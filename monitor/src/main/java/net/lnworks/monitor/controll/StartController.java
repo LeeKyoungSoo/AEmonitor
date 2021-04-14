@@ -47,6 +47,27 @@ public class StartController {
     @Value("${Globals.IntnetSys}")
     private String intnetSys;
 
+    @RequestMapping(value = "/aeChartViewNew")
+    public ModelAndView goAEChartViewNew(@RequestParam (value = "studyId") String studyId,
+                                      @RequestParam (value = "prtcpntId") String prtcpntId,
+                                      @RequestParam (value = "sumrySeq") int sumrySeq,
+                                      @RequestParam (value = "mntrngSeq") int mntrngSeq) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        AEMMntrngVO inAemMntrngVO = new AEMMntrngVO();
+        inAemMntrngVO.setStudyId(studyId);
+        inAemMntrngVO.setPrtcpntId(prtcpntId);
+        inAemMntrngVO.setSumrySeq(sumrySeq);
+        inAemMntrngVO.setMntrngSeq(mntrngSeq);
+
+        //AEMMntrngVO  OutAemMntrngVO =  aeMntmgService.selectAEMntrngView(inAemMntrngVO);
+
+        mav.addObject("newWrite", "Y");
+        mav.setViewName("content/study/aeChartUI.html");
+
+        return mav;
+    }
+
     @RequestMapping(value = "/aeChartView")
     public ModelAndView goAEChartView(@RequestParam (value = "studyId") String studyId,
                                       @RequestParam (value = "prtcpntId") String prtcpntId,
@@ -62,8 +83,24 @@ public class StartController {
 
         AEMMntrngVO  OutAemMntrngVO =  aeMntmgService.selectAEMntrngView(inAemMntrngVO);
 
+        mav.addObject("newWrite", "N");
         mav.addObject("aemMntrngVO", OutAemMntrngVO);
         mav.setViewName("content/study/aeChartUI.html");
+
+        return mav;
+    }
+
+    @RequestMapping(value = "/symptmsNew")
+    public ModelAndView goSymptmsNew(@RequestParam (value = "studyId") String studyId,
+                                     @RequestParam (value = "prtcpntId") String prtcpntId) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+
+        mav.addObject("newWrite", "Y");
+        mav.addObject("studyId", studyId);
+        mav.addObject("prtcpntId", prtcpntId);
+        mav.addObject("nowdate", DateTimeUtil.getNowDateHb());
+        mav.setViewName("content/study/aemPrtcpntSymptmsVO.html");
 
         return mav;
     }
@@ -103,6 +140,7 @@ public class StartController {
             }
         }
 
+        mav.addObject("newWrite", "N");
         mav.addObject("aemPrtcpntSymptmsVO", aemPrtcpntSymptmsVO);
         mav.setViewName("content/study/aemPrtcpntSymptmsVO.html");
 

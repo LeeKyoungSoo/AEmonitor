@@ -1,227 +1,299 @@
-<table class="tableClass">
-    <colgroup>
-        <col style="width:14%;">
-        <col style="width:36%;">
-        <col style="width:14%;">
-        <col style="width:36%;">
-    </colgroup>
-    <tbody>
-    <tr>
-        <td class="tdTextLift" colspan="4" style="background-color:#6E6E6E;">
-            <div style="float:left;font-size: 1rem;color:#ffffff;font-weight:600">AE모니터링결과 입력 ( 담당자 : [[${aemMntrngVO.mntrngDcsnUser}]])</div>
-            <div style="float:right">
-                <button type="button" id="aeChartClose" class="btn_right dis_inline" onclick="aeChartClose()"> X 닫기</button>
-            </div>
-        </th>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>AE번호 :</div></th>
-        <td class="tdTextLeft">
-            <input type="text" id="aeNo" name="aeNo" style="width:76%;" readonly="readonly"
-                   class="form-control form-control-sm dis_inline"
-                   th:value="${aemMntrngVO.aeNo}">
-        </td>
-        <th class="tdTextRight"><div>AE명 :</div></th>
-        <td class="tdTextLeft">
-            <input type="text" id="aeTermCtcae" name="aeTermCtcae" style="width:76%;" readonly="readonly"
-                   class="form-control form-control-sm dis_inline"
-                   th:value="${aemMntrngVO.aeTermCtcae}">
-            <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">검색</button>
-        </td>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>AE중증도 :</div></th>
-        <td class="tdTextLeft" colspan="2">
-            <div id="radio_visitTypeCode">
-                <div>
-                    <input type="radio" id="aeGrade1" name="aeGrade" index="0" disabled="" value="10"
-                           th:checked="${aemMntrngVO.aeGrade == '10'}">
-                    Grade 1
+<th:block th:if="${newWrite} == 'Y'" >
+</th:block>
 
-                    <input type="radio" id="aeGrade2" name="aeGrade" index="1" disabled="" value="20"
-                           th:checked="${aemMntrngVO.aeGrade == '20'}">
-                    Grade 2
-
-                    <input type="radio" id="aeGrade3" name="aeGrade" index="1" disabled="" value="30"
-                           th:checked="${aemMntrngVO.aeGrade == '30'}">
-                    <span style="font-color:red">Grade 3</span>
-
-                    <input type="radio" id="aeGrade4" name="aeGrade" index="1" disabled="" value="40"
-                           th:checked="${aemMntrngVO.aeGrade == '40'}">
-                    <span style="font-color:red">Grade 4</span>
-
-                    <input type="radio" id="aeGrade5" name="aeGrade" index="1" disabled="" value="50"
-                           th:checked="${aemMntrngVO.aeGrade == '50'}">
-                    <span style="font-color:red">Grade 5</span>
+<th:block th:if="${newWrite} == 'N'" >
+    <table class="tableClass">
+        <colgroup>
+            <col style="width:25%;">
+            <col style="width:40%;">
+            <col style="width:5%;">
+            <col style="width:30%;">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td class="tdTextLift" colspan="4" style="background-color:#6E6E6E;">
+                <div style="float:left;color:#ffffff;font-weight:600">AE모니터링결과 입력 ( 담당자 : [[${aemMntrngVO.mntrngDcsnUser}]])</div>
+                <div style="float:right">
+                    <button type="button" id="aeChartClose" class="btn_right dis_inline" onclick="aeChartClose()"> X 닫기</button>
                 </div>
-            </div>
-        </td>
-        <td class="tdTextLeft">
-            <div>
-                <input type="checkbox" id="actionDcsnAt" name="actionDcsnAt" index="0" disabled="disabled" value="Y"
-                       th:checked="${aemMntrngVO.actionDcsnAt == 'Y'}">
-                ongoing 여부
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>메모사항 :</div></th>
-        <td class="tdTextLeft" colspan="3">
+            </th>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>AE번호 :</div></th>
+            <td class="tdTextLeft" colspan="2">
+                <input type="text" id="aeNo" name="aeNo" style="width:20%;" readonly="readonly"
+                       class="form-control form-control-sm dis_inline"
+                       th:value="${aemMntrngVO.aeNo}">
+            </td>
+            <td class="tdTextLeft">
+                <div>
+                    <input type="checkbox" id="actionDcsnAt" name="actionDcsnAt" index="0" disabled="disabled" value="Y"
+                           th:checked="${aemMntrngVO.actionDcsnAt == 'Y'}">
+                    ongoing 여부
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>AE명 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <input type="text" id="aeTermCtcae" name="aeTermCtcae" style="width:70%;" readonly="readonly"
+                       class="form-control form-control-sm dis_inline"
+                       th:value="${aemMntrngVO.aeTermCtcae}">
+                <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">검색</button>
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>AE중증도 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <div id="radio_visitTypeCode">
+                    <div>
+                        <input type="radio" id="aeGrade1" name="aeGrade" value="10"
+                               th:checked="${aemMntrngVO.aeGrade == '10'}">
+                        Grade 1
+
+                        <input type="radio" id="aeGrade2" name="aeGrade" value="20"
+                               th:checked="${aemMntrngVO.aeGrade == '20'}">
+                        Grade 2
+
+                        <input type="radio" id="aeGrade3" name="aeGrade" value="30"
+                               th:checked="${aemMntrngVO.aeGrade == '30'}">
+                        <span style="font-color:red">Grade 3</span>
+
+                        <input type="radio" id="aeGrade4" name="aeGrade" value="40"
+                               th:checked="${aemMntrngVO.aeGrade == '40'}">
+                        <span style="font-color:red">Grade 4</span>
+
+                        <input type="radio" id="aeGrade5" name="aeGrade" value="50"
+                               th:checked="${aemMntrngVO.aeGrade == '50'}">
+                        <span style="font-color:red">Grade 5</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>메모사항 :</div></th>
+            <td class="tdTextLeft" colspan="3">
                 <textarea id="mntrngMemo" name="mntrngMemo" class="form-control form-control-sm"
-                          style="width:100%;height:80px;" readonly="readonly">[[${aemMntrngVO.mntrngMemo}]]</textarea>
-        </td>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>모니터링 입력일자 :</div></th>
-        <td class="tdTextLeft">
-            <div>
+                          style="width:100%;height:80px;">[[${aemMntrngVO.mntrngMemo}]]</textarea>
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>모니터링 입력일자 :</div></th>
+            <td class="tdTextLeft" colspan="3">
                 <div>
-                    <input type="text" id="mntrngRegistDe" name="mntrngRegistDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
-                           th:value="${aemMntrngVO.mntrngRegistDe}">
-                    <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
+                    <div>
+                        <input type="text" id="mntrngRegistDe" name="mntrngRegistDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
+                               th:value="${aemMntrngVO.mntrngRegistDe}">
+                        <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
+                    </div>
                 </div>
-            </div>
-        </td>
-        <th class="tdTextRight"><div>비정규 방문예약 :</div></th>
-        <td class="tdTextLeft">
-            <div>
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>비정규 방문예약 :</div></th>
+            <td class="tdTextLeft" colspan="3">
                 <div>
-                    <input type="text" id="visitResveDe" name="visitResveDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
-                           th:value="${aemMntrngVO.visitResveDe}">
-                    <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
+                    <div>
+                        <input type="text" id="visitResveDe" name="visitResveDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
+                               th:value="${aemMntrngVO.visitResveDe}">
+                        <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
+                    </div>
                 </div>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td class="tdTextLift" colspan="4" style="background-color:#6E6E6E;">
-            <div style="float:left;font-size: 1rem;color:#ffffff;font-weight:600">AE조치 ( 확인자 : [[${aemMntrngVO.actionDcsnUser}]])</div>
-            <div style="float:right">
-                <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">저장</button>
-                <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">취소</button>
-                <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">삭제</button>
-                <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">확정</button>
-            </div>
-        </th>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>Serious여부 :</div></th>
-        <td class="tdTextLeft" colspan="3">
-            <input type="radio" id="saeAt1" name="saeAt" index="1" disabled="" value="Y"
-                   th:checked="${aemMntrngVO.saeAt == 'Y'}"> Yes
-            <input type="radio" id="saeAt2" name="saeAt" index="1" disabled="" value="N"
-                   th:checked="${aemMntrngVO.saeAt == 'N'}"> No
-        </td>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>Serious내용 :</div></th>
-        <td class="tdTextLeft" colspan="3">
-            <input type="checkbox" id="saeDeath" name="saeDeath" index="0" disabled="disabled" value="Y"
-                   th:checked="${aemMntrngVO.saeDeath == 'Y'}"> 사망
-            <input type="checkbox" id="saeLifeThrt" name="saeLifeThrt" index="0" disabled="disabled" value="Y"
-                   th:checked="${aemMntrngVO.saeLifeThrt == 'Y'}"> 생명위협
-            <input type="checkbox" id="saeHsptlzNeed" name="saeHsptlzNeed" index="0" disabled="disabled" value="Y"
-                   th:checked="${aemMntrngVO.saeHsptlzNeed == 'Y'}"> 입원 또는 입원기간의 연장이 필요한 경우
-            <input type="checkbox" id="saeCsmalfnc" name="saeCsmalfnc" index="0" disabled="disabled" value="Y"
-                   th:checked="${aemMntrngVO.saeCsmalfnc == 'Y'}"> 지속적 또는 중대한 불구나 기능저하를 초래하는 경우
-            <input type="checkbox" id="saeCsdeform" name="saeCsdeform" index="0" disabled="disabled" value="Y"
-                   th:checked="${aemMntrngVO.saeCsdeform == 'Y'}"> 선천적 기형 또는 이상을 초래하는 경우
-            <input type="checkbox" id="saeEtcSittn" name="saeEtcSittn" index="0" disabled="disabled" value="Y"
-                   th:checked="${aemMntrngVO.saeEtcSittn == 'Y'}"> 기타 의할적으로 중요한 상황
-        </td>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>인과관계 :</div></th>
-        <td class="tdTextLeft">
-            <!-- causalityCode -->
-            <select name="causalityCode" id="causalityCode" class="custom-select custom-select-sm form-control form-control-sm">
-                <option value="">--선택--</option>
-                <option value="A10" th:selected="${aemMntrngVO.causalityCode == 'A10'}">Not related</option>
-                <option value="B10" th:selected="${aemMntrngVO.causalityCode == 'B10'}">확실함(Certain)</option>
-                <option value="A20" th:selected="${aemMntrngVO.causalityCode == 'A20'}">Related</option>
-                <option value="B20" th:selected="${aemMntrngVO.causalityCode == 'B20'}">상당히 확실함(Probable)</option>
-                <option value="B30" th:selected="${aemMntrngVO.causalityCode == 'B30'}">가능함(Possible)</option>
-                <option value="B40" th:selected="${aemMntrngVO.causalityCode == 'B40'}">가능성 적음(Unlikely)</option>
-                <option value="B50" th:selected="${aemMntrngVO.causalityCode == 'B50'}">가능성 없음(Unrelated)</option>
-                <option value="B60" th:selected="${aemMntrngVO.causalityCode == 'B60'}">평가곤란</option>
-                <option value="B70" th:selected="${aemMntrngVO.causalityCode == 'B70'}">평가불가</option>
-            </select>
-        </td>
-        <th class="tdTextRight"><div>예측여부 :</div></th>
-        <td class="tdTextLeft">
-            <input type="radio" id="predictAt1" name="predictAt" index="1" disabled="" value="Y"
-                   th:checked="${aemMntrngVO.predictAt == 'Y'}"> Yes
-            <input type="radio" id="predictAt2" name="predictAt" index="1" disabled="" value="N"
-                   th:checked="${aemMntrngVO.predictAt == 'N'}"> No
-        </td>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>관련조치 :</div></th>
-        <td class="tdTextLeft">
-            <!-- aeActionCode -->
-            <select name="aeActionCode" id="aeActionCode" class="custom-select custom-select-sm form-control form-control-sm">
-                <option value="">--선택--</option>
-                <option value="10" th:selected="${aemMntrngVO.aeActionCode == '10'}">용량변경 없음</option>
-                <option value="20" th:selected="${aemMntrngVO.aeActionCode == '20'}">용량 감소</option>
-                <option value="30" th:selected="${aemMntrngVO.aeActionCode == '30'}">용량 증가</option>
-                <option value="40" th:selected="${aemMntrngVO.aeActionCode == '40'}">일시 중단</option>
-                <option value="50" th:selected="${aemMntrngVO.aeActionCode == '50'}">영구 중단</option>
-                <option value="60" th:selected="${aemMntrngVO.aeActionCode == '60'}">해당없음</option>
-                <option value="70" th:selected="${aemMntrngVO.aeActionCode == '70'}">모름</option>
-            </select>
-        </td>
-        <th class="tdTextRight"><div>임상약종료 :</div></th>
-        <td class="tdTextLeft">
-            <input type="text" id="medcinStopDe" name="medcinStopDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
-                   th:value="${aemMntrngVO.medcinStopDe}">
-            <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
-        </td>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>기타초치 :</div></th>
-        <td class="tdTextLeft">
-            <!-- etcActionCode -->
-            <select name="etcActionCode" id="etcActionCode" class="custom-select custom-select-sm form-control form-control-sm">
-                <option value="10" th:selected="${aemMntrngVO.etcActionCode == '10'}">없음</option>
-                <option value="20" th:selected="${aemMntrngVO.etcActionCode == '20'}">약물요법</option>
-                <option value="30" th:selected="${aemMntrngVO.etcActionCode == '30'}">시술/처치</option>
-                <option value="40" th:selected="${aemMntrngVO.etcActionCode == '40'}">약물요법,시술/처치</option>
-            </select>
-        </td>
-        <th class="tdTextRight"><div> </div></th>
-        <td class="tdTextLeft">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdTextLift" colspan="4" style="background-color:#6E6E6E;">
+                <div style="float:left;color:#ffffff;font-weight:600">AE조치 ( 확인자 : [[${aemMntrngVO.actionDcsnUser}]])</div>
+                <div style="float:right">
+                    <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">저장</button>
+                    <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">삭제</button>
+                    <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline">확정</button>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>Serious여부 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <input type="radio" id="saeAt1" name="saeAt" value="Y"
+                       th:checked="${aemMntrngVO.saeAt == 'Y'}"> Yes
+                <input type="radio" id="saeAt2" name="saeAt" value="N"
+                       th:checked="${aemMntrngVO.saeAt == 'N'}"> No
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>Serious내용 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <input type="checkbox" id="saeDeath" name="saeDeath" value="Y"
+                       th:checked="${aemMntrngVO.saeDeath == 'Y'}"> 사망
+                <input type="checkbox" id="saeLifeThrt" name="saeLifeThrt" value="Y"
+                       th:checked="${aemMntrngVO.saeLifeThrt == 'Y'}"> 생명위협
+                <input type="checkbox" id="saeHsptlzNeed" name="saeHsptlzNeed" value="Y"
+                       th:checked="${aemMntrngVO.saeHsptlzNeed == 'Y'}"> 입원 또는 입원기간의 연장이 필요한 경우
+                <input type="checkbox" id="saeCsmalfnc" name="saeCsmalfnc" value="Y"
+                       th:checked="${aemMntrngVO.saeCsmalfnc == 'Y'}"> 지속적 또는 중대한 불구나 기능저하를 초래하는 경우
+                <input type="checkbox" id="saeCsdeform" name="saeCsdeform" value="Y"
+                       th:checked="${aemMntrngVO.saeCsdeform == 'Y'}"> 선천적 기형 또는 이상을 초래하는 경우
+                <input type="checkbox" id="saeEtcSittn" name="saeEtcSittn" value="Y"
+                       th:checked="${aemMntrngVO.saeEtcSittn == 'Y'}"> 기타 의할적으로 중요한 상황
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>인과관계 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <!-- causalityCode -->
+                <input type="radio" id="causalityCode1" name="causalityCode" value="A10"
+                       th:checked="${aemMntrngVO.causalityCode == 'A10'}">
+                Not related
 
-        </td>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>결과 :</div></th>
-        <td class="tdTextLeft">
-            <!-- aeRsltCode -->
-            <select name="aeRsltCode" id="aeRsltCode" class="custom-select custom-select-sm form-control form-control-sm">
-                <option value="">--선택--</option>
-                <option value="100" th:selected="${aemMntrngVO.aeRsltCode == '100'}">회복됨</option>
-                <option value="200" th:selected="${aemMntrngVO.aeRsltCode == '200'}">회복됨(휴유증동반)</option>
-                <option value="300" th:selected="${aemMntrngVO.aeRsltCode == '300'}">회복중</option>
-                <option value="400" th:selected="${aemMntrngVO.aeRsltCode == '400'}">회복안됨</option>
-                <option value="500" th:selected="${aemMntrngVO.aeRsltCode == '500'}">모름</option>
-            </select>
-        </td>
-        <th class="tdTextRight"><div>조치일자 :</div></th>
-        <td class="tdTextLeft">
-            <input type="text" id="actionDe" name="actionDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
-                   th:value="${aemMntrngVO.actionDe}">
-            <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
-        </td>
-    </tr>
-    <tr>
-        <th class="tdTextRight"><div>조치메모 :</div></th>
-        <td class="tdTextLeft" colspan="3">
+                <input type="radio" id="causalityCode2" name="causalityCode" value="B10"
+                       th:checked="${aemMntrngVO.causalityCode == 'B10'}">
+                확실함(Certain)
+
+                <input type="radio" id="causalityCode3" name="causalityCode" value="A20"
+                       th:checked="${aemMntrngVO.causalityCode == 'A20'}">
+                Related
+
+                <input type="radio" id="causalityCode4" name="causalityCode" value="B20"
+                       th:checked="${aemMntrngVO.causalityCode == 'B20'}">
+                상당히 확실함(Probable)
+
+                <input type="radio" id="causalityCode5" name="causalityCode" value="B30"
+                       th:checked="${aemMntrngVO.causalityCode == 'B30'}">
+                가능함(Possible)
+
+                <input type="radio" id="causalityCode6" name="causalityCode" value="B40"
+                       th:checked="${aemMntrngVO.causalityCode == 'B40'}">
+                가능성 적음(Unlikely)
+
+                <input type="radio" id="causalityCode7" name="causalityCode" value="B50"
+                       th:checked="${aemMntrngVO.causalityCode == 'B50'}">
+                가능성 없음(Unrelated)
+
+                <input type="radio" id="causalityCode8" name="causalityCode" value="B60"
+                       th:checked="${aemMntrngVO.causalityCode == 'B60'}">
+                평가곤란
+
+                <input type="radio" id="causalityCode9" name="causalityCode" value="B70"
+                       th:checked="${aemMntrngVO.causalityCode == 'B70'}">
+                평가불가
+           </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>예측여부 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <input type="radio" id="predictAt1" name="predictAt" value="Y"
+                       th:checked="${aemMntrngVO.predictAt == 'Y'}"> Yes
+                <input type="radio" id="predictAt2" name="predictAt" value="N"
+                       th:checked="${aemMntrngVO.predictAt == 'N'}"> No
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>관련조치 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <!-- aeActionCode -->
+                <input type="radio" id="aeActionCode1" name="aeActionCode" value="10"
+                       th:checked="${aemMntrngVO.aeActionCode == '10'}">
+                용량변경 없음
+
+                <input type="radio" id="aeActionCode2" name="aeActionCode" value="20"
+                       th:checked="${aemMntrngVO.aeActionCode == '20'}">
+                용량 감소
+
+                <input type="radio" id="aeActionCode3" name="aeActionCode" value="30"
+                       th:checked="${aemMntrngVO.aeActionCode == '30'}">
+                용량 증가
+
+                <input type="radio" id="aeActionCode4" name="aeActionCode" value="40"
+                       th:checked="${aemMntrngVO.aeActionCode == '40'}">
+                일시 중단
+
+                <input type="radio" id="aeActionCode5" name="aeActionCode" value="50"
+                       th:checked="${aemMntrngVO.aeActionCode == '50'}">
+                영구 중단
+
+                <input type="radio" id="aeActionCode6" name="aeActionCode" value="60"
+                       th:checked="${aemMntrngVO.aeActionCode == '60'}">
+                해당없음
+
+                <input type="radio" id="aeActionCode7" name="aeActionCode" value="70"
+                       th:checked="${aemMntrngVO.aeActionCode == '70'}">
+                모름
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>기타초치 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <!-- etcActionCode -->
+                <input type="radio" id="etcActionCode1" name="etcActionCode" value="10"
+                       th:checked="${aemMntrngVO.etcActionCode == '10'}">
+                없음
+
+                <input type="radio" id="etcActionCode2" name="etcActionCode" value="20"
+                       th:checked="${aemMntrngVO.etcActionCode == '20'}">
+                약물요법
+
+                <input type="radio" id="etcActionCode3" name="etcActionCode" value="30"
+                       th:checked="${aemMntrngVO.etcActionCode == '30'}">
+                시술/처치
+
+                <input type="radio" id="etcActionCode4" name="etcActionCode" value="40"
+                       th:checked="${aemMntrngVO.etcActionCode == '40'}">
+                약물요법,시술/처치
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>결과 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <!-- aeRsltCode -->
+                <input type="radio" id="aeRsltCode1" name="aeRsltCode" value="100"
+                       th:checked="${aemMntrngVO.aeRsltCode == '100'}">
+                회복됨
+
+                <input type="radio" id="aeRsltCode2" name="aeRsltCode" value="200"
+                       th:checked="${aemMntrngVO.aeRsltCode == '200'}">
+                회복됨(휴유증동반)
+
+                <input type="radio" id="aeRsltCode3" name="aeRsltCode" value="300"
+                       th:checked="${aemMntrngVO.aeRsltCode == '300'}">
+                회복중
+
+                <input type="radio" id="aeRsltCode4" name="aeRsltCode" value="400"
+                       th:checked="${aemMntrngVO.aeRsltCode == '400'}">
+                회복안됨
+
+                <input type="radio" id="aeRsltCode5" name="aeRsltCode" value="500"
+                       th:checked="${aemMntrngVO.aeRsltCode == '500'}">
+                모름
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>임상약종료 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <input type="text" id="medcinStopDe" name="medcinStopDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
+                       th:value="${aemMntrngVO.medcinStopDe}">
+                <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>조치일자 :</div></th>
+            <td class="tdTextLeft" colspan="3">
+                <input type="text" id="actionDe" name="actionDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
+                       th:value="${aemMntrngVO.actionDe}">
+                <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
+            </td>
+        </tr>
+        <tr>
+            <th class="tdTextRight"><div>조치메모 :</div></th>
+            <td class="tdTextLeft" colspan="3">
                 <textarea id="actionMemo" name="actionMemo" class="form-control form-control-sm"
-                          style="width:100%;height:80px;" readonly="readonly">[[${aemMntrngVO.actionMemo}]]</textarea>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                          style="width:100%;height:80px;">[[${aemMntrngVO.actionMemo}]]</textarea>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</th:block>
+
+
 
 <script>
     $('#actionDe').datepicker({

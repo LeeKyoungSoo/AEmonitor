@@ -48,7 +48,6 @@
         ]]>
 	</select>
 
-
     <select id="getSysSetupFileList" resultMap="DataMapVO" >
     	<![CDATA[
         SELECT SETUPITEM_CODE AS setupitemCode
@@ -74,13 +73,70 @@
         ]]>
     </select>
 
+    <insert id="insertSymptms" parameterType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
+        <![CDATA[
+        INSERT INTO AEMPRTCPNTSYMPTMS (
+             STUDY_ID
+            ,PRTCPNT_ID
+            ,SYMPTMS_SEQ
+            ,SYMPTMS_REGTYPE_CODE
+            ,SYMPTMS_TITLE
+            ,SYMPTMS_CONFIRM
+            ,CALL_PARTNER
+            ,SYMPTMS_CN
+            ,SYMPTMS_REGIST_DE
+            ,SYMPTMS_STRTDE
+            ,FRST_REGISTER_ID
+            ,LAST_UPDUSR_ID
+        ) VALUES (
+             #{studyId}
+            ,#{prtcpntId}
+            ,GET_NEXT_SYMPTMS_SEQ(#{studyId}, #{prtcpntId})
+            ,#{symptmsRegtypeCode}
+            ,'NO TITLE'
+            ,IFNULL(#{symptmsConfirm}, 'N')
+            ,IFNULL(#{callPartner}, '')
+            ,IFNULL(#{symptmsCn}, '')
+            ,STR_TO_DATE(IFNULL(#{symptmsRegistDe}, DATE_FORMAT(NOW(),'%Y%m%d')), '%Y%m%d')
+            ,STR_TO_DATE(IFNULL(#{symptmsRegistDe}, DATE_FORMAT(NOW(),'%Y%m%d')), '%Y%m%d')
+            ,#{frstRegisterId}
+            ,#{lastUpdusrId}
+        )
+        ]]>
+    </insert>
+
+    <update id="updateSymptms" parameterType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
+        <!-- 증세 수정 : 확인여부, 내용, 구분만 수정 -->
+        <![CDATA[
+        UPDATE AEMPRTCPNTSYMPTMS SET
+            SYMPTMS_CONFIRM = IFNULL(#{symptmsConfirm}, 'N')
+            ,SYMPTMS_CN = IFNULL(#{symptmsCn}, '')
+            ,CALL_PARTNER = IFNULL(#{callPartner}, '')
+            ,LAST_UPDT_PNTTM = NOW()
+		    ,LAST_UPDUSR_ID = #{lastUpdusrId}
+        WHERE STUDY_ID = #{studyId}
+            AND PRTCPNT_ID = #{prtcpntId}
+            AND SYMPTMS_SEQ = #{symptmsSeq}
+        ]]>
+    </update>
+
+    <delete id="deleteSymptms" parameterType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
+        <!-- 증세 삭제 -->
+        <![CDATA[
+        DELETE FROM AEMPRTCPNTSYMPTMS
+        WHERE STUDY_ID = #{studyId}
+          AND PRTCPNT_ID = #{prtcpntId}
+          AND SYMPTMS_SEQ = #{symptmsSeq}
+        ]]>
+    </delete>
+
     <select id="selectSymptms" parameterType="net.lnworks.monitor.domain.study.AEMntrngSymptmsParamVO" resultType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
 	    <!-- 증세 상세 -->
         <![CDATA[
         SELECT TPS.STUDY_ID AS studyId, TPS.PRTCPNT_ID AS prtcpntId, TPS.SYMPTMS_SEQ AS symptmsSeq, TPS.SYMPTMS_REGTYPE_CODE AS symptmsRegtypeCode,
-               DATE_FORMAT(TPS.SYMPTMS_REGIST_DE, '%Y%m%d') AS symptmsRegistDe, TPS.SYMPTMS_TITLE AS symptmsTitle,
-               DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y%m%d') AS symptmsStrtDe,
-               DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y%m%d') AS symptmsEndDe,
+               DATE_FORMAT(TPS.SYMPTMS_REGIST_DE, '%Y-%m-%d') AS symptmsRegistDe, TPS.SYMPTMS_TITLE AS symptmsTitle,
+               DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d') AS symptmsStrtDe,
+               DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y-%m-%d') AS symptmsEndDe,
                CONCAT_WS('~',DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d'), IFNULL(DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y-%m-%d'),'')) AS symptmsDe,
                TPS.SYMPTMS_CN AS symptmsCn, TPS.ATCH_FILE_ID AS atchFileId,
                TPS.OUTBND_CALL_AT AS outbndCallAt, TPS.CALL_PARTNER AS callPartner, TPS.VISIT_TYPE_CODE AS visitTypeCode, TPS.VISITRULE_SEQ AS visitRuleSeq,
@@ -89,7 +145,8 @@
                 WHERE TVR.STUDY_ID = TPS.STUDY_ID
                   AND TVR.VISITRULE_SEQ = TPS.VISITRULE_SEQ) AS trmtStep,
                (SELECT TU.USER_NM FROM COMTNUSERINFO TU WHERE TU.ESNTL_ID = TPS.FRST_REGISTER_ID) AS registerNm,
-               IF(T1.CNT > 0, 'Y', 'N') AS useAt
+               IF(T1.CNT > 0, 'Y', 'N') AS useAt,
+               SYMPTMS_CONFIRM AS symptmsConfirm
         FROM AEMPRTCPNTSYMPTMS TPS
                  LEFT JOIN (
             SELECT TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ, COUNT(*) AS CNT
@@ -154,8 +211,7 @@
             ,  CONCAT_WS('|',TM.STUDY_ID,TM.PRTCPNT_ID,TM.SUMRY_SEQ,TM.MNTRNG_SEQ,'') AS treeKey
             ,  2 AS level
             ,  TM.ACTION_DCSN_AT AS code
-            ,  CONCAT('[',CONCAT_WS('][', CONCAT('RV##',TM.REVISN_NO)
-                    , CONCAT_WS('~',DATE_FORMAT(TM.AE_STRT_DE, '%Y-%m-%d'),IFNULL(DATE_FORMAT(TM.AE_END_DE, '%Y-%m-%d'), ''))
+            ,  CONCAT('[',CONCAT_WS('][', CONCAT('',TM.ae_term_ctcae)
                     , IFNULL(TGD.CODE_NM,'-')
                     , IF(TM.ACTION_DCSN_AT='Y','조치확정','조치미확정')
             ),']') AS treeItem
@@ -236,21 +292,19 @@
         <!-- 참여자 증상 목록 -->
         <![CDATA[
 	    SELECT TPS.STUDY_ID AS studyId, TPS.PRTCPNT_ID AS prtcpntId, TPS.SYMPTMS_SEQ AS symptmsSeq, TPS.SYMPTMS_REGTYPE_CODE AS symptmsRegtypeCode,
-	           CASE
-				WHEN TPS.SYMPTMS_REGTYPE_CODE ='110' THEN '사진'
-                WHEN TPS.SYMPTMS_REGTYPE_CODE ='120' THEN '동영상'
-                WHEN TPS.SYMPTMS_REGTYPE_CODE ='130' THEN '음성'
-                WHEN TPS.SYMPTMS_REGTYPE_CODE ='140' THEN 'TEXT'
-                WHEN TPS.SYMPTMS_REGTYPE_CODE ='300' THEN '전화'
-                WHEN TPS.SYMPTMS_REGTYPE_CODE ='400' THEN '외래'
-				ELSE 'IOT'
-           END AS symRegTxt,
-               DATE_FORMAT(TPS.SYMPTMS_REGIST_DE, '%Y%m%d') AS symptmsRegistDe,
-               TPS.SYMPTMS_TITLE AS symptmsTitle,
-               CONCAT_WS('~',DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d'), IFNULL(DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y-%m-%d'),'')) AS symptmsDe,
-               (SELECT TU.USER_NM FROM COMTNUSERINFO TU WHERE TU.ESNTL_ID = TPS.FRST_REGISTER_ID) AS registerNm,
-               IF(IFNULL(T1.CNT,0) > 0, '1', '0') AS useAt,
-               IF(IFNULL(T2.CNT,0) > 0, 'Y', 'N') AS otherAEUseAt
+	            CASE
+					WHEN TPS.SYMPTMS_REGTYPE_CODE ='300' THEN '전화'
+					WHEN TPS.SYMPTMS_REGTYPE_CODE ='400' THEN '대면'
+				ELSE '앱'
+                END AS symRegTxt,
+                DATE_FORMAT(TPS.SYMPTMS_REGIST_DE, '%Y%m%d') AS symptmsRegistDe,
+                TPS.SYMPTMS_TITLE AS symptmsTitle,
+                CONCAT_WS('~',DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d'), IFNULL(DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y-%m-%d'),'')) AS symptmsDe,
+                (SELECT TU.USER_NM FROM COMTNUSERINFO TU WHERE TU.ESNTL_ID = TPS.FRST_REGISTER_ID) AS registerNm,
+                IF(IFNULL(T1.CNT,0) > 0, '1', '0') AS useAt,
+                IF(IFNULL(T2.CNT,0) > 0, 'Y', 'N') AS otherAEUseAt,
+	            IFNULL(IF( LENGTH(SYMPTMS_CN) > 10, CONCAT(LEFT(SYMPTMS_CN, 10),'...'), SYMPTMS_CN), '') AS symptmsCn,
+                SYMPTMS_CONFIRM AS symptmsConfirm
 	    FROM AEMPRTCPNTSYMPTMS TPS
 		   LEFT JOIN (
 			SELECT TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ, COUNT(*) AS CNT
@@ -289,16 +343,21 @@
          WHERE TPS.STUDY_ID = #{studyId}
            AND TPS.PRTCPNT_ID = #{prtcpntId}
         ]]>
-        <if test='viewType!=null and !viewType.equals("")'>
-            AND TPS.SYMPTMS_REGTYPE_CODE IN (#{viewType})
-        </if>
+        <choose>
+            <when test="viewTypeList.size != 0">
+                AND TPS.SYMPTMS_REGTYPE_CODE IN
+                <foreach collection="viewTypeList" item="item" index="index" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </when>
+        </choose>
         <if test='sumrySeq!=null and !sumrySeq.equals("")'>
             <if test='useIncludeAt != "Y"'>
                 AND IF(IFNULL(T1.CNT,0) > 0, 'Y', 'N') = IF(#{useIncludeAt} = '', 'N', #{useIncludeAt})
             </if>
         </if>
         <![CDATA[
-         ORDER BY TPS.SYMPTMS_SEQ DESC
+         ORDER BY TPS.SYMPTMS_REGIST_DE DESC, TPS.SYMPTMS_SEQ DESC
         ]]>
     </select>
 
@@ -306,16 +365,17 @@
         <!-- 참여자 목록 -->
         <![CDATA[
         SELECT studyId, prtcpntId, enrlNo, initial
-               ,CONCAT(symptmsCnt,' ',IF(visitScheduledDe1 IS NOT NULL,'방문','')) AS newSymptms
-               ,sexdstnCode, telno, birthday, pcnAppId
-               ,IFNULL(visitScheduledDe1, visitScheduledDe2) AS visitForecastDe
-               ,cnfrmrNm
+                ,CONCAT(symptmsCnt,' ',IF(visitScheduledDe1 IS NOT NULL,'방문','')) AS newSymptms
+                ,sexdstnCode, telno, birthday, pcnAppId
+                ,IFNULL(visitScheduledDe1, visitScheduledDe2) AS visitForecastDe
+                ,cnfrmrNm
+                ,DATE_FORMAT(regDt, '%Y-%m-%d') AS regDt
         FROM (
                 SELECT TD.STUDY_ID AS studyid
                     , TD.PRTCPNT_ID AS prtcpntId
                     , TD.ENRL_NO AS enrlNo
                     , TP.INITIAL AS initial
-                    , CONCAT(IFNULL(TS.SCNT,0),'(',IFNULL(TS.SCNTALL,0),')') AS symptmsCnt
+                    , CONCAT(IFNULL(TS.CONFIRM,0),'(',IFNULL(TS.SCNTALL,0),')') AS symptmsCnt
                     , TP.SEXDSTN_CODE AS sexdstnCode
                     , TP.TELNO AS telno
                     , CONCAT_WS('-', LPAD(TP.BRTHDY_YEAR, 4, '0'), LPAD(TP.BRTHDY_MONTH, 2, '0'), LPAD(IFNULL(TP.BRTHDY_DATE,''), 2, '0')) AS birthday
@@ -331,18 +391,17 @@
                         WHERE STUDY_ID = #{studyId}
                           AND DATE_ADD(TD.MDCTN_STRTDE, INTERVAL TVS.TERM_DAYS DAY) > IFNULL(LAST_VISITDE, NOW())
                     ) AS visitScheduledDe2
+                    , TS.regDt
                 FROM AEMSTDYPRTCPNT TD
                      JOIN AEMPRTCPNT TP ON TP.PRTCPNT_ID = TD.PRTCPNT_ID
                      LEFT JOIN (
                         SELECT PRTCPNT_ID
                             ,  SUM(IF(DATE_FORMAT(SYMPTMS_REGIST_DE, '%Y%m%d') BETWEEN IFNULL(NULLIF(#{startDe},''),'00000000') AND IFNULL(NULLIF(#{endDe},''),'99991231'), 1,0)) AS SCNT
+                            ,  SUM(IF(SYMPTMS_CONFIRM = 'N', 1, 0)) AS CONFIRM
                             ,  COUNT(*) AS SCNTALL
+                            ,  MAX(SYMPTMS_REGIST_DE) AS regDt
                         FROM AEMPRTCPNTSYMPTMS TPS
                         WHERE STUDY_ID = #{studyId}
-                          AND NOT EXISTS (SELECT 1 FROM AEMMNTRNGSYMPTMS TMS
-                                          WHERE TMS.STUDY_ID = TPS.STUDY_ID
-                                            AND TMS.PRTCPNT_ID = TPS.PRTCPNT_ID
-                                            AND TMS.SYMPTMS_SEQ = TPS.SYMPTMS_SEQ)
                         GROUP BY PRTCPNT_ID
                      ) TS
                      ON TS.PRTCPNT_ID = TD.PRTCPNT_ID
@@ -383,7 +442,7 @@
             AND visitScheduledDe1 IS NOT NULL /* 오늘방문예정일 경우 */
         </if>
         <![CDATA[
-        ORDER BY enrlNo
+        ORDER BY regDt desc, enrlNo
         ]]>
     </select>
 

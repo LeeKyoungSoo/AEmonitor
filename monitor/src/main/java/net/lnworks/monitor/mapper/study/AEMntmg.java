@@ -17,4 +17,7 @@ public interface AEMntmg {
     List<DataListMap> fileDetailList(AEMPrtcpntSymptmsVO vo) throws Exception;
     List<DataListMap> getSysSetupFileList() throws Exception;
     AEMMntrngVO selectAEMntrngView(AEMMntrngVO vo) throws Exception;
+    int insertSymptms(AEMPrtcpntSymptmsVO vo) throws Exception;
+    int updateSymptms(AEMPrtcpntSymptmsVO vo) throws Exception;
+    int deleteSymptms(AEMPrtcpntSymptmsVO vo) throws Exception;
 }

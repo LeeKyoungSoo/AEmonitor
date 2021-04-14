@@ -75,4 +75,6 @@ public class AEMPrtcpntSymptmsVO {
     private String endDe;
 
     private String symRegTxt;
+
+    private String symptmsConfirm;
 }

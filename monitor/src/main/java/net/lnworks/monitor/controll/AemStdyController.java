@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,32 @@ import java.util.Map;
 public class AemStdyController {
     @Autowired
     private AEMntmgService aeMntmgService;
+
+    @PostMapping("/symptmsInsert")
+    public int goSymptmsInsert(AEMPrtcpntSymptmsVO aemPrtcpntSymptmsVO, Principal principal) throws Exception {
+        int returnNum = 0;
+        aemPrtcpntSymptmsVO.setFrstRegisterId(principal.getName());
+        aemPrtcpntSymptmsVO.setLastUpdusrId(principal.getName());
+        returnNum = aeMntmgService.insertSymptms(aemPrtcpntSymptmsVO);
+
+        return returnNum;
+    }
+
+    @PostMapping("/symptmsDelete")
+    public int goSymptmsDelete(AEMPrtcpntSymptmsVO aemPrtcpntSymptmsVO) throws Exception {
+        int returnNum = 0;
+        returnNum = aeMntmgService.deleteSymptms(aemPrtcpntSymptmsVO);
+        return returnNum;
+    }
+
+    @PostMapping("/symptmsUpdate")
+    public int goSymptmsUpdate(AEMPrtcpntSymptmsVO aemPrtcpntSymptmsVO, Principal principal) throws Exception {
+        int returnNum = 0;
+        aemPrtcpntSymptmsVO.setLastUpdusrId(principal.getName());
+        returnNum = aeMntmgService.updateSymptms(aemPrtcpntSymptmsVO);
+
+        return returnNum;
+    }
 
     @GetMapping("/aeTreeList")
     public List<AEMntrngTreeVO> goAETreeList(@RequestParam (value = "studyId") String studyId,
@@ -39,10 +66,11 @@ public class AemStdyController {
                                                    @RequestParam (value = "viewType") String viewType) throws Exception {
         //참여자 증상 목록
         AEMntrngSymptmsParamVO aeMntrngSymptmsParamVO = new AEMntrngSymptmsParamVO();
-
         aeMntrngSymptmsParamVO.setStudyId(studyId);
         aeMntrngSymptmsParamVO.setPrtcpntId(prtcpntId);
-        aeMntrngSymptmsParamVO.setViewType(viewType);
+        List<String> viewTypeList =  Arrays.asList(viewType.split(","));
+
+        aeMntrngSymptmsParamVO.setViewTypeList(viewTypeList);
         List<AEMPrtcpntSymptmsVO> aemPrtcpntSymptmsVOList = aeMntmgService.selectSymptmsList(aeMntrngSymptmsParamVO);
 
         return aemPrtcpntSymptmsVOList;
