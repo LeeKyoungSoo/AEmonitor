@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.lnworks.monitor.mapper.study.PcnctcAE">
+
+    <select id="pcnctcaeOneList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
+        <![CDATA[
+        SELECT CTCAE_VER AS ctcaeVer
+            , MEDDRA_CODE AS medDraCode
+            , MEDDRA_SOC AS medDraSoc
+        FROM PCNCTCAE
+        WHERE CTCAE_VER = (SELECT CTCAE_VER FROM AEMSTUDY TS WHERE TS.STUDY_ID = #{studyId})
+        ]]>
+    </select>
+
+    <select id="pcnctcaeTwoList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
+        <![CDATA[
+        SELECT CTCAE_VER AS ctcaeVer
+            , MEDDRA_CODE AS medDraCode
+            , MEDDRA_SOC AS medDraSoc
+            , TERM AS term
+        FROM PCNCTCAE
+        WHERE CTCAE_VER = #{ctcaeVer}
+            AND MEDDRA_SOC = #{medDraSoc}
+        ORDER BY TERM
+        ]]>
+    </select>
+
+    <select id="pcnctcaeThreeList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
+        <![CDATA[
+         SELECT CTCAE_VER AS ctcaeVer
+            , MEDDRA_CODE AS medDraCode
+            , MEDDRA_SOC AS medDraSoc
+            , TERM AS term
+            , IFNULL(GRADE1, '-') AS grade1
+            , IFNULL(GRADE2, '-') AS grade2
+            , IFNULL(GRADE3, '-') AS grade3
+            , IFNULL(GRADE4, '-') AS grade4
+            , IFNULL(GRADE5, '-') AS grade5
+        FROM PCNCTCAE
+        WHERE CTCAE_VER = #{ctcaeVer}
+          AND MEDDRA_CODE = #{medDraCode};
+        ]]>
+    </select>
+</mapper>

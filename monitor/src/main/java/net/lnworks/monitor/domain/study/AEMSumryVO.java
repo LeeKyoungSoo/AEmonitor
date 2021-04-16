@@ -67,4 +67,6 @@ public class AEMSumryVO {
 
     /** 결과코드 */
     private String resultCode;
+
+    private String useYn;
 }

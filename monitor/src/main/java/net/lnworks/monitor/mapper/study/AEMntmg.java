@@ -20,4 +20,7 @@ public interface AEMntmg {
     int insertSymptms(AEMPrtcpntSymptmsVO vo) throws Exception;
     int updateSymptms(AEMPrtcpntSymptmsVO vo) throws Exception;
     int deleteSymptms(AEMPrtcpntSymptmsVO vo) throws Exception;
+    int insertAEMMntrng(AEMMntrngVO vo) throws Exception;
+    int insertAEMSumry(AEMMntrngVO vo) throws Exception;
+    int updateAEMSumry(AEMMntrngVO vo) throws Exception;
 }

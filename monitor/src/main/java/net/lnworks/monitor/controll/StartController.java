@@ -9,15 +9,14 @@ import net.lnworks.monitor.domain.study.*;
 import net.lnworks.monitor.service.member.MemberLoginService;
 import net.lnworks.monitor.service.menu.MenuConfigService;
 import net.lnworks.monitor.service.study.AEMntmgService;
+import net.lnworks.monitor.service.study.PcnctcAEService;
 import net.lnworks.monitor.service.study.StudyMngService;
 import net.lnworks.monitor.util.DataListMap;
 import net.lnworks.monitor.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -44,25 +43,38 @@ public class StartController {
     @Autowired
     private AEMntmgService aeMntmgService;
 
+    @Autowired
+    private PcnctcAEService pcnctcaeService;
+
     @Value("${Globals.IntnetSys}")
     private String intnetSys;
 
+    @RequestMapping(value = "/pcnctcaeView")
+    public ModelAndView goPcnctcaeView(@RequestParam (value = "studyId") String studyId) throws Exception {
+
+        ModelAndView mav = new ModelAndView();
+        PcnctcAEVO pcnctcAEVOIn = new PcnctcAEVO();
+        pcnctcAEVOIn.setStudyId(studyId);
+
+        List<PcnctcAEVO> pcnctcAEVOList = pcnctcaeService.pcnctcaeOneList(pcnctcAEVOIn);
+
+        mav.addObject("pcnctcaeVOList", pcnctcAEVOList);
+        mav.setViewName("content/study/pcnctcaeUI.html");
+
+        return mav;
+    }
+
     @RequestMapping(value = "/aeChartViewNew")
     public ModelAndView goAEChartViewNew(@RequestParam (value = "studyId") String studyId,
-                                      @RequestParam (value = "prtcpntId") String prtcpntId,
-                                      @RequestParam (value = "sumrySeq") int sumrySeq,
-                                      @RequestParam (value = "mntrngSeq") int mntrngSeq) throws Exception {
+                                         @RequestParam (value = "prtcpntId") String prtcpntId) throws Exception {
 
         ModelAndView mav = new ModelAndView();
         AEMMntrngVO inAemMntrngVO = new AEMMntrngVO();
         inAemMntrngVO.setStudyId(studyId);
         inAemMntrngVO.setPrtcpntId(prtcpntId);
-        inAemMntrngVO.setSumrySeq(sumrySeq);
-        inAemMntrngVO.setMntrngSeq(mntrngSeq);
-
-        //AEMMntrngVO  OutAemMntrngVO =  aeMntmgService.selectAEMntrngView(inAemMntrngVO);
 
         mav.addObject("newWrite", "Y");
+        mav.addObject("aemMntrngVO", inAemMntrngVO);
         mav.setViewName("content/study/aeChartUI.html");
 
         return mav;
@@ -71,15 +83,13 @@ public class StartController {
     @RequestMapping(value = "/aeChartView")
     public ModelAndView goAEChartView(@RequestParam (value = "studyId") String studyId,
                                       @RequestParam (value = "prtcpntId") String prtcpntId,
-                                      @RequestParam (value = "sumrySeq") int sumrySeq,
-                                      @RequestParam (value = "mntrngSeq") int mntrngSeq) throws Exception {
+                                      @RequestParam (value = "sumrySeq") int sumrySeq) throws Exception {
 
         ModelAndView mav = new ModelAndView();
         AEMMntrngVO inAemMntrngVO = new AEMMntrngVO();
         inAemMntrngVO.setStudyId(studyId);
         inAemMntrngVO.setPrtcpntId(prtcpntId);
         inAemMntrngVO.setSumrySeq(sumrySeq);
-        inAemMntrngVO.setMntrngSeq(mntrngSeq);
 
         AEMMntrngVO  OutAemMntrngVO =  aeMntmgService.selectAEMntrngView(inAemMntrngVO);
 

@@ -1,0 +1,165 @@
+<table id="cnctcaeUITable" class="tableClass">
+    <colgroup>
+        <col style="width:30%;">
+        <col style="width:70%;">
+    </colgroup>
+    <tbody>
+    <tr>
+        <td align="right" colspan="2">
+            <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline" onclick="gradeChoice();">선택</button>
+            <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline" onclick="pcnctcaeHide();">닫기</button>
+        </th>
+    </tr>
+    <tr>
+        <th class="tdTextRight"><div>category :</div></th>
+        <td class="tdTextLeft">
+            <select id="pcnctcaeCoList" name="pcnctcaeCoList" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm"
+                onchange="PcnctcaeListDataChange();">
+                <option value=""></option>
+                <th:block th:each="pcnctcae : ${pcnctcaeVOList}" >
+                    <option th:value="${pcnctcae.ctcaeVer + '|' + pcnctcae.medDraSoc}" th:text="${pcnctcae.medDraSoc}" />
+                </th:block>
+            </select>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div id="pcnctcaeTowView" style="margin-top:12px;width:100%;display: none">
+    <table class="table table-bordered" id="pcnctcaeList"  cellspacing="0"  style="width:100%;font-size:12px;"></table>
+</div>
+
+<div id="pcnctcaeGradeView" style="margin-top:12px;width:100%;display:none">
+    <table id="pcnctcaeGradeTable" class="table table-bordered display nowrap">
+        <colgroup>
+            <col style="width:20%;">
+            <col style="width:80%;">
+        </colgroup>
+        <tbody>
+        <tr>
+            <th class="tdTextCenter"><div>Grade</div></th>
+            <th class="tdTextCenter"><div>Description</div></th>
+        </tr>
+        <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(1, this);">
+            <td class="tdTextCenter"><div>1</div></td>
+            <td class="tdTextCenter"><div id="pcnctcaeGrade_1">sss</div></td>
+        </tr>
+        <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(2, this);">
+            <td class="tdTextCenter"><div>2</div></td>
+            <td class="tdTextCenter"><div id="pcnctcaeGrade_2">sss</div></td>
+        </tr>
+        <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(3, this);">
+            <td class="tdTextCenter"><div>3</div></td>
+            <td class="tdTextCenter"><div id="pcnctcaeGrade_3">sss</div></td>
+        </tr>
+        <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(4, this);">
+            <td class="tdTextCenter"><div>4</div></td>
+            <td class="tdTextCenter"><div id="pcnctcaeGrade_4">sss</div></td>
+        </tr>
+        <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(5, this);">
+            <td class="tdTextCenter"><div>5</div></td>
+            <td class="tdTextCenter"><div id="pcnctcaeGrade_5">sss</div></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var gCtcaeVer;
+    var gMedDraCode;
+    var gMedDraSoc;
+    var gTerm;
+    var gGrade;
+    var gGrade_Lv;
+
+    $('#pcnctcaeList').DataTable({
+        scrollY: "176px",
+        scrollCollapse: true,
+        paging: true,
+        columns: [
+            {
+                "title": "Adverse Eventddd",
+                "width": "50%"
+            },
+            {
+                "title": "Category",
+                "width": "50%"
+            }
+        ],
+        columnDefs: [
+            {
+                "targets": [2],
+                "visible": false
+            },
+            {
+                "targets": [3],
+                "visible": false
+            }
+        ],
+        responsive: true,
+        bInfo: false
+    });
+
+
+    $('#pcnctcaeList tbody').on('click', 'tr', function () {
+        var data = $('#pcnctcaeList').DataTable().row( this ).data();
+
+        $("#pcnctcaeList tr").not(this).removeClass('selected');
+        $(this).addClass('selected');
+
+        pcnctcaeGradeData(data[2], data[3]);
+    });
+
+    function  pcnctcaeGradeData(ctcaeVer, medDraCode) {
+        console.log("pcnctcaeGradeData-ctcaeVer : " + ctcaeVer);
+        console.log("pcnctcaeGradeData-medDraCode : " + medDraCode);
+
+        $.ajax({
+            url:'[[@{/aemonitorapi/pcnctcaeGrade}]]',
+            type:'get',
+            dataType: 'json',
+            data:{
+                ctcaeVer : ctcaeVer,
+                medDraCode : medDraCode,
+                [[${_csrf.parameterName}]] : '[[${_csrf.token}]]'
+            },
+            success:function(data){
+                gCtcaeVer = data.ctcaeVer;
+                gMedDraCode = data.medDraCode;
+                gMedDraSoc = data.medDraSoc;
+                gTerm = data.term;
+                $("#pcnctcaeGrade_1").html(data.grade1);
+                $("#pcnctcaeGrade_2").html(data.grade2);
+                $("#pcnctcaeGrade_3").html(data.grade3);
+                $("#pcnctcaeGrade_4").html(data.grade4);
+                $("#pcnctcaeGrade_5").html(data.grade5);
+                $("#pcnctcaeGradeView").show();
+                gGrade_Lv = "";
+            }
+        });
+    }
+
+    function pcnctcaeGradeChoice(code, _this) {
+        gGrade_Lv = code;
+        console.log("pcnctcaeGradeChoice-gGrade_Lv : " + gGrade_Lv);
+        gGrade = $("#pcnctcaeGrade_" + code).html();
+        console.log("pcnctcaeGradeChoice-gGrade : " + gGrade);
+
+        $("#pcnctcaeGradeTable tr").not(_this).removeClass('selected');
+        $(_this).addClass('selected');
+    }
+
+    function gradeChoice() {
+        console.log("gradeChoice-gGrade_Lv : " + gGrade_Lv);
+        if ( gGrade_Lv == "" ) {
+            modal({
+                type: 'warning',
+                title: '주의',
+                text: '선택된 값이 없습니다.',
+                center: false,
+            });
+        } else {
+            gradeChoiceSend(gTerm, gMedDraCode, gGrade_Lv);
+        }
+    }
+</script>

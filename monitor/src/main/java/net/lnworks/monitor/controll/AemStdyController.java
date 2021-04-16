@@ -2,6 +2,7 @@ package net.lnworks.monitor.controll;
 
 import net.lnworks.monitor.domain.study.*;
 import net.lnworks.monitor.service.study.AEMntmgService;
+import net.lnworks.monitor.service.study.PcnctcAEService;
 import net.lnworks.monitor.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,41 @@ import java.util.Map;
 public class AemStdyController {
     @Autowired
     private AEMntmgService aeMntmgService;
+
+    @Autowired
+    private PcnctcAEService pcnctcaeService;
+
+    @PostMapping("/aeChartInsert")
+    public int goAEChartInsert(AEMMntrngVO aemMntrngVO, Principal principal) throws Exception {
+        int returnNum = 0;
+        aemMntrngVO.setFrstRegisterId(principal.getName());
+        aemMntrngVO.setLastUpdusrId(principal.getName());
+        returnNum = aeMntmgService.insertAEMSumry(aemMntrngVO);
+
+        return returnNum;
+    }
+
+    @PostMapping("/aeChartUpdate")
+    public int goAEChartUpdate(AEMMntrngVO aemMntrngVO, Principal principal) throws Exception {
+        int returnNum = 0;
+        aemMntrngVO.setFrstRegisterId(principal.getName());
+        aemMntrngVO.setLastUpdusrId(principal.getName());
+        returnNum = aeMntmgService.updateAEMSumry(aemMntrngVO);
+
+        if (aemMntrngVO.getMntrngDcsnAt() != null && aemMntrngVO.getMntrngDcsnAt().equals("Y")) {
+            aemMntrngVO.setMntrngDcsnEsntlId(principal.getName());
+        }
+
+        if (aemMntrngVO.getActionDcsnAt() != null && aemMntrngVO.getActionDcsnAt().equals("Y")) {
+            aemMntrngVO.setActionDcsnEsntlId(principal.getName());
+        }
+
+        if (aemMntrngVO.getActionDcsnAt() != null && !aemMntrngVO.getUseYn().equals("N") ) {
+            aeMntmgService.insertAEMMntrng(aemMntrngVO);
+        }
+
+        return returnNum;
+    }
 
     @PostMapping("/symptmsInsert")
     public int goSymptmsInsert(AEMPrtcpntSymptmsVO aemPrtcpntSymptmsVO, Principal principal) throws Exception {
@@ -42,6 +78,32 @@ public class AemStdyController {
         returnNum = aeMntmgService.updateSymptms(aemPrtcpntSymptmsVO);
 
         return returnNum;
+    }
+
+    @GetMapping("/pcnctcaeGrade")
+    public PcnctcAEVO goPcnctcaeGrade(@RequestParam (value = "ctcaeVer") String ctcaeVer,
+                                      @RequestParam (value = "medDraCode") String medDraCode) throws Exception {
+
+        PcnctcAEVO pcnctcAEVOIn = new PcnctcAEVO();
+        pcnctcAEVOIn.setCtcaeVer(ctcaeVer);
+        pcnctcAEVOIn.setMedDraCode(medDraCode);
+
+        PcnctcAEVO pcnctcAEVO = pcnctcaeService.pcnctcaeThreeList(pcnctcAEVOIn);
+
+        return pcnctcAEVO;
+    }
+
+    @GetMapping("/pcnctcaeList")
+    public List<PcnctcAEVO> goPcnctcaeList(@RequestParam (value = "ctcaeVer") String ctcaeVer,
+                                           @RequestParam (value = "medDraSoc") String medDraSoc) throws Exception {
+
+        PcnctcAEVO pcnctcAEVOIn = new PcnctcAEVO();
+        pcnctcAEVOIn.setCtcaeVer(ctcaeVer);
+        pcnctcAEVOIn.setMedDraSoc(medDraSoc);
+
+        List<PcnctcAEVO> pcnctcAEVOList = pcnctcaeService.pcnctcaeTwoList(pcnctcAEVOIn);
+
+        return pcnctcAEVOList;
     }
 
     @GetMapping("/aeTreeList")

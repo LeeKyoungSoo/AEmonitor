@@ -52,4 +52,16 @@ public class AEMntmgService {
     public int deleteSymptms(AEMPrtcpntSymptmsVO vo) throws Exception {
         return aEMntmg.deleteSymptms(vo);
     }
+
+    public int insertAEMMntrng(AEMMntrngVO vo) throws Exception {
+        return aEMntmg.insertAEMMntrng(vo);
+    }
+
+    public int insertAEMSumry(AEMMntrngVO vo) throws Exception {
+        return aEMntmg.insertAEMSumry(vo);
+    }
+
+    public int updateAEMSumry(AEMMntrngVO vo) throws Exception {
+        return aEMntmg.updateAEMSumry(vo);
+    }
 }
