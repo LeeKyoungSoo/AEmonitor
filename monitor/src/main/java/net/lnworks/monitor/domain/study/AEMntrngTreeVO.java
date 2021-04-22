@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -59,4 +61,26 @@ public class AEMntrngTreeVO {
      * 증상 선택 시 종류 구분용 코드
      */
     private String code;
+
+    private List<AEMMntrngVO> aemMntrngHistoryList;
+    private AEMntrngTreeVO aeFavoriteVo;
+
+    private String medDraCode;
+    private String aeTremNm;
+    private String mnAt;
+    private String acAt;
+    private String aeGrade;
+    private String saeAt;
+    private String saeDeath;
+    private String saeLifeThrt;
+    private String saeHsptlzNeed;
+    private String saeCsmalfnc;
+    private String saeCsdeform;
+    private String saeEtcSittn;
+    private String causalityCode;
+    private String predictAt;
+    private String aeActionCode;
+    private String etcActionCode;
+    private String aeRsltCode;
+    private String regDt;
 }

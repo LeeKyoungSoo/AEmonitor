@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="monitor.main/Hibernate" uuid="05a71739-de80-486a-b72c-927d7d8426f0">
+      <driver-ref>athena</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate</remarks>
+      <jdbc-driver>com.simba.athena.jdbc42.Driver</jdbc-driver>
+      <jdbc-url>jdbc:log4jdbc:mysql://localhost:3307/aemngdb02?useSSL=false&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>

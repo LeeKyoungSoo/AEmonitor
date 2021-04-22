@@ -39,3 +39,9 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+bootJar{
+    archivesBaseName = 'aemanagement'
+    archiveFileName = 'aemanagement.jar'
+    archiveVersion = "0.0.1"
+}

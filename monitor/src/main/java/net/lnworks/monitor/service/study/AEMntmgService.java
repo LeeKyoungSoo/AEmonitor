@@ -25,6 +25,10 @@ public class AEMntmgService {
         return aEMntmg.selectAETree(vo);
     }
 
+    public List<AEMntrngTreeVO> selectFavoriteTree(AEMntrngTreeParamVO vo) throws Exception {
+        return aEMntmg.selectFavoriteTree(vo);
+    }
+
     public AEMPrtcpntSymptmsVO selectSymptms(AEMntrngSymptmsParamVO vo) throws Exception {
         return aEMntmg.selectSymptms(vo);
     }
@@ -63,5 +67,9 @@ public class AEMntmgService {
 
     public int updateAEMSumry(AEMMntrngVO vo) throws Exception {
         return aEMntmg.updateAEMSumry(vo);
+    }
+
+    public int insertFavorites(AEMMntrngVO vo) throws Exception {
+        return aEMntmg.insertFavorites(vo);
     }
 }

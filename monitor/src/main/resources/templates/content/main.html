@@ -397,7 +397,10 @@
 
                     <!-- 증상 -->
                     <div id="SymptmsUi" style="position: relative">
-                        <div id="pcnctcae" class="card-body aeChartUI" style="position: absolute;width:100%;z-index: 999"></div>
+
+
+
+
                         <!-- 참여자 증상 Start -->
                         <div class="leftLayout">
                             <div class="card shadow mb-4" id="SymptmsUiLeft" style="margin-right:4px;">
@@ -529,7 +532,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">로그아웃 하시겠습니까?</h5>
+                    <h5 class="modal-title-2" id="exampleModalLabel" style="margin-bottom: 0;line-height: 1.5;">로그아웃 하시겠습니까?</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -541,6 +544,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div id="adMoniModal" class="adMoniModal">
+        <div id="pcnctcae" class="card-body aeChartUI adMoniModalCont"></div>
     </div>
 
     <form id="logout" name="logout" method="post">
@@ -597,6 +604,27 @@
             width:100%;
             border-radius: calc(.35rem - 1px);"
         }
+        .adMoniModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 999; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+        }
+
+        .adMoniModalCont {
+            margin: auto;
+            padding: 20px;
+            width:70%;
+            z-index: 999;
+            background-color: #ffffff;
+        }
     </style>
 
     <script>
@@ -610,7 +638,7 @@
             var events = $('#events');
             $('#SymptmsUi').hide();
             $('#aeChart').hide();
-            $("#pcnctcae").hide();
+            $("#adMoniModal").hide();
 
             $('#dataTable').DataTable( {
                 scrollY:        "176px",
@@ -756,6 +784,16 @@
         }
 
         function aeChartInsert() {
+            if ($("#aeTermCtcae").val() == "") {
+                modal({
+                    type: 'warning',
+                    title: '주의',
+                    text: 'AE명을 입력해 주십시오',
+                    center: false,
+                });
+                $("#aeTermCtcae").focus();
+                return;
+            }
             var param = $("form[name=AEMMntrngVOForm]").serialize();
             $.ajax({
                 url:'[[@{/aemonitorapi/aeChartInsert}]]',
@@ -770,6 +808,36 @@
                     });
                     aeTreeDataChange(gStudyId, gPrtcpntId, 'All');
                     aeChartView(gStudyId, gPrtcpntId, 0, '');
+                },
+                error:function(data){
+                    console.log(data);
+                }
+            });
+        }
+
+        function aeFavorites() {
+            if ($("#aeTermCtcae").val() == "") {
+                modal({
+                    type: 'warning',
+                    title: '주의',
+                    text: 'AE명을 입력해 주십시오',
+                    center: false,
+                });
+                $("#aeTermCtcae").focus();
+                return;
+            }
+            var param = $("form[name=AEMMntrngVOForm]").serialize();
+            $.ajax({
+                url:'[[@{/aemonitorapi/aeFavorite}]]',
+                type:'post',
+                data: param,
+                success:function(data){
+                    console.log(data);
+                    modal({
+                        type: 'success',
+                        title: 'Success',
+                        text: '즐겨 찾기에 등록되었습니다.'
+                    });
                 },
                 error:function(data){
                     console.log(data);
@@ -835,7 +903,12 @@
 
         function SymptmsInsert() {
             if ($("#symptmsCn").val() == "") {
-                alert("내용을 입력해 주십시오");
+                modal({
+                    type: 'warning',
+                    title: '주의',
+                    text: '내용을 입력해 주십시오.',
+                    center: false,
+                });
                 $("#symptmsCn").focus();
                 return;
             }
@@ -864,7 +937,12 @@
 
         function SymptmsUpdate() {
             if ($("#symptmsCn").val() == "") {
-                alert("내용을 입력해 주십시오");
+                modal({
+                    type: 'warning',
+                    title: '주의',
+                    text: '내용을 입력해 주십시오.',
+                    center: false,
+                });
                 $("#symptmsCn").focus();
                 return;
             }
@@ -986,12 +1064,31 @@
                 success:function(data){
                     $("#aeTree").empty();
                     $.each(data, function(key) {
-                        $('#aeTree').append('<div class="aeTree" style="padding-top:2px;padding-bottom:2px;cursor:pointer;" onclick="aeChartView(\''
-                            + data[key].studyId + '\',\''
-                            + data[key].prtcpntId + '\',\''
-                            + data[key].sumrySeq + '\',\''
-                            + '' + '\'); aeTreeSet($(this));" ><img src="/img/graychip.png" style="width:12px;height:12px;">' +
-                            '&nbsp;' + data[key].treeItem + '</div>');
+
+                            $('#aeTree').append('<div style="padding-top:2px;padding-bottom:2px;">'
+                                + '<!--<img src="/img/graychip.png" style="margin-right:4px;width:8px;height:8px;">-->'
+                                + '● <span class="aeTree" id="aeTreeRow_' + key + '" style="cursor:pointer;" onclick="aeChartView(\''
+                                + data[key].studyId + '\',\''
+                                + data[key].prtcpntId + '\',\''
+                                + data[key].sumrySeq + '\',\''
+                                + '' + '\'); aeTreeSet($(this));">'
+                                + '[' + data[key].aeNumr + ']'
+                                + '[' + data[key].adNm + ']'
+                                + '[' + data[key].grade + ']'
+                                + '[' + data[key].sdt + ']'
+                                + '[' + data[key].edt + ']'
+                                + '[' + data[key].serious + ']'
+                                + '[' + data[key].seriousCont + ']'
+                                + '[' + data[key].relation + ']'
+                                + '[' + data[key].prediction + ']'
+                                + '[' + data[key].relationMeasure + ']'
+                                + '[' + data[key].etcMeasure + ']'
+                                + '[' + data[key].aeResult + ']'
+                                + '[' + data[key].mnAt + ']'
+                                + '[' + data[key].acAt + ']'
+                                + '</span>'
+                                + '<img src="/img/copy.png" style="margin-left:4px;width:12px;height:12px;" onclick="copyElement(\'aeTreeRow_' + key + '\')"></div>');
+
                         counter++;
                     });
                 }
@@ -1051,7 +1148,7 @@
                         ]).draw(false);
                         counter++;
                     });
-                    $("#pcnctcae").hide();
+                    $("#adMoniModal").hide();
                     if (gubun == 2 || gubun == 4) {
                         SymptomDetail(gStudyId, gPrtcpntId, gSymptmsSeq);
                     }
@@ -1125,7 +1222,7 @@
 
                         counter++;
                     });
-                    $("#pcnctcae").hide();
+                    $("#adMoniModal").hide();
                     if (gubun != 1) {
                         symptmsListDataChange(gStudyId, gPrtcpntId, gubun);
                     }
@@ -1152,14 +1249,14 @@
                 success:function(data){
                     $("#pcnctcae").empty();
                     $("#pcnctcae").html(data);
-                    $("#pcnctcae").show();
+                    $("#adMoniModal").show();
                 }
             });
         }
 
         function pcnctcaeHide() {
             $("#pcnctcae").empty();
-            $("#pcnctcae").hide();
+            $("#adMoniModal").hide();
         }
 
         function gradeChoiceSend(term, medDraCode, grade_Lv) {
@@ -1169,11 +1266,70 @@
             pcnctcaeHide();
         }
 
+        function allRowChoiceSend(medDraCode
+                                ,aeTremNm
+                                ,aeGrade
+                                ,saeAt
+                                ,saeDeath
+                                ,saeLifeThrt
+                                ,saeHsptlzNeed
+                                ,saeCsmalfnc
+                                ,saeCsdeform
+                                ,saeEtcSittn
+                                ,causalityCode
+                                ,predictAt
+                                ,aeActionCode
+                                ,etcActionCode
+                                ,aeRsltCode) {
+
+            $('#aeTermCtcae').val(aeTremNm);
+            $('#medDraCode').val(medDraCode);
+
+            if (aeGrade != "") $('#aeGrade' + (aeGrade / 10)).prop('checked', true);
+            if (saeAt == 'Y') $('#saeAt1').prop('checked', true);
+            if (saeAt == 'N') $('#saeAt2').prop('checked', true);
+
+            if (saeDeath == 'Y') $('#saeDeath').prop('checked', true);
+            if (saeLifeThrt == 'Y') $('#saeLifeThrt').prop('checked', true);
+            if (saeHsptlzNeed == 'Y') $('#saeHsptlzNeed').prop('checked', true);
+            if (saeCsmalfnc == 'Y') $('#saeCsmalfnc').prop('checked', true);
+            if (saeCsdeform == 'Y') $('#saeCsdeform').prop('checked', true);
+            if (saeEtcSittn == 'Y') $('#saeEtcSittn').prop('checked', true);
+
+            if (causalityCode == 'A10') $('#causalityCode1').prop('checked', true);
+            if (causalityCode == 'B10') $('#causalityCode2').prop('checked', true);
+            if (causalityCode == 'A20') $('#causalityCode3').prop('checked', true);
+            if (causalityCode == 'B20') $('#causalityCode4').prop('checked', true);
+            if (causalityCode == 'B30') $('#causalityCode5').prop('checked', true);
+            if (causalityCode == 'B40') $('#causalityCode6').prop('checked', true);
+            if (causalityCode == 'B50') $('#causalityCode7').prop('checked', true);
+            if (causalityCode == 'B60') $('#causalityCode8').prop('checked', true);
+            if (causalityCode == 'B70') $('#causalityCode9').prop('checked', true);
+
+            if (predictAt == 'Y') $('#predictAt1').prop('checked', true);
+            if (predictAt == 'N') $('#predictAt2').prop('checked', true);
+
+            if (aeActionCode != "") $('#aeActionCode' + (aeActionCode / 10)).prop('checked', true);
+            if (etcActionCode != "") $('#etcActionCode' + (etcActionCode / 10)).prop('checked', true);
+            if (aeRsltCode != "") $('#aeRsltCode' + (aeRsltCode / 100)).prop('checked', true);
+            pcnctcaeHide();
+        }
+
         function  PcnctcaeListDataChange() {
             var tableGrid = $('#pcnctcaeList').DataTable();
             var pcnctcaeVal = $("#pcnctcaeCoList").val().split("|");
             var ctcaeVer = pcnctcaeVal[0];
             var medDraSoc = pcnctcaeVal[1];
+            var searchVal = $("#pcnctinput").val();
+
+            if ( ctcaeVer == "" ) {
+                modal({
+                    type: 'primary',
+                    title: '필수입력',
+                    text: 'category를 선택해 주십시오.',
+                });
+                return;
+            }
 
             console.log("PcnctcaeListDataChange-ctcaeVer : " + ctcaeVer);
             console.log("PcnctcaeListDataChange-medDraSoc : " + medDraSoc);
@@ -1185,6 +1341,7 @@
                 data:{
                     ctcaeVer : ctcaeVer,
                     medDraSoc : medDraSoc,
+                    searchVal : searchVal,
                     [[${_csrf.parameterName}]] : '[[${_csrf.token}]]'
                 },
                 success:function(data){
@@ -1206,6 +1363,32 @@
                     tableGrid.columns.adjust().draw();
                 }
             });
+        }
+
+        function copyElement(code) {
+            var copyText = $("#" + code).html();
+            console.log(copyText);
+
+            var textarea = document.createElement('textarea');
+            textarea.textContent = copyText;
+            document.body.appendChild(textarea);
+
+            var selection = document.getSelection();
+            var range = document.createRange();
+            //  range.selectNodeContents(textarea);
+            range.selectNode(textarea);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            //document.execCommand('copy')
+            if (document.execCommand('copy') == true) {
+                modal({
+                    type: 'success',
+                    title: 'Success - 클립보드에 복사되었습니다',
+                    text: copyText
+                });
+            }
+            selection.removeAllRanges();
+            document.body.removeChild(textarea);
         }
     </script>
 

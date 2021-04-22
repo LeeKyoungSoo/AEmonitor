@@ -13,6 +13,7 @@ public interface AEMntmg {
     List<AEMPrtcpntSymptmsVO> selectSymptmsList(AEMntrngSymptmsParamVO vo) throws Exception;
     List<AEMStdyPrtcpntVO> selectPrtcpntList(AEMntrngParamVO vo) throws Exception;
     List<AEMntrngTreeVO> selectAETree(AEMntrngTreeParamVO vo) throws Exception;
+    List<AEMntrngTreeVO> selectFavoriteTree(AEMntrngTreeParamVO vo) throws Exception;
     AEMPrtcpntSymptmsVO selectSymptms(AEMntrngSymptmsParamVO vo) throws Exception;
     List<DataListMap> fileDetailList(AEMPrtcpntSymptmsVO vo) throws Exception;
     List<DataListMap> getSysSetupFileList() throws Exception;
@@ -23,4 +24,5 @@ public interface AEMntmg {
     int insertAEMMntrng(AEMMntrngVO vo) throws Exception;
     int insertAEMSumry(AEMMntrngVO vo) throws Exception;
     int updateAEMSumry(AEMMntrngVO vo) throws Exception;
+    int insertFavorites(AEMMntrngVO vo) throws Exception;
 }

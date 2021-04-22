@@ -55,10 +55,13 @@ public class StartController {
         ModelAndView mav = new ModelAndView();
         PcnctcAEVO pcnctcAEVOIn = new PcnctcAEVO();
         pcnctcAEVOIn.setStudyId(studyId);
-
+        AEMntrngTreeParamVO aeMntrngTreeParamVO = new AEMntrngTreeParamVO();
+        aeMntrngTreeParamVO.setStudyId(studyId);
         List<PcnctcAEVO> pcnctcAEVOList = pcnctcaeService.pcnctcaeOneList(pcnctcAEVOIn);
+        List<AEMntrngTreeVO> aeMntrngTreeVOList = aeMntmgService.selectFavoriteTree(aeMntrngTreeParamVO);
 
         mav.addObject("pcnctcaeVOList", pcnctcAEVOList);
+        mav.addObject("aeFavoriteList", aeMntrngTreeVOList);
         mav.setViewName("content/study/pcnctcaeUI.html");
 
         return mav;

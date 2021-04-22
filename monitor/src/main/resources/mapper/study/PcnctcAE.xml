@@ -22,6 +22,11 @@
         FROM PCNCTCAE
         WHERE CTCAE_VER = #{ctcaeVer}
             AND MEDDRA_SOC = #{medDraSoc}
+        ]]>
+        <if test='searchVal!=null and !searchVal.equals("")'>
+            AND TERM LIKE CONCAT('%', #{searchVal}, '%')
+        </if>
+        <![CDATA[
         ORDER BY TERM
         ]]>
     </select>

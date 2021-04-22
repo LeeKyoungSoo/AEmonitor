@@ -18,4 +18,5 @@ public class PcnctcAEVO {
     private String grade4;
     private String grade5;
     private String studyId;
+    private String searchVal;
 }
