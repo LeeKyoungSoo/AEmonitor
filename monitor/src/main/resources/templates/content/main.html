@@ -1351,9 +1351,9 @@
                     $.each(data, function(key) {
                         tableGrid.row.add([
                             data[key].term,
+                            data[key].medDraCode,
                             data[key].medDraSoc,
-                            data[key].ctcaeVer,
-                            data[key].medDraCode
+                            data[key].ctcaeVer
                         ]).draw(false);
                     });
                     $("#pcnctcaeTowView").show();

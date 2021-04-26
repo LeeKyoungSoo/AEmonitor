@@ -148,6 +148,7 @@ public class AemStdyController {
             aeSummaryVO.setMnAt(aeTree.getMnAt());
             aeSummaryVO.setAcAt(aeTree.getAcAt());
 
+            aeSummaryVO.setSDt("");
             //종료일(진행중)
             aeSummaryVO.setEdt(aeTree.getRegDt());
 
@@ -190,7 +191,7 @@ public class AemStdyController {
             List<AEMMntrngVO> aemMntrngHistoryList = aeTree.getAemMntrngHistoryList();
             for (AEMMntrngVO aeTreeHistory : aemMntrngHistoryList) {
                 //시작일
-                if ( aeSummaryVO.getSDt() == null ) {
+                if ( aeSummaryVO.getSDt() == null || aeSummaryVO.getSDt().equals("") ) {
                     aeSummaryVO.setSDt(aeTreeHistory.getLastUpdtPnttm());
                 }
                 gradeList.add(aeTreeHistory.getAeGrade());

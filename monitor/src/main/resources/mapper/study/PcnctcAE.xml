@@ -6,10 +6,10 @@
     <select id="pcnctcaeOneList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
         <![CDATA[
         SELECT CTCAE_VER AS ctcaeVer
-            , MEDDRA_CODE AS medDraCode
             , MEDDRA_SOC AS medDraSoc
         FROM PCNCTCAE
         WHERE CTCAE_VER = (SELECT CTCAE_VER FROM AEMSTUDY TS WHERE TS.STUDY_ID = #{studyId})
+        GROUP BY CTCAE_VER, MEDDRA_SOC
         ]]>
     </select>
 

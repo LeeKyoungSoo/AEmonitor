@@ -1,5 +1,4 @@
 <configuration>
-<!--    <property name="LOG_DIR" value="C://temp/logs" />-->
     <property name="LOG_DIR" value="/home/aeuser/aesystem/logs" />
     <property name="SERVER_NAME" value="collection"/>
     <property name="LOG_PATH_NAME" value="${LOG_DIR}/${SERVER_NAME}" />

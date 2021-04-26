@@ -220,4 +220,13 @@ public class AERoleLogic {
         }
         return retunVal;
     }
+
+    public String emptyChk(String checkVal) {
+        if ( checkVal == null) {
+            return  "";
+        }
+        else {
+            return  checkVal;
+        }
+    }
 }

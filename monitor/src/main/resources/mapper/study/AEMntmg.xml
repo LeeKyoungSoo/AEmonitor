@@ -364,7 +364,7 @@
             TS.ACTION_MEMO AS actionMemo,
             TS.ACTION_DCSN_AT AS actionDcsnAt,
             TS.ACTION_DCSN_ESNTL_ID AS actionDcsnEsntlId,
-            DATE_FORMAT(TS.LAST_UPDT_PNTTM, '%Y-%m-%d') AS lastUpdtPnttm
+            IFNULL(DATE_FORMAT(TS.LAST_UPDT_PNTTM, '%Y-%m-%d'),'') AS lastUpdtPnttm
         FROM AEMMNTRNG TS
         WHERE TS.STUDY_ID = #{studyId}
           AND TS.PRTCPNT_ID = #{prtcpntId}
@@ -522,7 +522,7 @@
             GET_COMCODE_STR('AEM011', TSJ.AE_ACTION_CODE) AS aeActionCode,
             GET_COMCODE_STR('AEM012', TSJ.ETC_ACTION_CODE) AS etcActionCode,
             GET_COMCODE_STR('AEM013', TSJ.AE_RSLT_CODE) AS aeRsltCode,
-            DATE_FORMAT(TSJ.LAST_UPDT_PNTTM, '%Y-%m-%d') AS regDt
+            IFNULL(DATE_FORMAT(TSJ.LAST_UPDT_PNTTM, '%Y-%m-%d'),'') AS regDt
         FROM
              AEMSUMRY TSJ
              LEFT JOIN COMTCCMMNDETAILCODE TGD
@@ -568,7 +568,7 @@
             IFNULL(GET_COMCODE_STR('AEM011', TSJ.AE_ACTION_CODE), '') AS aeActionCode,
             IFNULL(GET_COMCODE_STR('AEM012', TSJ.ETC_ACTION_CODE), '') AS etcActionCode,
             IFNULL(GET_COMCODE_STR('AEM013', TSJ.AE_RSLT_CODE), '') AS aeRsltCode,
-            TSJ.LAST_UPDT_PNTTM AS regDt
+            IFNULL(TSJ.LAST_UPDT_PNTTM,'') AS regDt
         FROM
              AEMFAVORITES TSJ
              LEFT JOIN COMTCCMMNDETAILCODE TGD

@@ -6,8 +6,10 @@
     <tbody>
     <tr>
         <td valign="bottom">
-            <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline" onclick="displayUI(1);" style="width:100px;border: 1px solid #4273DF;border-radius: 8px 8px 0px 0px;">검색</button>
-            <button type="button" id="ic_sEndDeV_img" class="btn_right dis_inline" onclick="displayUI(2);" style="width:100px;border: 1px solid #4273DF;border-radius: 8px 8px 0px 0px;">즐겨찾기</button>
+            <button type="button" id="pcnctcaeUITabOneBtn" class="btn btn-primary" onclick="displayUI(1);"
+                    style="width:100px;border: 1px solid #4273DF;border-radius: 8px 8px 0px 0px;font-size: .875rem;margin-bottom: 1px;">검색</button>
+            <button type="button" id="pcnctcaeUITabTwoBtn" class="btn btn-primary" onclick="displayUI(2);"
+                    style="width:100px;background-color:#858796;border: 1px solid #858796;border-radius: 8px 8px 0px 0px;font-size: .875rem;margin-bottom: 1px;">즐겨찾기</button>
         </td>
         <td align="right">
             <a href="javascript:pcnctcaeHide();" class="btn btn-primary btn-icon-split btn-sm" style="margin-bottom:8px;margin-right:8px">
@@ -102,7 +104,7 @@
         </table>
     </div>
 </div>
-<div id="pcnctcaeUITabTow" style="margin-top:20px;display: none">
+<div id="pcnctcaeUITabTwo" style="margin-top:20px;display: none">
     <th:block th:each="aeFavoriteRow, num : ${aeFavoriteList}" >
         <input type="hidden" th:id="${'aeTabRow_' + num.count}" th:value="${aeFavoriteRow.aeFavoriteVo.medDraCode + '|'
                                                                 + aeFavoriteRow.aeFavoriteVo.aeTremNm + '|'
@@ -159,18 +161,18 @@
         columns: [
             {
                 "title": "Adverse Event",
-                "width": "50%"
+                "width": "40%"
+            },
+            {
+                "title": "MedDRA Code",
+                "width": "20%"
             },
             {
                 "title": "Category",
-                "width": "50%"
+                "width": "40%"
             }
         ],
         columnDefs: [
-            {
-                "targets": [2],
-                "visible": false
-            },
             {
                 "targets": [3],
                 "visible": false
@@ -186,16 +188,25 @@
         $("#pcnctcaeList tr").not(this).removeClass('selected');
         $(this).addClass('selected');
 
-        pcnctcaeGradeData(data[2], data[3]);
+        pcnctcaeGradeData(data[3], data[1]);
     });
 
     function  displayUI(code) {
         if ( code == 1 ) {
             $('#pcnctcaeUITabOne').show();
-            $('#pcnctcaeUITabTow').hide();
+            $('#pcnctcaeUITabTwo').hide();
+            $("#pcnctcaeUITabOneBtn").css("background-color", "#4273DF");
+            $("#pcnctcaeUITabOneBtn").css("border", "1px solid #4273DF");
+            $("#pcnctcaeUITabTwoBtn").css("background-color", "#858796");
+            $("#pcnctcaeUITabTwoBtn").css("border", "1px solid #858796");
+
         } else {
             $('#pcnctcaeUITabOne').hide();
-            $('#pcnctcaeUITabTow').show();
+            $('#pcnctcaeUITabTwo').show();
+            $("#pcnctcaeUITabOneBtn").css("background-color", "#858796");
+            $("#pcnctcaeUITabOneBtn").css("border", "1px solid #858796");
+            $("#pcnctcaeUITabTwoBtn").css("background-color", "#4273DF");
+            $("#pcnctcaeUITabTwoBtn").css("border", "1px solid #4273DF");
         }
     }
 
