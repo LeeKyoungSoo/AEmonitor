@@ -1,4 +1,4 @@
-package net.lnworks.monitor.controll;
+package net.lnworks.monitor.controller;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;

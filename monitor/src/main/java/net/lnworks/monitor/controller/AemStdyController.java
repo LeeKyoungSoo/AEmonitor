@@ -1,4 +1,4 @@
-package net.lnworks.monitor.controll;
+package net.lnworks.monitor.controller;
 
 import net.lnworks.monitor.domain.study.*;
 import net.lnworks.monitor.domain.summary.AESummaryVO;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 @RestController

@@ -1,4 +1,4 @@
-package net.lnworks.monitor.controll;
+package net.lnworks.monitor.controller;
 
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
