@@ -146,10 +146,14 @@ public class AemStdyController {
             aeSummaryVO.setAdNm(aeTree.getAeTremNm());
             aeSummaryVO.setMnAt(aeTree.getMnAt());
             aeSummaryVO.setAcAt(aeTree.getAcAt());
-
-            aeSummaryVO.setSDt("");
-            //종료일(진행중)
-            aeSummaryVO.setEdt(aeTree.getRegDt());
+            aeSummaryVO.setStartDt(aeTree.getAeStrtDe());
+            if (aeTree.getAcAt().equals("ongoing") ||
+                    (aeTree.getAeEndDe() == null || aeTree.getAeEndDe().equals("")) ) {
+                aeSummaryVO.setEndDt(aeTree.getAcAt());
+            }
+            else {
+                aeSummaryVO.setEndDt(aeTree.getAeEndDe());
+            }
 
             //증증도 - 가장 놓은 Grade
             List<String> gradeList = new ArrayList<>();
@@ -189,10 +193,6 @@ public class AemStdyController {
 
             List<AEMMntrngVO> aemMntrngHistoryList = aeTree.getAemMntrngHistoryList();
             for (AEMMntrngVO aeTreeHistory : aemMntrngHistoryList) {
-                //시작일
-                if ( aeSummaryVO.getSDt() == null || aeSummaryVO.getSDt().equals("") ) {
-                    aeSummaryVO.setSDt(aeTreeHistory.getLastUpdtPnttm());
-                }
                 gradeList.add(aeTreeHistory.getAeGrade());
                 seriousList.add(aeTreeHistory.getSaeAt());
                 predictionList.add(aeTreeHistory.getPredictAt());

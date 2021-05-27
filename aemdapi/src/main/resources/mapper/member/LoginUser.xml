@@ -5,17 +5,22 @@
 
     <resultMap type="net.lnworks.aemdapi.util.DataListMap" id="DataMapVO" />
 
-    <select id="getUserauthority" parameterType="net.lnworks.aemdapi.domain.LoginVO" resultMap="DataMapVO">
-        <!-- 메인화면 진입 2번째 쿼리 -->
+    <insert id="insLoginUser" parameterType="net.lnworks.aemdapi.domain.LoginVO">
         <![CDATA[
-        /* LoginUser.getUserauthority */
-        SELECT A.ESNTL_ID USER_ID, A.AUTHOR_CODE AUTHORITY
-        FROM SYSMEMBAUTHORINFO A
-           , COMVNUSERMASTER B
-        WHERE A.ESNTL_ID = B.ESNTL_ID
-          AND B.ESNTL_ID = #{uniqId}
+        /* LoginUser.getLoginUser */
+        INSERT INTO AEAPIPARTNERINST
+        (
+             PTID
+            ,PTPWD
+            ,PTNM
+        )
+        VALUES (
+            #{ptId}
+            ,#{ptPwd}
+            ,#{ptNm}
+        )
         ]]>
-    </select>
+    </insert>
 
     <select id="getLoginUser" parameterType="net.lnworks.aemdapi.domain.LoginVO" resultType="net.lnworks.aemdapi.domain.LoginVO">
         <![CDATA[

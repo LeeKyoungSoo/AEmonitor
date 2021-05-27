@@ -83,4 +83,7 @@ public class AEMntrngTreeVO {
     private String etcActionCode;
     private String aeRsltCode;
     private String regDt;
+
+    private String aeStrtDe;
+    private String aeEndDe;
 }

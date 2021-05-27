@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface LoginUser {
     LoginVO getLoginUser(LoginVO vo) throws Exception;
     DataListMap getUserRol(LoginVO vo) throws Exception;
-    DataListMap getUserauthority(LoginVO vo) throws Exception;
+    int insLoginUser(LoginVO vo) throws Exception;
 }

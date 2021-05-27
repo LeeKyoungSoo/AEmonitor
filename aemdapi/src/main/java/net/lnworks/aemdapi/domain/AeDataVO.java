@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter
@@ -13,8 +12,9 @@ import java.util.List;
 public class AeDataVO implements Serializable {
     private static final long serialVersionUID = 8790295116848734737L;
 
-    private String studyCode;
-    private String subjectKey;
+    private String studyId;
+    private String prtcpntId;
 
-    private List<MessageVO> message;
+    private MessageVO message;
+    private ReturnMessageVO apiResult;
 }

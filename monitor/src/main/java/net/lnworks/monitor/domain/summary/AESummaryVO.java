@@ -31,10 +31,10 @@ public class AESummaryVO {
     private String grade;
 
     //시작일
-    private String sDt;
+    private String startDt;
 
     //종료일(진행중)
-    private String edt;
+    private String endDt;
 
     //Serious (Yes 1회라도 있으면 Yes)
     private String serious;

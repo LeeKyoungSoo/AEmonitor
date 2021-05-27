@@ -27,14 +27,8 @@
             </tr>
             <tr>
                 <th class="tdTextRight"><div>AE번호 :</div></th>
-                <td class="tdTextLeft" colspan="2">
+                <td class="tdTextLeft" colspan="3">
 
-                </td>
-                <td class="tdTextLeft">
-                    <div>
-                        <input type="checkbox" id="actionDcsnAt" name="actionDcsnAt" index="0" value="Y">
-                        ongoing 여부
-                    </div>
                 </td>
             </tr>
             <tr>
@@ -77,24 +71,30 @@
                 </td>
             </tr>
             <tr>
-                <th class="tdTextRight"><div>모니터링 입력일자 :</div></th>
+                <th class="tdTextRight"><div>AE 시작일자 :</div></th>
                 <td class="tdTextLeft" colspan="3">
                     <div>
                         <div>
-                            <input type="text" id="mntrngRegistDe" name="mntrngRegistDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;">
+                            <input type="text" id="aeStrtDe" name="aeStrtDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;">
                             <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                         </div>
                     </div>
                 </td>
             </tr>
             <tr>
-                <th class="tdTextRight"><div>비정규 방문예약 :</div></th>
-                <td class="tdTextLeft" colspan="3">
+                <th class="tdTextRight"><div>AE 종료일자 :</div></th>
+                <td class="tdTextLeft" colspan="2">
                     <div>
                         <div>
-                            <input type="text" id="visitResveDe" name="visitResveDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;">
+                            <input type="text" id="aeEndDe" name="aeEndDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;">
                             <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                         </div>
+                    </div>
+                </td>
+                <td class="tdTextLeft">
+                    <div>
+                        <input type="checkbox" id="actionDcsnAt" name="actionDcsnAt" index="0" value="Y">
+                        ongoing 여부
                     </div>
                 </td>
             </tr>
@@ -106,8 +106,8 @@
             <tr>
                 <th class="tdTextRight"><div>Serious여부 :</div></th>
                 <td class="tdTextLeft" colspan="3">
-                    <input type="radio" id="saeAt1" name="saeAt" value="Y"> Yes
-                    <input type="radio" id="saeAt2" name="saeAt" value="N"> No
+                    <input type="radio" id="saeAt1" name="saeAt" value="Y" onclick="saeAtChange();"> Yes
+                    <input type="radio" id="saeAt2" name="saeAt" value="N" onclick="saeAtChange();"> No
                 </td>
             </tr>
             <tr>
@@ -284,15 +284,8 @@
         </tr>
         <tr>
             <th class="tdTextRight"><div>AE번호 :</div></th>
-            <td class="tdTextLeft" colspan="2">
+            <td class="tdTextLeft" colspan="3">
                 [[${aemMntrngVO.aeNo}]]
-            </td>
-            <td class="tdTextLeft">
-                <div>
-                    <input type="checkbox" id="actionDcsnAt" name="actionDcsnAt" index="0" value="Y"
-                           th:checked="${aemMntrngVO.actionDcsnAt == 'Y'}">
-                    ongoing 여부
-                </div>
             </td>
         </tr>
         <tr>
@@ -340,26 +333,33 @@
             </td>
         </tr>
         <tr>
-            <th class="tdTextRight"><div>모니터링 입력일자 :</div></th>
+            <th class="tdTextRight"><div>AE 시작일자 :</div></th>
             <td class="tdTextLeft" colspan="3">
                 <div>
                     <div>
-                        <input type="text" id="mntrngRegistDe" name="mntrngRegistDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
-                               th:value="${aemMntrngVO.mntrngRegistDe}">
+                        <input type="text" id="aeStrtDe" name="aeStrtDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
+                               th:value="${aemMntrngVO.aeStrtDe}">
                         <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                     </div>
                 </div>
             </td>
         </tr>
         <tr>
-            <th class="tdTextRight"><div>비정규 방문예약 :</div></th>
-            <td class="tdTextLeft" colspan="3">
+            <th class="tdTextRight"><div>AE 종료일자 :</div></th>
+            <td class="tdTextLeft" colspan="2">
                 <div>
                     <div>
-                        <input type="text" id="visitResveDe" name="visitResveDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
-                               th:value="${aemMntrngVO.visitResveDe}">
+                        <input type="text" id="aeEndDe" name="aeEndDe" readonly class="form-control form-control-sm dis_inline" style="width:130px;"
+                               th:value="${aemMntrngVO.aeEndDe}">
                         <img src="/img/cal.png" style="width:18px;height:18px;margin-left:-26px">
                     </div>
+                </div>
+            </td>
+            <td class="tdTextLeft">
+                <div>
+                    <input type="checkbox" id="actionDcsnAt" name="actionDcsnAt" index="0" value="Y"
+                           th:checked="${aemMntrngVO.actionDcsnAt == 'Y'}">
+                    ongoing 여부
                 </div>
             </td>
         </tr>
@@ -372,26 +372,32 @@
             <th class="tdTextRight"><div>Serious여부 :</div></th>
             <td class="tdTextLeft" colspan="3">
                 <input type="radio" id="saeAt1" name="saeAt" value="Y"
-                       th:checked="${aemMntrngVO.saeAt == 'Y'}"> Yes
+                       th:checked="${aemMntrngVO.saeAt == 'Y'}" onclick="saeAtChange();"> Yes
                 <input type="radio" id="saeAt2" name="saeAt" value="N"
-                       th:checked="${aemMntrngVO.saeAt == 'N'}"> No
+                       th:checked="${aemMntrngVO.saeAt == 'N'}" onclick="saeAtChange();"> No
             </td>
         </tr>
         <tr>
             <th class="tdTextRight"><div>Serious내용 :</div></th>
             <td class="tdTextLeft" colspan="3">
                 <input type="checkbox" id="saeDeath" name="saeDeath" value="Y"
-                       th:checked="${aemMntrngVO.saeDeath == 'Y'}"> 사망
+                       th:checked="${aemMntrngVO.saeDeath == 'Y'}"
+                       th:disabled="${aemMntrngVO.saeAt == 'N'}"> 사망
                 <input type="checkbox" id="saeLifeThrt" name="saeLifeThrt" value="Y"
-                       th:checked="${aemMntrngVO.saeLifeThrt == 'Y'}"> 치명적이거나 생명을 위협
+                       th:checked="${aemMntrngVO.saeLifeThrt == 'Y'}"
+                       th:disabled="${aemMntrngVO.saeAt == 'N'}"> 치명적이거나 생명을 위협
                 <input type="checkbox" id="saeHsptlzNeed" name="saeHsptlzNeed" value="Y"
-                       th:checked="${aemMntrngVO.saeHsptlzNeed == 'Y'}"> 입원을 요하거나 입원 연장
+                       th:checked="${aemMntrngVO.saeHsptlzNeed == 'Y'}"
+                       th:disabled="${aemMntrngVO.saeAt == 'N'}"> 입원을 요하거나 입원 연장
                 <input type="checkbox" id="saeCsmalfnc" name="saeCsmalfnc" value="Y"
-                       th:checked="${aemMntrngVO.saeCsmalfnc == 'Y'}"> 비가역장애/지속적인 불구 발생
+                       th:checked="${aemMntrngVO.saeCsmalfnc == 'Y'}"
+                       th:disabled="${aemMntrngVO.saeAt == 'N'}"> 비가역장애/지속적인 불구 발생
                 <input type="checkbox" id="saeCsdeform" name="saeCsdeform" value="Y"
-                       th:checked="${aemMntrngVO.saeCsdeform == 'Y'}"> 선천적 기형 또는 이상 초래
+                       th:checked="${aemMntrngVO.saeCsdeform == 'Y'}"
+                       th:disabled="${aemMntrngVO.saeAt == 'N'}"> 선천적 기형 또는 이상 초래
                 <input type="checkbox" id="saeEtcSittn" name="saeEtcSittn" value="Y"
-                       th:checked="${aemMntrngVO.saeEtcSittn == 'Y'}"> 기타 의학적으로 중요한 상황
+                       th:checked="${aemMntrngVO.saeEtcSittn == 'Y'}"
+                       th:disabled="${aemMntrngVO.saeAt == 'N'}"> 기타 의학적으로 중요한 상황
             </td>
         </tr>
         <tr>
@@ -559,12 +565,12 @@
         language : "kr"
     });
 
-    $('#mntrngRegistDe').datepicker({
+    $('#aeStrtDe').datepicker({
         format : "yyyy-mm-dd",
         language : "kr"
     });
 
-    $('#visitResveDe').datepicker({
+    $('#aeEndDe').datepicker({
         format : "yyyy-mm-dd",
         language : "kr"
     });
@@ -573,4 +579,23 @@
         format : "yyyy-mm-dd",
         language : "kr"
     });
+
+    function saeAtChange() {
+        if($("#saeAt2").is(":checked")) {
+            $("#saeDeath").prop('disabled',true);
+            $("#saeLifeThrt").prop('disabled',true);
+            $("#saeHsptlzNeed").prop('disabled',true);
+            $("#saeCsmalfnc").prop('disabled',true);
+            $("#saeCsdeform").prop('disabled',true);
+            $("#saeEtcSittn").prop('disabled',true);
+        }
+        else {
+            $("#saeDeath").prop('disabled',false);
+            $("#saeLifeThrt").prop('disabled',false);
+            $("#saeHsptlzNeed").prop('disabled',false);
+            $("#saeCsmalfnc").prop('disabled',false);
+            $("#saeCsdeform").prop('disabled',false);
+            $("#saeEtcSittn").prop('disabled',false);
+        }
+    }
 </script>

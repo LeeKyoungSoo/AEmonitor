@@ -8,9 +8,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MessageVO {
-    private String messageNo;
+    private String symptmsRegtypeCode;
     private String type;
-    private String content;
-    private String fileId;
-    private String regTm;
+    private String symptmsCn;
+    private String callPartner;
+    private String symptmsRegistDe;
 }

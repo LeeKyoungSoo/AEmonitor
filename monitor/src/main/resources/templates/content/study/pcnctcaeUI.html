@@ -80,25 +80,25 @@
                 <th class="tdTextCenter"><div>Grade</div></th>
                 <th class="tdTextCenter"><div>Description</div></th>
             </tr>
-            <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(1, this);">
+            <tr id="pcnctcaeGrade_1_ui" style="cursor:pointer" onclick="pcnctcaeGradeChoice(1, this);">
                 <td class="tdTextCenter"><div>1</div></td>
-                <td class="tdTextLeft"><div id="pcnctcaeGrade_1">sss</div></td>
+                <td class="tdTextLeft"><div id="pcnctcaeGrade_1"></div></td>
             </tr>
-            <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(2, this);">
+            <tr id="pcnctcaeGrade_2_ui" style="cursor:pointer" onclick="pcnctcaeGradeChoice(2, this);">
                 <td class="tdTextCenter"><div>2</div></td>
-                <td class="tdTextLeft"><div id="pcnctcaeGrade_2">sss</div></td>
+                <td class="tdTextLeft"><div id="pcnctcaeGrade_2"></div></td>
             </tr>
-            <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(3, this);">
+            <tr id="pcnctcaeGrade_3_ui" style="cursor:pointer" onclick="pcnctcaeGradeChoice(3, this);">
                 <td class="tdTextCenter"><div>3</div></td>
-                <td class="tdTextLeft"><div id="pcnctcaeGrade_3">sss</div></td>
+                <td class="tdTextLeft"><div id="pcnctcaeGrade_3"></div></td>
             </tr>
-            <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(4, this);">
+            <tr id="pcnctcaeGrade_4_ui" style="cursor:pointer" onclick="pcnctcaeGradeChoice(4, this);">
                 <td class="tdTextCenter"><div>4</div></td>
-                <td class="tdTextLeft"><div id="pcnctcaeGrade_4">sss</div></td>
+                <td class="tdTextLeft"><div id="pcnctcaeGrade_4"></div></td>
             </tr>
-            <tr style="cursor:pointer" onclick="pcnctcaeGradeChoice(5, this);">
+            <tr id="pcnctcaeGrade_5_ui" style="cursor:pointer" onclick="pcnctcaeGradeChoice(5, this);">
                 <td class="tdTextCenter"><div>5</div></td>
-                <td class="tdTextLeft"><div id="pcnctcaeGrade_5">sss</div></td>
+                <td class="tdTextLeft"><div id="pcnctcaeGrade_5"></div></td>
             </tr>
             </tbody>
         </table>
@@ -214,6 +214,12 @@
         console.log("pcnctcaeGradeData-ctcaeVer : " + ctcaeVer);
         console.log("pcnctcaeGradeData-medDraCode : " + medDraCode);
 
+        $("#pcnctcaeGrade_1_ui").show();
+        $("#pcnctcaeGrade_2_ui").show();
+        $("#pcnctcaeGrade_3_ui").show();
+        $("#pcnctcaeGrade_4_ui").show();
+        $("#pcnctcaeGrade_5_ui").show();
+
         $.ajax({
             url:'[[@{/aemonitorapi/pcnctcaeGrade}]]',
             type:'get',
@@ -228,6 +234,11 @@
                 gMedDraCode = data.medDraCode;
                 gMedDraSoc = data.medDraSoc;
                 gTerm = data.term;
+                if (data.grade1.trim() == "-" ) $("#pcnctcaeGrade_1_ui").hide();
+                if (data.grade2.trim() == "-" ) $("#pcnctcaeGrade_2_ui").hide();
+                if (data.grade3.trim() == "-" ) $("#pcnctcaeGrade_3_ui").hide();
+                if (data.grade4.trim() == "-" ) $("#pcnctcaeGrade_4_ui").hide();
+                if (data.grade5.trim() == "-" ) $("#pcnctcaeGrade_5_ui").hide();
                 $("#pcnctcaeGrade_1").html(data.grade1);
                 $("#pcnctcaeGrade_2").html(data.grade2);
                 $("#pcnctcaeGrade_3").html(data.grade3);

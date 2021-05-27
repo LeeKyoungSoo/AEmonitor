@@ -6,7 +6,8 @@
     <resultMap type="net.lnworks.monitor.util.DataListMap" id="DataMapVO" />
 
     <insert id="insertFavorites" parameterType="net.lnworks.monitor.domain.study.AEMMntrngVO">
-	<![CDATA[
+	    <![CDATA[
+        /* AEMntmg.insertAEMSumry */
         INSERT INTO AEMFAVORITES (
               STUDY_ID
              ,PRTCPNT_ID
@@ -48,8 +49,8 @@
              ,NULLIF(#{aeTermCtcae}, '')
              ,NULLIF(#{aeTermOther}, '')
              ,NULLIF(#{aeGrade}, '')
-             ,now()
-             ,now()
+             ,STR_TO_DATE(replace(NULLIF(#{aeStrtDe}, ''), '-',''), '%Y%m%d')
+             ,STR_TO_DATE(replace(NULLIF(#{aeEndDe}, ''), '-',''), '%Y%m%d')
              ,NULLIF(#{mntrngMemo}, '')
              ,STR_TO_DATE(replace(NULLIF(#{mntrngRegistDe}, ''), '-',''), '%Y%m%d')
              ,STR_TO_DATE(replace(NULLIF(#{visitResveDe}, ''), '-',''), '%Y%m%d')
@@ -76,7 +77,8 @@
 	</insert>
 
     <insert id="insertAEMMntrng" parameterType="net.lnworks.monitor.domain.study.AEMMntrngVO">
-	<![CDATA[
+	    <![CDATA[
+        /* AEMntmg.insertAEMSumry */
         INSERT INTO AEMMNTRNG (
               STUDY_ID
              ,PRTCPNT_ID
@@ -124,8 +126,8 @@
              ,NULLIF(#{aeTermCtcae}, '')
              ,NULLIF(#{aeTermOther}, '')
              ,NULLIF(#{aeGrade}, '')
-             ,now()
-             ,now()
+             ,STR_TO_DATE(replace(NULLIF(#{aeStrtDe}, ''), '-',''), '%Y%m%d')
+             ,STR_TO_DATE(replace(NULLIF(#{aeEndDe}, ''), '-',''), '%Y%m%d')
              ,NULLIF(#{mntrngMemo}, '')
              ,STR_TO_DATE(replace(NULLIF(#{mntrngRegistDe}, ''), '-',''), '%Y%m%d')
              ,STR_TO_DATE(replace(NULLIF(#{visitResveDe}, ''), '-',''), '%Y%m%d')
@@ -156,7 +158,8 @@
 	</insert>
 
     <insert id="insertAEMSumry" parameterType="net.lnworks.monitor.domain.study.AEMMntrngVO">
-	<![CDATA[
+	    <![CDATA[
+        /* AEMntmg.insertAEMSumry */
         INSERT INTO AEMSUMRY (
                STUDY_ID
               ,PRTCPNT_ID
@@ -198,8 +201,8 @@
              ,NULLIF(#{aeTermCtcae}, '')
              ,NULLIF(#{aeTermOther}, '')
              ,NULLIF(#{aeGrade}, '')
-             ,now()
-             ,now()
+            ,STR_TO_DATE(replace(NULLIF(#{aeStrtDe}, ''), '-',''), '%Y%m%d')
+            ,STR_TO_DATE(replace(NULLIF(#{aeEndDe}, ''), '-',''), '%Y%m%d')
              ,NULLIF(#{mntrngMemo}, '')
              ,STR_TO_DATE(replace(NULLIF(#{mntrngRegistDe}, ''), '-',''), '%Y%m%d')
              ,STR_TO_DATE(replace(NULLIF(#{visitResveDe}, ''), '-',''), '%Y%m%d')
@@ -227,13 +230,14 @@
 
     <update id="updateAEMSumry" parameterType="net.lnworks.monitor.domain.study.AEMMntrngVO">
         <![CDATA[
+        /* AEMntmg.updateAEMSumry */
         UPDATE AEMSUMRY SET
                MEDDRA_CODE		= NULLIF(#{medDraCode}, '')
               ,AE_TERM_CTCAE	= NULLIF(#{aeTermCtcae}, '')
               ,AE_TERM_OTHER	= NULLIF(#{aeTermOther}, '')
               ,AE_GRADE			= NULLIF(#{aeGrade}, '')
-              ,AE_STRT_DE		= now()
-              ,AE_END_DE		= now()
+              ,AE_STRT_DE		= STR_TO_DATE(replace(NULLIF(#{aeStrtDe}, ''), '-',''), '%Y%m%d')
+              ,AE_END_DE		= STR_TO_DATE(replace(NULLIF(#{aeEndDe}, ''), '-',''), '%Y%m%d')
               ,MNTRNG_MEMO		= NULLIF(#{mntrngMemo}, '')
               ,MNTRNG_REGIST_DE	= STR_TO_DATE(replace(NULLIF(#{mntrngRegistDe}, ''), '-',''), '%Y%m%d')
               ,VISIT_RESVE_DE	= STR_TO_DATE(replace(NULLIF(#{visitResveDe}, ''), '-',''), '%Y%m%d')
@@ -269,6 +273,7 @@
 
     <select id="selectAEMntrngView" parameterType="net.lnworks.monitor.domain.study.AEMMntrngVO" resultType="net.lnworks.monitor.domain.study.AEMMntrngVO">
 	    <![CDATA[
+        /* AEMntmg.selectAEMntrngView */
         SELECT
             TS.STUDY_ID AS studyId,
             TS.PRTCPNT_ID AS prtcpntId,
@@ -330,6 +335,7 @@
 
     <select id="selectAEMntrngHistoryView" parameterType="map" resultType="net.lnworks.monitor.domain.study.AEMMntrngVO">
         <![CDATA[
+        /* AEMntmg.selectAEMntrngHistoryView */
         SELECT
             TS.STUDY_ID AS studyId,
             TS.PRTCPNT_ID AS prtcpntId,
@@ -375,6 +381,7 @@
 
     <select id="getSysSetupFileList" resultMap="DataMapVO" >
     	<![CDATA[
+        /* AEMntmg.getSysSetupFileList */
         SELECT SETUPITEM_CODE AS setupitemCode
              ,CASE WHEN SETUPITEM_CODE = 'FILE_UPLOAD_EXT' THEN  LOWER(SETUPITEM_VAL) ELSE SETUPITEM_VAL END AS setupitemVal
              ,SETUPITEM_DC AS setupitemDc
@@ -387,6 +394,7 @@
     <select id="fileDetailList" parameterType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO" resultMap="DataMapVO" >
         <!-- 증세 첨부 -->
         <![CDATA[
+        /* AEMntmg.fileDetailList */
         SELECT
             ATCH_FILE_ID, FILE_CN, FILE_SN, FILE_STRE_COURS, STRE_FILE_NM,
             FILE_EXTSN, ORIGNL_FILE_NM, FILE_SIZE, SORT_ORDR, SORT_ORDR AS OLD_SORT_ORDR, ENCRYPT_VAL,
@@ -401,6 +409,7 @@
     <insert id="insertSymptms" parameterType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
         <!-- 증세 등록 -->
         <![CDATA[
+        /* AEMntmg.insertSymptms */
         INSERT INTO AEMPRTCPNTSYMPTMS (
              STUDY_ID
             ,PRTCPNT_ID
@@ -434,6 +443,7 @@
     <update id="updateSymptms" parameterType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
         <!-- 증세 수정 : 확인여부, 내용, 구분만 수정 -->
         <![CDATA[
+        /* AEMntmg.updateSymptms */
         UPDATE AEMPRTCPNTSYMPTMS SET
             SYMPTMS_CONFIRM = IFNULL(#{symptmsConfirm}, 'N')
             ,SYMPTMS_CN = IFNULL(#{symptmsCn}, '')
@@ -459,6 +469,7 @@
     <select id="selectSymptms" parameterType="net.lnworks.monitor.domain.study.AEMntrngSymptmsParamVO" resultType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
 	    <!-- 증세 상세 -->
         <![CDATA[
+        /* AEMntmg.selectSymptms */
         SELECT TPS.STUDY_ID AS studyId, TPS.PRTCPNT_ID AS prtcpntId, TPS.SYMPTMS_SEQ AS symptmsSeq, TPS.SYMPTMS_REGTYPE_CODE AS symptmsRegtypeCode,
                DATE_FORMAT(TPS.SYMPTMS_REGIST_DE, '%Y-%m-%d') AS symptmsRegistDe, TPS.SYMPTMS_TITLE AS symptmsTitle,
                DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d') AS symptmsStrtDe,
@@ -500,6 +511,7 @@
     <select id="selectAETree" parameterType="net.lnworks.monitor.domain.study.AEMntrngTreeParamVO" resultMap="selectAETreeHistory">
         <!-- 참여자 AE Tree -->
         <![CDATA[
+        /* AEMntmg.selectAETree */
         SELECT
             TSJ.STUDY_ID AS studyId,
             TSJ.PRTCPNT_ID AS prtcpntId,
@@ -522,7 +534,9 @@
             GET_COMCODE_STR('AEM011', TSJ.AE_ACTION_CODE) AS aeActionCode,
             GET_COMCODE_STR('AEM012', TSJ.ETC_ACTION_CODE) AS etcActionCode,
             GET_COMCODE_STR('AEM013', TSJ.AE_RSLT_CODE) AS aeRsltCode,
-            IFNULL(DATE_FORMAT(TSJ.LAST_UPDT_PNTTM, '%Y-%m-%d'),'') AS regDt
+            IFNULL(DATE_FORMAT(TSJ.LAST_UPDT_PNTTM, '%Y-%m-%d'),'') AS regDt,
+            DATE_FORMAT(TSJ.AE_STRT_DE, '%Y-%m-%d') AS aeStrtDe,
+            DATE_FORMAT(TSJ.AE_END_DE, '%Y-%m-%d') AS aeEndDe
         FROM
              AEMSUMRY TSJ
              LEFT JOIN COMTCCMMNDETAILCODE TGD
@@ -549,6 +563,7 @@
     <select id="selectFavoriteTree" parameterType="net.lnworks.monitor.domain.study.AEMntrngTreeParamVO" resultMap="selectFavorite">
         <!-- 참여자 AE Tree -->
         <![CDATA[
+        /* AEMntmg.selectFavoriteTree */
         SELECT
             TSJ.STUDY_ID AS studyId,
             TSJ.PRTCPNT_ID AS prtcpntId,
@@ -582,6 +597,7 @@
     <select id="selectFavoriteCode" parameterType="map" resultType="net.lnworks.monitor.domain.study.AEMntrngTreeVO">
         <!-- 참여자 AE Tree -->
         <![CDATA[
+        /* AEMntmg.selectFavoriteCode */
         SELECT
             TSJ.STUDY_ID AS studyId,
             TSJ.PRTCPNT_ID AS prtcpntId,
@@ -613,7 +629,8 @@
     <select id="selectSymptmsList" parameterType="net.lnworks.monitor.domain.study.AEMntrngSymptmsParamVO" resultType="net.lnworks.monitor.domain.study.AEMPrtcpntSymptmsVO">
         <!-- 참여자 증상 목록 -->
         <![CDATA[
-	    SELECT TPS.STUDY_ID AS studyId, TPS.PRTCPNT_ID AS prtcpntId, TPS.SYMPTMS_SEQ AS symptmsSeq, TPS.SYMPTMS_REGTYPE_CODE AS symptmsRegtypeCode,
+        /* AEMntmg.selectSymptmsList */
+        SELECT TPS.STUDY_ID AS studyId, TPS.PRTCPNT_ID AS prtcpntId, TPS.SYMPTMS_SEQ AS symptmsSeq, TPS.SYMPTMS_REGTYPE_CODE AS symptmsRegtypeCode,
 	            CASE
 					WHEN TPS.SYMPTMS_REGTYPE_CODE ='300' THEN '전화'
 					WHEN TPS.SYMPTMS_REGTYPE_CODE ='400' THEN '대면'
@@ -686,6 +703,7 @@
     <select id="selectPrtcpntList" parameterType="net.lnworks.monitor.domain.study.AEMntrngParamVO" resultType="net.lnworks.monitor.domain.study.AEMStdyPrtcpntVO">
         <!-- 참여자 목록 -->
         <![CDATA[
+        /* AEMntmg.selectPrtcpntList */
         SELECT studyId, prtcpntId, enrlNo, initial
                 ,CONCAT(symptmsCnt,' ',IF(visitScheduledDe1 IS NOT NULL,'방문','')) AS newSymptms
                 ,sexdstnCode, telno, birthday, pcnAppId

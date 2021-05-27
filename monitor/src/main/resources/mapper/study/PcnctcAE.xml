@@ -5,6 +5,7 @@
 
     <select id="pcnctcaeOneList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
         <![CDATA[
+        /* PcnctcAE.pcnctcaeOneList */
         SELECT CTCAE_VER AS ctcaeVer
             , MEDDRA_SOC AS medDraSoc
         FROM PCNCTCAE
@@ -15,14 +16,20 @@
 
     <select id="pcnctcaeTwoList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
         <![CDATA[
+        /* PcnctcAE.pcnctcaeTwoList */
         SELECT CTCAE_VER AS ctcaeVer
             , MEDDRA_CODE AS medDraCode
             , MEDDRA_SOC AS medDraSoc
             , TERM AS term
         FROM PCNCTCAE
-        WHERE CTCAE_VER = #{ctcaeVer}
-            AND MEDDRA_SOC = #{medDraSoc}
+        WHERE 1 = 1
         ]]>
+        <if test='ctcaeVer!=null and !ctcaeVer.equals("")'>
+            AND CTCAE_VER = #{ctcaeVer}
+        </if>
+        <if test='medDraSoc!=null and !medDraSoc.equals("")'>
+            AND MEDDRA_SOC = #{medDraSoc}
+        </if>
         <if test='searchVal!=null and !searchVal.equals("")'>
             AND TERM LIKE CONCAT('%', #{searchVal}, '%')
         </if>
@@ -33,6 +40,7 @@
 
     <select id="pcnctcaeThreeList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
         <![CDATA[
+        /* PcnctcAE.pcnctcaeThreeList */
          SELECT CTCAE_VER AS ctcaeVer
             , MEDDRA_CODE AS medDraCode
             , MEDDRA_SOC AS medDraSoc

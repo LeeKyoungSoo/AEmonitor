@@ -9,7 +9,7 @@ public class AERoleLogic {
      * */
     public String aeGrade(List<String> getNumList) {
         int getnNum = 0;
-        String returnVal = "Grade ";
+        String returnVal = "";
 
         for (String numVal : getNumList) {
             if ( numVal != null ) {

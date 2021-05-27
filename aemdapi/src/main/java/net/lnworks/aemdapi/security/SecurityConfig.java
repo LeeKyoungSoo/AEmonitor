@@ -1,96 +1,55 @@
 package net.lnworks.aemdapi.security;
 
-import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
-import javax.sql.DataSource;
+import javax.annotation.Resource;
 
-@Log
+@Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    DataSource dataSource;
-    ZerockUserService zerockUserService;
+    @Resource(name="memberService")
+    private UserDetailsService userDetailsService;
 
-    /*
+    @Bean
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
+    @Bean
+    public PasswordEncoder encoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider();
-    }
-    */
-
-    @Override
-    // js, css, image 설정은 보안 설정의 영향 밖에 있도록 만들어주는 설정.
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    public TokenStore tokenStore() {
+        return new InMemoryTokenStore();
     }
 
     @Override
-    protected  void configure(HttpSecurity http) throws  Exception {
-        log.info("security config........");
-
-        http.authorizeRequests()
-                .antMatchers("/accounts/**", "/aemonitorapi/**")
-                .permitAll();
-
-        http.authorizeRequests()
-                .antMatchers("/aemonitor/**")
-                .hasRole("M");
-
-        http.authorizeRequests()
-                .and()
-                .formLogin()
-                .loginPage("/accounts/login")
-                .defaultSuccessUrl("/aemonitor/examlist");
-
-        http.authorizeRequests()
-                .and()
-                .exceptionHandling()
-                .accessDeniedPage("/accounts/accessDenied");
-
-        http.authorizeRequests()
-                .and()
-                .logout()
-                .logoutUrl("/accounts/logout")
-                .invalidateHttpSession(true);
-
-        http.rememberMe()
-                .key("zerock")
-                .userDetailsService(zerockUserService)
-                .tokenRepository(getTokenSeries())
-                .tokenValiditySeconds(60*60*24);
-
-        //http.cors().and();
-        //http.csrf().disable();
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService) .passwordEncoder(encoder());
     }
-
-    private PersistentTokenRepository getTokenSeries() {
-        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
-        repo.setDataSource(dataSource);
-        return repo;
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors()
+            .and()
+            .csrf()
+            .disable()
+            .anonymous()
+            .disable()
+            .authorizeRequests()
+            .antMatchers("/api-docs/**")
+            .permitAll();
     }
-
-    /*
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        log.info("build Auth global........");
-
-        auth.inMemoryAuthentication()
-                .withUser("manager")
-                .password("{noop}1111")
-                .roles("MANAGER");
-    }
-    */
 }

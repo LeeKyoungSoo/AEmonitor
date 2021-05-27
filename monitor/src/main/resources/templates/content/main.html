@@ -1064,7 +1064,6 @@
                 success:function(data){
                     $("#aeTree").empty();
                     $.each(data, function(key) {
-
                             $('#aeTree').append('<div style="padding-top:2px;padding-bottom:2px;">'
                                 + '<!--<img src="/img/graychip.png" style="margin-right:4px;width:8px;height:8px;">-->'
                                 + '● <span class="aeTree" id="aeTreeRow_' + key + '" style="cursor:pointer;" onclick="aeChartView(\''
@@ -1072,20 +1071,18 @@
                                 + data[key].prtcpntId + '\',\''
                                 + data[key].sumrySeq + '\',\''
                                 + '' + '\'); aeTreeSet($(this));">'
-                                + '[' + data[key].aeNumr + ']'
-                                + '[' + data[key].adNm + ']'
-                                + '[' + data[key].grade + ']'
-                                + '[' + data[key].sdt + ']'
-                                + '[' + data[key].edt + ']'
-                                + '[' + data[key].serious + ']'
-                                + '[' + data[key].seriousCont + ']'
-                                + '[' + data[key].relation + ']'
-                                + '[' + data[key].prediction + ']'
-                                + '[' + data[key].relationMeasure + ']'
-                                + '[' + data[key].etcMeasure + ']'
-                                + '[' + data[key].aeResult + ']'
+                                + '[AE명 : ' + data[key].adNm + '], '
+                                + '[Grade : ' + data[key].grade + '], '
+                                + '[AE시작일 : ' + data[key].startDt + '], '
+                                + '[AE종료일 : ' + data[key].endDt + '], '
+                                + '[Serious여부 : ' + data[key].serious + '], '
+                                + '[Serious내용 : ' + data[key].seriousCont + '], '
+                                + '[인과관계 : ' + data[key].relation + '], '
+                                + '[예측여부 : ' + data[key].prediction + '], '
+                                + '[관련조치 : ' + data[key].relationMeasure + '], '
+                                + '[기타조치 : ' + data[key].etcMeasure + '], '
+                                + '[결과 : ' + data[key].aeResult + '], '
                                 + '[' + data[key].mnAt + ']'
-                                + '[' + data[key].acAt + ']'
                                 + '</span>'
                                 + '<img src="/img/copy.png" style="margin-left:4px;width:12px;height:12px;" onclick="copyElement(\'aeTreeRow_' + key + '\')"></div>');
 
@@ -1317,11 +1314,18 @@
 
         function  PcnctcaeListDataChange() {
             var tableGrid = $('#pcnctcaeList').DataTable();
-            var pcnctcaeVal = $("#pcnctcaeCoList").val().split("|");
-            var ctcaeVer = pcnctcaeVal[0];
-            var medDraSoc = pcnctcaeVal[1];
+            var pcnctcaeVal = "";
+            var ctcaeVer = "";
+            var medDraSoc = "";
             var searchVal = $("#pcnctinput").val();
 
+            if ( $("#pcnctcaeCoList").val() != "" ) {
+                pcnctcaeVal = $("#pcnctcaeCoList").val().split("|");
+                ctcaeVer = pcnctcaeVal[0];
+                medDraSoc = pcnctcaeVal[1];
+            }
+
+            /*
             if ( ctcaeVer == "" ) {
                 modal({
                     type: 'primary',
@@ -1330,6 +1334,7 @@
                 });
                 return;
             }
+            */
 
             console.log("PcnctcaeListDataChange-ctcaeVer : " + ctcaeVer);
             console.log("PcnctcaeListDataChange-medDraSoc : " + medDraSoc);
