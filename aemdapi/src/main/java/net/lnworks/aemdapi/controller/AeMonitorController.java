@@ -51,10 +51,6 @@ public class AeMonitorController {
             returnMessage.setReturnMessage("aemonitors data input fail");
             aeDataVO.setApiResult(returnMessage);
         }
-
-
-
-
         return aeDataVO;
     }
 }
