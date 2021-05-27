@@ -16,6 +16,7 @@ import net.lnworks.monitor.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -214,6 +215,41 @@ public class StartController {
         mav.addObject("aemStdyPrtcpntVOList", aemStdyPrtcpntVOList);
 
         mav.setViewName("content/main.html");
+
+        return mav;
+    }
+
+    @RequestMapping(value = "/examApiTest")
+    public ModelAndView goExamApiTest(HttpServletRequest request, Principal principal) throws Exception {
+        ModelAndView mav = new ModelAndView();
+
+        //사용자의 uniqId를 이용하여 처리 (AS-IS는 userId와 사용이 혼제되어 있음)
+        log.info(TAG_USER + " : " +  principal.getName());
+        LoginVO userVo = new LoginVO();
+        userVo.setUniqId(principal.getName());
+
+        //사용자정보
+        DataListMap userInfoMap = memberLoginService.getUserInfo(userVo);
+        DataListMap userAuthorityMap = memberLoginService.getUserauthority(userVo);
+        //userVo.setUniqId(userInfoMap.get("esntlId").toString());
+
+        //메뉴정보
+        MenuManageVO menuManageVO = new MenuManageVO();
+        menuManageVO.setTmpUniqId(userInfoMap.get("esntlId").toString());
+        menuManageVO.setMode("admin");
+        menuManageVO.setIntnetSysAt(intnetSys);
+        List<DataListMap> menuOneDepthMap = menuConfigService.getLevelOneMenuList(menuManageVO);
+        List<DataListMap> menuAllDepthMap = menuConfigService.getLevelAllMenuList(menuManageVO);
+
+        mav.addObject("userinfo", userInfoMap);
+        mav.addObject("menuTitle", "AE모니터링");
+        mav.addObject("sdate", DateTimeUtil.getNowDateHb());
+        mav.addObject("edate", DateTimeUtil.getNowDateHb());
+        mav.addObject("userAuthority", userAuthorityMap);
+        mav.addObject("menuOneDepth", menuOneDepthMap);
+        mav.addObject("menuAllDepth", menuAllDepthMap);
+
+        mav.setViewName("content/apitest.html");
 
         return mav;
     }
