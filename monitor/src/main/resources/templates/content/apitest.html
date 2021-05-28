@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko"
-      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="layout/defaultLayoutNoFooter"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/defaultLayoutNoFooter">
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <title>AE모니터링</title>
@@ -42,23 +42,26 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item" th:each="oneDepth : ${menuOneDepth}">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" th:data-target="'#collapse' + ${oneDepth.menuNo}"
-                   aria-expanded="true" th:aria-controls="'collapse' + ${oneDepth.menuNo}">
-                    <th:block th:if="${oneDepth.menuNo} == '9000224'" >
+                <a aria-expanded="true" class="nav-link collapsed" data-toggle="collapse"
+                   href="#"
+                   th:aria-controls="'collapse' + ${oneDepth.menuNo}" th:data-target="'#collapse' + ${oneDepth.menuNo}">
+                    <th:block th:if="${oneDepth.menuNo} == '9000224'">
                         <i class="fas fa-fw fa-chart-area"></i>
                     </th:block>
-                    <th:block th:if="${oneDepth.menuNo} == '2080000'" >
+                    <th:block th:if="${oneDepth.menuNo} == '2080000'">
                         <i class="fas fa-fw fa-cog"></i>
                     </th:block>
-                    <th:block th:if="${oneDepth.menuNo} != '9000224' and ${oneDepth.menuNo} != '2080000'" >
+                    <th:block th:if="${oneDepth.menuNo} != '9000224' and ${oneDepth.menuNo} != '2080000'">
                         <i class="fas fa-fw fa-table"></i>
                     </th:block>
                     <span>[[${oneDepth.menuNm}]]</span>
                 </a>
-                <div th:id="'collapse' + ${oneDepth.menuNo}" class="collapse" th:aria-labelledby="'heading' + ${oneDepth.menuNo}" data-parent="#accordionSidebar">
+                <div class="collapse" data-parent="#accordionSidebar"
+                     th:aria-labelledby="'heading' + ${oneDepth.menuNo}" th:id="'collapse' + ${oneDepth.menuNo}">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <!--<h6 class="collapse-header">Custom Components:</h6>-->
-                        <th:block th:each="twoDepth : ${menuAllDepth}" th:if="${twoDepth.upperMenuId} == ${oneDepth.menuNo}" >
+                        <th:block th:each="twoDepth : ${menuAllDepth}"
+                                  th:if="${twoDepth.upperMenuId} == ${oneDepth.menuNo}">
                             <a class="collapse-item" href="javascript:alert('준비중입니다.')">[[${twoDepth.menuNm}]]</a>
                         </th:block>
                     </div>
@@ -75,8 +78,8 @@
 
             <!-- Sidebar Message -->
             <div class="sidebar-card">
-                <img class="sidebar-card-illustration mb-2"  th:src="@{/img/undraw_rocket.svg}" alt="">
-                <p class="text-center mb-2"><strong>AE관리시스템</strong>  개발진행중</p>
+                <img alt="" class="sidebar-card-illustration mb-2" th:src="@{/img/undraw_rocket.svg}">
+                <p class="text-center mb-2"><strong>AE관리시스템</strong> 개발진행중</p>
                 <a class="btn btn-success btn-sm" th:href="@{/aemonitor/examApiTest}">API TEST</a>
             </div>
 
@@ -84,7 +87,7 @@
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+        <div class="d-flex flex-column" id="content-wrapper">
 
             <!-- Main Content -->
             <div id="content">
@@ -93,14 +96,14 @@
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
                     <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop">
                         <i class="fa fa-bars"></i>
                     </button>
 
                     <!-- Topbar Search -->
                     <form
                             class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
-                        >
+                    >
                         <div class="input-group">
 
                         </div>
@@ -111,18 +114,19 @@
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               href="#" id="searchDropdown" role="button">
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
                             <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                 aria-labelledby="searchDropdown">
+                            <div aria-labelledby="searchDropdown"
+                                 class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in">
                                 <form class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                               placeholder="Search for..." aria-label="Search"
-                                               aria-describedby="basic-addon2">
+                                        <input aria-describedby="basic-addon2" aria-label="Search"
+                                               class="form-control bg-light border-0 small" placeholder="Search for..."
+                                               type="text">
                                         <div class="input-group-append">
                                             <button class="btn btn-primary" type="button">
                                                 <i class="fas fa-search fa-sm"></i>
@@ -135,15 +139,16 @@
 
                         <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               href="#" id="alertsDropdown" role="button">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
                                 <span class="badge badge-danger badge-counter">3+</span>
                             </a>
                             <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                 aria-labelledby="alertsDropdown">
+                            <div aria-labelledby="alertsDropdown"
+                                 class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in">
                                 <h6 class="dropdown-header">
                                     Alerts Center
                                 </h6>
@@ -187,63 +192,68 @@
 
                         <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               href="#" id="messagesDropdown" role="button">
                                 <i class="fas fa-envelope fa-fw"></i>
                                 <!-- Counter - Messages -->
                                 <span class="badge badge-danger badge-counter">7</span>
                             </a>
                             <!-- Dropdown - Messages -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                 aria-labelledby="messagesDropdown">
+                            <div aria-labelledby="messagesDropdown"
+                                 class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in">
                                 <h6 class="dropdown-header">
                                     Message Center
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" th:src="@{/img/undraw_profile_1.svg}"
-                                             alt="">
+                                        <img alt="" class="rounded-circle"
+                                             th:src="@{/img/undraw_profile_1.svg}">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div class="font-weight-bold">
                                         <div class="text-truncate">Hi there! I am wondering if you can help me with a
-                                            problem I've been having.</div>
+                                            problem I've been having.
+                                        </div>
                                         <div class="small text-gray-500">Emily Fowler · 58m</div>
                                     </div>
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" th:src="@{/img/undraw_profile_2.svg}"
-                                             alt="">
+                                        <img alt="" class="rounded-circle"
+                                             th:src="@{/img/undraw_profile_2.svg}">
                                         <div class="status-indicator"></div>
                                     </div>
                                     <div>
                                         <div class="text-truncate">I have the photos that you ordered last month, how
-                                            would you like them sent to you?</div>
+                                            would you like them sent to you?
+                                        </div>
                                         <div class="small text-gray-500">Jae Chun · 1d</div>
                                     </div>
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" th:src="@{/img/undraw_profile_3.svg}"
-                                             alt="">
+                                        <img alt="" class="rounded-circle"
+                                             th:src="@{/img/undraw_profile_3.svg}">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
                                     <div>
                                         <div class="text-truncate">Last month's report looks great, I am very happy with
-                                            the progress so far, keep up the good work!</div>
+                                            the progress so far, keep up the good work!
+                                        </div>
                                         <div class="small text-gray-500">Morgan Alvarez · 2d</div>
                                     </div>
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
-                                             alt="">
+                                        <img alt="" class="rounded-circle"
+                                             src="https://source.unsplash.com/Mv9hjnEUHR4/60x60">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div>
                                         <div class="text-truncate">Am I a good boy? The reason I ask is because someone
-                                            told me that people say this to all dogs, even if they aren't good...</div>
+                                            told me that people say this to all dogs, even if they aren't good...
+                                        </div>
                                         <div class="small text-gray-500">Chicken the Dog · 2w</div>
                                     </div>
                                 </a>
@@ -255,15 +265,17 @@
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><span th:text="${userinfo.userNm}" /></span>
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               href="#" id="userDropdown" role="button">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><span
+                                        th:text="${userinfo.userNm}"/></span>
                                 <img class="img-profile rounded-circle"
                                      th:src="@{/img/undraw_profile.svg}">
                             </a>
                             <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                 aria-labelledby="userDropdown">
+                            <div aria-labelledby="userDropdown"
+                                 class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
@@ -277,7 +289,7 @@
                                     Activity Log
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" data-target="#logoutModal" data-toggle="modal" href="#">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -309,18 +321,15 @@
                     <div onclick="apiSubjectUpdate();" style="cursor: pointer;margin: 10px 10px 10px 10px">
                         5. 연구대상자 상태변경 [POST]
                     </div>
-
                     <div onclick="apiMessageReadCheck();" style="cursor: pointer;margin: 10px 10px 10px 10px">
-                        6. 이상반응 메시지 확인 [POST]
+                        6. 이상반응 메시지 확인 [POST]dsfsdfsdf
                     </div>
                     <div onclick="apiMessageComment();" style="cursor: pointer;margin: 10px 10px 10px 10px">
                         7. 이상반응 메시지 답변 작성 [PUT]
                     </div>
-
                     <div onclick="apiAEToken();" style="cursor: pointer;margin: 10px 10px 10px 10px">
                         8. [AE System] 토큰취득 API [POST]
                     </div>
-
                     <div onclick="apiAEMessage();" style="cursor: pointer;margin: 10px 10px 10px 10px">
                         9. [AE System] 연구 대상자 증상정보 등록 [POST]
                     </div>
@@ -348,31 +357,32 @@
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
+    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="logoutModal" role="dialog"
+         tabindex="-1">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title-2" id="exampleModalLabel" style="margin-bottom: 0;line-height: 1.5;">로그아웃 하시겠습니까?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title-2" id="exampleModalLabel" style="margin-bottom: 0;line-height: 1.5;">로그아웃
+                        하시겠습니까?</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">로그아웃 하시려면 로그아웃버튼을 눌려주십시오.</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancel</button>
                     <a class="btn btn-primary" href="javascript:logout()">Logout</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="adMoniModal" class="adMoniModal">
-        <div id="pcnctcae" class="card-body aeChartUI adMoniModalCont"></div>
+    <div class="adMoniModal" id="adMoniModal">
+        <div class="card-body aeChartUI adMoniModalCont" id="pcnctcae"></div>
     </div>
 
-    <form id="logout" name="logout" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <form id="logout" method="post" name="logout">
+        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
     </form>
 
     <style type="text/css">
@@ -391,13 +401,14 @@
                 "data": JSON.stringify({
                     "secretKey": "911eea266daa4ea2817ab9a3a7a2c238"
                 }),
-                success:function(data){
-                    console.log("success : " + data);
+                success: function (data) {
+                    console.log("success : " + data.code);
+                    console.log("success : " + data.data.accessToken);
                 },
-                error : function(error) {
+                error: function (error) {
                     console.log("error : " + error);
                 },
-                complete : function() {
+                complete: function () {
                     console.log("complete!!");
                 }
             });
@@ -416,13 +427,14 @@
                     query: "",
                     variables: {}
                 }),
-                success:function(data){
+                success: function (data) {
                     console.log("success : " + data);
                 },
-                error : function(error) {
-                    console.log("error : " + error);
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
                 },
-                complete : function() {
+                complete: function () {
                     console.log("complete!!");
                 }
             });
@@ -443,13 +455,14 @@
                     "mappingKeyType": "Mobile",
                     "mappingKeyCode": "01011112222"
                 }),
-                success:function(data){
+                success: function (data) {
                     console.log("success : " + data);
                 },
-                error : function(error) {
-                    console.log("error : " + error);
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
                 },
-                complete : function() {
+                complete: function () {
                     console.log("complete!!");
                 }
             });
@@ -463,13 +476,14 @@
                 "headers": {
                     "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJaQlZIQUwiLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlhdCI6MTYyMjA5MTA5NCwiZXhwIjoxNjIyMDkxMTI0LCJpcEFkZHIiOiIxNzIuMzEuNTIuMzcifQ.7OcvJk0LRbyr02obwh-EQrS7qNPaz0Zgpy4CLOsb1VE"
                 },
-                success:function(data){
+                success: function (data) {
                     console.log("success : " + data);
                 },
-                error : function(error) {
-                    console.log("error : " + error);
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
                 },
-                complete : function() {
+                complete: function () {
                     console.log("complete!!");
                 }
             });
@@ -487,13 +501,14 @@
                 "data": JSON.stringify({
                     "subjectStatus": "Ongoing"
                 }),
-                success:function(data){
+                success: function (data) {
                     console.log("success : " + data);
                 },
-                error : function(error) {
-                    console.log("error : " + error);
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
                 },
-                complete : function() {
+                complete: function () {
                     console.log("complete!!");
                 }
             });
@@ -507,13 +522,16 @@
                 "headers": {
                     "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJaQlZIQUwiLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlhdCI6MTYyMjA5MTA5NCwiZXhwIjoxNjIyMDkxMTI0LCJpcEFkZHIiOiIxNzIuMzEuNTIuMzcifQ.7OcvJk0LRbyr02obwh-EQrS7qNPaz0Zgpy4CLOsb1VE"
                 },
-                success:function(data){
-                    console.log("success : " + data);
+                success: function (data) {
+                    console.log("success : " + data.code);
+                    console.log("success : " + data.data.messageNo);
+                    console.log("success : " + data.data.messageStatus);
                 },
-                error : function(error) {
-                    console.log("error : " + error);
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
                 },
-                complete : function() {
+                complete: function () {
                     console.log("complete!!");
                 }
             });
@@ -534,13 +552,14 @@
                     "mediaType": "Text",
                     "body": "해열제 드시고 푹 쉬세요. 증상이 개선되지 않으면 병원에 방문해 주세요."
                 }),
-                success:function(data){
+                success: function (data) {
                     console.log("success : " + data);
                 },
-                error : function(error) {
-                    console.log("error : " + error);
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
                 },
-                complete : function() {
+                complete: function () {
                     console.log("complete!!");
                 }
             });
@@ -552,6 +571,8 @@
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": true,
                     "Authorization": "Basic YWVtb25pdG9yOlRtYzZTU1JRRXdGQXlTalhaWkV6VG1yL2MvVjBNcDRSMjE3UUJTSkpqQUk9",
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
@@ -560,13 +581,13 @@
                     "password": "ae2021001",
                     "grant_type": "password"
                 },
-                success:function(data){
+                success: function (data) {
                     console.log("success : " + data);
                 },
-                error : function(error) {
+                error: function (error) {
                     console.log("error : " + error);
                 },
-                complete : function() {
+                complete: function () {
                     console.log("complete!!");
                 }
             });
@@ -578,7 +599,7 @@
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
-                    "Authorization": "Bearer 8f5e1171-6623-45ef-bae8-47cdb7b335bd",
+                    "Authorization": "Bearer 27c1d33d-1756-4acb-8ff9-5f7144660c16",
                     "Content-Type": "application/json"
                 },
                 "data": JSON.stringify({
@@ -592,13 +613,13 @@
                         "symptmsRegistDe": "2020-05-25 18:20:03"
                     }
                 }),
-                success:function(data){
+                success: function (data) {
                     console.log("success : " + data);
                 },
-                error : function(error) {
+                error: function (error) {
                     console.log("error : " + error);
                 },
-                complete : function() {
+                complete: function () {
                     console.log("complete!!");
                 }
             });
