@@ -565,14 +565,13 @@
             });
         }
 
+        var accessToken = "";
         function apiAEToken() {
             $.ajax({
                 "url": "http://localhost:7201/oauth/token",
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Credentials": true,
                     "Authorization": "Basic YWVtb25pdG9yOlRtYzZTU1JRRXdGQXlTalhaWkV6VG1yL2MvVjBNcDRSMjE3UUJTSkpqQUk9",
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
@@ -582,7 +581,8 @@
                     "grant_type": "password"
                 },
                 success: function (data) {
-                    console.log("success : " + data);
+                    console.log("success : " + data.access_token);
+                    accessToken = data.access_token;
                 },
                 error: function (error) {
                     console.log("error : " + error);
@@ -599,7 +599,7 @@
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
-                    "Authorization": "Bearer 27c1d33d-1756-4acb-8ff9-5f7144660c16",
+                    "Authorization": "Bearer " + accessToken,
                     "Content-Type": "application/json"
                 },
                 "data": JSON.stringify({
@@ -614,7 +614,9 @@
                     }
                 }),
                 success: function (data) {
-                    console.log("success : " + data);
+                    console.log("success : " + data.studyId);
+                    console.log("success : " + data.prtcpntId);
+                    console.log("success : " + data.message.symptmsRegtypeCode);
                 },
                 error: function (error) {
                     console.log("error : " + error);
