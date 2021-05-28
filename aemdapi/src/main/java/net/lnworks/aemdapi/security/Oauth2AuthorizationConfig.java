@@ -29,7 +29,7 @@ public class Oauth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory() .withClient("aemonitor")
+        clients.inMemory().withClient("aemonitor")
                 .secret(passwordEncoder.encode("Tmc6SSRQEwFAySjXZZEzTmr/c/V0Mp4R217QBSJJjAI="))
                 .authorizedGrantTypes("authorization_code", "password", "refresh_token")
                 .scopes("read", "write")
