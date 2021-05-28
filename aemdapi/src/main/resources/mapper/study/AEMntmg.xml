@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.lnworks.aemdapi.mapper.study.AEMntmg">
+
+    <resultMap type="net.lnworks.aemdapi.util.DataListMap" id="DataMapVO" />
+
+    <insert id="insertSymptms" parameterType="net.lnworks.aemdapi.domain.study.AEMPrtcpntSymptmsVO">
+        <!-- 증세 등록 -->
+        <![CDATA[
+        INSERT INTO AEMPRTCPNTSYMPTMS (
+             STUDY_ID
+            ,PRTCPNT_ID
+            ,SYMPTMS_SEQ
+            ,SYMPTMS_REGTYPE_CODE
+            ,SYMPTMS_TITLE
+            ,SYMPTMS_CONFIRM
+            ,CALL_PARTNER
+            ,SYMPTMS_CN
+            ,SYMPTMS_REGIST_DE
+            ,SYMPTMS_STRTDE
+            ,FRST_REGISTER_ID
+            ,LAST_UPDUSR_ID
+        ) VALUES (
+             #{studyId}
+            ,#{prtcpntId}
+            ,GET_NEXT_SYMPTMS_SEQ(#{studyId}, #{prtcpntId})
+            ,#{symptmsRegtypeCode}
+            ,'NO TITLE'
+            ,IFNULL(#{symptmsConfirm}, 'N')
+            ,IFNULL(#{callPartner}, '')
+            ,IFNULL(#{symptmsCn}, '')
+            ,#{symptmsRegistDe}
+            ,#{symptmsRegistDe}
+            ,#{frstRegisterId}
+            ,#{lastUpdusrId}
+        )
+        ]]>
+    </insert>
+
+    <update id="updateSymptms" parameterType="net.lnworks.aemdapi.domain.study.AEMPrtcpntSymptmsVO">
+        <!-- 증세 수정 : 확인여부, 내용, 구분만 수정 -->
+        <![CDATA[
+        UPDATE AEMPRTCPNTSYMPTMS SET
+            SYMPTMS_CONFIRM = IFNULL(#{symptmsConfirm}, 'N')
+            ,SYMPTMS_CN = IFNULL(#{symptmsCn}, '')
+            ,CALL_PARTNER = IFNULL(#{callPartner}, '')
+            ,LAST_UPDT_PNTTM = NOW()
+		    ,LAST_UPDUSR_ID = #{lastUpdusrId}
+        WHERE STUDY_ID = #{studyId}
+            AND PRTCPNT_ID = #{prtcpntId}
+            AND SYMPTMS_SEQ = #{symptmsSeq}
+        ]]>
+    </update>
+
+    <delete id="deleteSymptms" parameterType="net.lnworks.aemdapi.domain.study.AEMPrtcpntSymptmsVO">
+        <!-- 증세 삭제 -->
+        <![CDATA[
+        DELETE FROM AEMPRTCPNTSYMPTMS
+        WHERE STUDY_ID = #{studyId}
+          AND PRTCPNT_ID = #{prtcpntId}
+          AND SYMPTMS_SEQ = #{symptmsSeq}
+        ]]>
+    </delete>
+
+    <select id="selectSymptms" parameterType="net.lnworks.aemdapi.domain.study.AEMntrngSymptmsParamVO" resultType="net.lnworks.aemdapi.domain.study.AEMPrtcpntSymptmsVO">
+        <!-- 증세 상세 -->
+        <![CDATA[
+        SELECT TPS.STUDY_ID AS studyId, TPS.PRTCPNT_ID AS prtcpntId, TPS.SYMPTMS_SEQ AS symptmsSeq, TPS.SYMPTMS_REGTYPE_CODE AS symptmsRegtypeCode,
+               DATE_FORMAT(TPS.SYMPTMS_REGIST_DE, '%Y-%m-%d') AS symptmsRegistDe, TPS.SYMPTMS_TITLE AS symptmsTitle,
+               DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d') AS symptmsStrtDe,
+               DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y-%m-%d') AS symptmsEndDe,
+               CONCAT_WS('~',DATE_FORMAT(TPS.SYMPTMS_STRTDE, '%Y-%m-%d'), IFNULL(DATE_FORMAT(TPS.SYMPTMS_ENDDE, '%Y-%m-%d'),'')) AS symptmsDe,
+               TPS.SYMPTMS_CN AS symptmsCn, TPS.ATCH_FILE_ID AS atchFileId,
+               TPS.OUTBND_CALL_AT AS outbndCallAt, TPS.CALL_PARTNER AS callPartner, TPS.VISIT_TYPE_CODE AS visitTypeCode, TPS.VISITRULE_SEQ AS visitRuleSeq,
+               (SELECT TRMT_STEP
+                FROM AEMVISITRULE TVR
+                WHERE TVR.STUDY_ID = TPS.STUDY_ID
+                  AND TVR.VISITRULE_SEQ = TPS.VISITRULE_SEQ) AS trmtStep,
+               (SELECT TU.USER_NM FROM COMTNUSERINFO TU WHERE TU.ESNTL_ID = TPS.FRST_REGISTER_ID) AS registerNm,
+               IF(T1.CNT > 0, 'Y', 'N') AS useAt,
+               SYMPTMS_CONFIRM AS symptmsConfirm
+        FROM AEMPRTCPNTSYMPTMS TPS
+                 LEFT JOIN (
+            SELECT TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ, COUNT(*) AS CNT
+            FROM AEMMNTRNGSYMPTMS TMS
+            GROUP BY TMS.STUDY_ID, TMS.PRTCPNT_ID, TMS.SYMPTMS_SEQ) T1
+                           ON TPS.STUDY_ID = T1.STUDY_ID
+                               AND TPS.PRTCPNT_ID = T1.PRTCPNT_ID
+                               AND TPS.SYMPTMS_SEQ = T1.SYMPTMS_SEQ
+        WHERE TPS.STUDY_ID = #{studyId}
+          AND TPS.PRTCPNT_ID = #{prtcpntId}
+          AND TPS.SYMPTMS_SEQ = #{symptmsSeq}
+        ]]>
+    </select>
+
+
+</mapper>

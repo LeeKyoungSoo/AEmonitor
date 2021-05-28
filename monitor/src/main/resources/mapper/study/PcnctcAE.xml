@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.lnworks.monitor.mapper.study.PcnctcAE">
+
+    <select id="pcnctcaeOneList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
+        <![CDATA[
+        /* PcnctcAE.pcnctcaeOneList */
+        SELECT CTCAE_VER AS ctcaeVer
+            , MEDDRA_SOC AS medDraSoc
+        FROM PCNCTCAE
+        WHERE CTCAE_VER = (SELECT CTCAE_VER FROM AEMSTUDY TS WHERE TS.STUDY_ID = #{studyId})
+        GROUP BY CTCAE_VER, MEDDRA_SOC
+        ]]>
+    </select>
+
+    <select id="pcnctcaeTwoList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
+        <![CDATA[
+        /* PcnctcAE.pcnctcaeTwoList */
+        SELECT CTCAE_VER AS ctcaeVer
+            , MEDDRA_CODE AS medDraCode
+            , MEDDRA_SOC AS medDraSoc
+            , TERM AS term
+        FROM PCNCTCAE
+        WHERE 1 = 1
+        ]]>
+        <if test='ctcaeVer!=null and !ctcaeVer.equals("")'>
+            AND CTCAE_VER = #{ctcaeVer}
+        </if>
+        <if test='medDraSoc!=null and !medDraSoc.equals("")'>
+            AND MEDDRA_SOC = #{medDraSoc}
+        </if>
+        <if test='searchVal!=null and !searchVal.equals("")'>
+            AND TERM LIKE CONCAT('%', #{searchVal}, '%')
+        </if>
+        <![CDATA[
+        ORDER BY TERM
+        ]]>
+    </select>
+
+    <select id="pcnctcaeThreeList" parameterType="net.lnworks.monitor.domain.study.PcnctcAEVO" resultType="net.lnworks.monitor.domain.study.PcnctcAEVO" >
+        <![CDATA[
+        /* PcnctcAE.pcnctcaeThreeList */
+         SELECT CTCAE_VER AS ctcaeVer
+            , MEDDRA_CODE AS medDraCode
+            , MEDDRA_SOC AS medDraSoc
+            , TERM AS term
+            , IFNULL(GRADE1, '-') AS grade1
+            , IFNULL(GRADE2, '-') AS grade2
+            , IFNULL(GRADE3, '-') AS grade3
+            , IFNULL(GRADE4, '-') AS grade4
+            , IFNULL(GRADE5, '-') AS grade5
+        FROM PCNCTCAE
+        WHERE CTCAE_VER = #{ctcaeVer}
+          AND MEDDRA_CODE = #{medDraCode};
+        ]]>
+    </select>
+</mapper>

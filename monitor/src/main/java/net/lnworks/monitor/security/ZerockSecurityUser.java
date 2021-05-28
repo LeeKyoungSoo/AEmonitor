@@ -2,7 +2,7 @@ package net.lnworks.monitor.security;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.lnworks.monitor.domain.Member;
+import net.lnworks.monitor.domain.LoginVO;
 import net.lnworks.monitor.domain.MemberRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,10 +14,9 @@ import java.util.List;
 @Setter
 public class ZerockSecurityUser extends User {
     private static final String ROLE_PREFIX = "ROLE_";
-    private Member member;
 
-    public ZerockSecurityUser(Member member) {
-        super(member.getUid(), "{noop}" + member.getUpw(), makeGrantedAuthority(member.getRoles()));
+    public ZerockSecurityUser(LoginVO vo) {
+        super(vo.getUniqId(), vo.getPassword(), makeGrantedAuthority(vo.getRoleList()));
     }
 
     private static List<GrantedAuthority> makeGrantedAuthority(List<MemberRole> roles) {

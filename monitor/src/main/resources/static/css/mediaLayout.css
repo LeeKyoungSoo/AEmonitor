@@ -1,0 +1,52 @@
+@media screen and (min-width: 1024px) {
+    .rightLayout {
+        float:right;
+        width:50%;
+    }
+    .leftLayout {
+        float:left;
+        width:50%;
+    }
+    .layout940 {
+        float: right;
+    }
+}
+@media only screen and (min-width: 768px) and (max-width: 1024px)  {
+    .rightLayout {
+        width: 100%;
+    }
+    .leftLayout {
+        width: 100%;
+    }
+    .layout940 {
+        float: right;
+    }
+}
+@media only screen and (max-width: 940px)  {
+    .rightLayout {
+        width: 100%;
+    }
+    .leftLayout {
+        width: 100%;
+    }
+    .layout940 {
+        visibility: hidden;
+    }
+    .card-header {
+        height: 70px;
+    }
+}
+@media only screen and (max-width: 768px)  {
+    .rightLayout {
+        width: 100%;
+    }
+    .leftLayout {
+        width: 100%;
+    }
+    .layout940 {
+        visibility: hidden;
+    }
+    .card-header {
+        height: 70px;
+    }
+}
