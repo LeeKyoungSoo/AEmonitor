@@ -21,6 +21,14 @@ public class AeMonitorController {
     @Autowired
     private AEMntmgService aeMntmgService;
 
+    @PostMapping(value="/testApi")
+    public AeDataVO userTestApi(@RequestBody AeDataVO  aeDataVO) throws  Exception {
+
+        log.info(" API - aemonitors/userAeData");
+
+        return aeDataVO;
+    }
+
     @PostMapping(value = "/userAeData")
     public AeDataVO userAeData(@RequestBody AeDataVO aeDataVO) throws Exception {
         //AeDataVO returnAeData = new AeDataVO();
