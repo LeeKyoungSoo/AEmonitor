@@ -304,6 +304,14 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
+                    SERVER URL : <input type="text" id="serverurl" name="serverurl" style="width:240px;"/>
+                    <span style="color:red">
+                        <br> ex > http:// 부터 입력 마지막 '/' 는 생략 ( http://localhost:7201 )
+                        <br> http://localhost:7201
+                        <br> http://141.164.39.105:7201
+                        <br> http://sandbox.procarenote.com
+                    </span>
+
                     <div onclick="apiToken();" style="cursor: pointer;margin: 10px 10px 10px 10px">
                         1. accessToken 취득 API [POST]
                     </div>
@@ -391,8 +399,9 @@
 
     <script>
         function apiToken() {
+            var serverURL = $("#serverurl").val();
             $.ajax({
-                "url": "http://sandbox.procarenote.com//gateway/bethesdasoft/auth/token",
+                "url": serverURL + "/gateway/bethesdasoft/auth/token",
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
@@ -415,8 +424,9 @@
         }
 
         function apiAeStudy() {
+            var serverURL = $("#serverurl").val();
             $.ajax({
-                "url": "http://sandbox.procarenote.com/gateway/bethesdasoft/study/AeStudy",
+                "url": serverURL + "/gateway/bethesdasoft/study/AeStudy",
                 "method": "GET",
                 "timeout": 0,
                 "headers": {
@@ -441,8 +451,9 @@
         }
 
         function apiSubjectCreate() {
+            var serverURL = $("#serverurl").val();
             $.ajax({
-                "url": "http://sandbox.procarenote.com/gateway/bethesdasoft/AeStudy/subject",
+                "url": serverURL + "/gateway/bethesdasoft/AeStudy/subject",
                 "method": "PUT",
                 "timeout": 0,
                 "headers": {
@@ -469,8 +480,9 @@
         }
 
         function apiSubjectRead() {
+            var serverURL = $("#serverurl").val();
             $.ajax({
-                "url": "http://sandbox.procarenote.com/gateway/bethesdasoft/AeStudy/subject/PAT001",
+                "url": serverURL + "/gateway/bethesdasoft/AeStudy/subject/PAT001",
                 "method": "GET",
                 "timeout": 0,
                 "headers": {
@@ -490,8 +502,9 @@
         }
 
         function apiSubjectUpdate() {
+            var serverURL = $("#serverurl").val();
             $.ajax({
-                "url": "http://sandbox.procarenote.com/gateway/bethesdasoft/AeStudy/subject/PAT001/subject-status",
+                "url": serverURL + "/gateway/bethesdasoft/AeStudy/subject/PAT001/subject-status",
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
@@ -515,8 +528,9 @@
         }
 
         function apiMessageReadCheck() {
+            var serverURL = $("#serverurl").val();
             $.ajax({
-                "url": "http://sandbox.procarenote.com/gateway/bethesdasoft/aemessage/1/message-status",
+                "url": serverURL + "gateway/bethesdasoft/aemessage/1/message-status",
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
@@ -538,8 +552,9 @@
         }
 
         function apiMessageComment() {
+            var serverURL = $("#serverurl").val();
             $.ajax({
-                "url": "http://sandbox.procarenote.com/gateway/bethesdasoft/aemessage",
+                "url": serverURL + "/gateway/bethesdasoft/aemessage",
                 "method": "PUT",
                 "timeout": 0,
                 "headers": {
@@ -567,8 +582,9 @@
 
         var accessToken = "";
         function apiAEToken() {
+            var serverURL = $("#serverurl").val();
             $.ajax({
-                "url": "http://localhost:7201/oauth/token",
+                "url": serverURL + "/oauth/token",
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
@@ -594,8 +610,9 @@
         }
 
         function apiAEMessage() {
+            var serverURL = $("#serverurl").val();
             $.ajax({
-                "url": "http://localhost:7201/aemonitors/userAeData",
+                "url": serverURL + "/aemonitors/userAeData",
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
