@@ -43,5 +43,5 @@ test {
 bootJar{
     archivesBaseName = 'aemanagement'
     archiveFileName = 'aemanagement.jar'
-    archiveVersion = "0.0.1"
+    archiveVersion = '0.0.3'
 }

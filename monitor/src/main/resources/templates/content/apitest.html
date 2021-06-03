@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ko"
+      layout:decorator="layout/defaultLayoutNoFooter"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>AE모니터링</title>
+</head>
+
+<body id="page-top">
+
+<th:block layout:fragment="content">
+
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/aemonitor/examlist}">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">AE관리시스템<sup>2.0</sup></div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/aemonitor/examlist}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>[[${menuTitle}]]</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item" th:each="oneDepth : ${menuOneDepth}">
+                <a aria-expanded="true" class="nav-link collapsed" data-toggle="collapse"
+                   href="#"
+                   th:aria-controls="'collapse' + ${oneDepth.menuNo}" th:data-target="'#collapse' + ${oneDepth.menuNo}">
+                    <th:block th:if="${oneDepth.menuNo} == '9000224'">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                    </th:block>
+                    <th:block th:if="${oneDepth.menuNo} == '2080000'">
+                        <i class="fas fa-fw fa-cog"></i>
+                    </th:block>
+                    <th:block th:if="${oneDepth.menuNo} != '9000224' and ${oneDepth.menuNo} != '2080000'">
+                        <i class="fas fa-fw fa-table"></i>
+                    </th:block>
+                    <span>[[${oneDepth.menuNm}]]</span>
+                </a>
+                <div class="collapse" data-parent="#accordionSidebar"
+                     th:aria-labelledby="'heading' + ${oneDepth.menuNo}" th:id="'collapse' + ${oneDepth.menuNo}">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <!--<h6 class="collapse-header">Custom Components:</h6>-->
+                        <th:block th:each="twoDepth : ${menuAllDepth}"
+                                  th:if="${twoDepth.upperMenuId} == ${oneDepth.menuNo}">
+                            <a class="collapse-item" href="javascript:alert('준비중입니다.')">[[${twoDepth.menuNm}]]</a>
+                        </th:block>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+            <!-- Sidebar Message -->
+            <div class="sidebar-card">
+                <img alt="" class="sidebar-card-illustration mb-2" th:src="@{/img/undraw_rocket.svg}">
+                <p class="text-center mb-2"><strong>AE관리시스템</strong> 개발진행중</p>
+                <a class="btn btn-success btn-sm" th:href="@{/aemonitor/examApiTest}">API TEST</a>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div class="d-flex flex-column" id="content-wrapper">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <form
+                            class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
+                    >
+                        <div class="input-group">
+
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               href="#" id="searchDropdown" role="button">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div aria-labelledby="searchDropdown"
+                                 class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input aria-describedby="basic-addon2" aria-label="Search"
+                                               class="form-control bg-light border-0 small" placeholder="Search for..."
+                                               type="text">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               href="#" id="alertsDropdown" role="button">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div aria-labelledby="alertsDropdown"
+                                 class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                                <h6 class="dropdown-header">
+                                    Alerts Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 7, 2019</div>
+                                        $290.29 has been deposited into your account!
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        Spending Alert: We've noticed unusually high spending for your account.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+                        </li>
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               href="#" id="messagesDropdown" role="button">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">7</span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div aria-labelledby="messagesDropdown"
+                                 class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img alt="" class="rounded-circle"
+                                             th:src="@{/img/undraw_profile_1.svg}">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div class="font-weight-bold">
+                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
+                                            problem I've been having.
+                                        </div>
+                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img alt="" class="rounded-circle"
+                                             th:src="@{/img/undraw_profile_2.svg}">
+                                        <div class="status-indicator"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">I have the photos that you ordered last month, how
+                                            would you like them sent to you?
+                                        </div>
+                                        <div class="small text-gray-500">Jae Chun · 1d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img alt="" class="rounded-circle"
+                                             th:src="@{/img/undraw_profile_3.svg}">
+                                        <div class="status-indicator bg-warning"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Last month's report looks great, I am very happy with
+                                            the progress so far, keep up the good work!
+                                        </div>
+                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img alt="" class="rounded-circle"
+                                             src="https://source.unsplash.com/Mv9hjnEUHR4/60x60">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
+                                            told me that people say this to all dogs, even if they aren't good...
+                                        </div>
+                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               href="#" id="userDropdown" role="button">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><span
+                                        th:text="${userinfo.userNm}"/></span>
+                                <img class="img-profile rounded-circle"
+                                     th:src="@{/img/undraw_profile.svg}">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div aria-labelledby="userDropdown"
+                                 class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" data-target="#logoutModal" data-toggle="modal" href="#">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    SERVER URL : <input type="text" id="serverurl" name="serverurl" style="width:240px;"/>
+                    <span style="color:red">
+                        <br> ex > http:// 부터 입력 마지막 '/' 는 생략 ( http://localhost:7201 )
+                        <br> http://localhost:7201
+                        <br> http://141.164.39.105:7201
+                        <br> http://sandbox.procarenote.com
+                    </span>
+
+                    <div onclick="apiToken();" style="cursor: pointer;margin: 10px 10px 10px 10px">
+                        1. accessToken 취득 API [POST]
+                    </div>
+
+                    <div onclick="apiAeStudy();" style="cursor: pointer;margin: 10px 10px 10px 10px">
+                        2. 연구정보 [GET]
+                    </div>
+
+                    <div onclick="apiSubjectCreate();" style="cursor: pointer;margin: 10px 10px 10px 10px">
+                        3. 연구대상자 등록 [PUT]
+                    </div>
+                    <div onclick="apiSubjectRead();" style="cursor: pointer;margin: 10px 10px 10px 10px">
+                        4. 연구대상자 조회 [GET]
+                    </div>
+                    <div onclick="apiSubjectUpdate();" style="cursor: pointer;margin: 10px 10px 10px 10px">
+                        5. 연구대상자 상태변경 [POST]
+                    </div>
+                    <div onclick="apiMessageReadCheck();" style="cursor: pointer;margin: 10px 10px 10px 10px">
+                        6. 이상반응 메시지 확인 [POST]
+                    </div>
+                    <div onclick="apiMessageComment();" style="cursor: pointer;margin: 10px 10px 10px 10px">
+                        7. 이상반응 메시지 답변 작성 [PUT]
+                    </div>
+                    <div onclick="apiAEToken();" style="cursor: pointer;margin: 10px 10px 10px 10px">
+                        8. [AE System] 토큰취득 API [POST]
+                    </div>
+                    <div onclick="apiAEMessage();" style="cursor: pointer;margin: 10px 10px 10px 10px">
+                        9. [AE System] 연구 대상자 증상정보 등록 [POST]
+                    </div>
+                </div>
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>2021 BETHESDA All Rights Reserved</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="logoutModal" role="dialog"
+         tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title-2" id="exampleModalLabel" style="margin-bottom: 0;line-height: 1.5;">로그아웃
+                        하시겠습니까?</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">로그아웃 하시려면 로그아웃버튼을 눌려주십시오.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancel</button>
+                    <a class="btn btn-primary" href="javascript:logout()">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="adMoniModal" id="adMoniModal">
+        <div class="card-body aeChartUI adMoniModalCont" id="pcnctcae"></div>
+    </div>
+
+    <form id="logout" method="post" name="logout">
+        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+    </form>
+
+    <style type="text/css">
+
+    </style>
+
+    <script>
+        function apiToken() {
+            var serverURL = $("#serverurl").val();
+            $.ajax({
+                "url": serverURL + "/gateway/bethesdasoft/auth/token",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "secretKey": "911eea266daa4ea2817ab9a3a7a2c238"
+                }),
+                success: function (data) {
+                    console.log("success : " + data.code);
+                    console.log("success : " + data.data.accessToken);
+                },
+                error: function (error) {
+                    console.log("error : " + error);
+                },
+                complete: function () {
+                    console.log("complete!!");
+                }
+            });
+        }
+
+        function apiAeStudy() {
+            var serverURL = $("#serverurl").val();
+            $.ajax({
+                "url": serverURL + "/gateway/bethesdasoft/study/AeStudy",
+                "method": "GET",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJaQlZIQUwiLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlhdCI6MTYyMjEzMDU5NywiZXhwIjoxNjIyMTMwNjI3LCJpcEFkZHIiOiIxNzIuMzEuNTIuMzcifQ.3tJ7N4qImWtS-KOksQhXGKQAYlS95hUASpN9osDi-Dw",
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    query: "",
+                    variables: {}
+                }),
+                success: function (data) {
+                    console.log("success : " + data);
+                },
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
+                },
+                complete: function () {
+                    console.log("complete!!");
+                }
+            });
+        }
+
+        function apiSubjectCreate() {
+            var serverURL = $("#serverurl").val();
+            $.ajax({
+                "url": serverURL + "/gateway/bethesdasoft/AeStudy/subject",
+                "method": "PUT",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJaQlZIQUwiLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlhdCI6MTYyMjA5MTA5NCwiZXhwIjoxNjIyMDkxMTI0LCJpcEFkZHIiOiIxNzIuMzEuNTIuMzcifQ.7OcvJk0LRbyr02obwh-EQrS7qNPaz0Zgpy4CLOsb1VE",
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "subjectKey": "P001",
+                    "subjectStatus": "Ongoing",
+                    "mappingKeyType": "Mobile",
+                    "mappingKeyCode": "01011112222"
+                }),
+                success: function (data) {
+                    console.log("success : " + data);
+                },
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
+                },
+                complete: function () {
+                    console.log("complete!!");
+                }
+            });
+        }
+
+        function apiSubjectRead() {
+            var serverURL = $("#serverurl").val();
+            $.ajax({
+                "url": serverURL + "/gateway/bethesdasoft/AeStudy/subject/PAT001",
+                "method": "GET",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJaQlZIQUwiLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlhdCI6MTYyMjA5MTA5NCwiZXhwIjoxNjIyMDkxMTI0LCJpcEFkZHIiOiIxNzIuMzEuNTIuMzcifQ.7OcvJk0LRbyr02obwh-EQrS7qNPaz0Zgpy4CLOsb1VE"
+                },
+                success: function (data) {
+                    console.log("success : " + data);
+                },
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
+                },
+                complete: function () {
+                    console.log("complete!!");
+                }
+            });
+        }
+
+        function apiSubjectUpdate() {
+            var serverURL = $("#serverurl").val();
+            $.ajax({
+                "url": serverURL + "/gateway/bethesdasoft/AeStudy/subject/PAT001/subject-status",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJaQlZIQUwiLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlhdCI6MTYyMjA5MTA5NCwiZXhwIjoxNjIyMDkxMTI0LCJpcEFkZHIiOiIxNzIuMzEuNTIuMzcifQ.7OcvJk0LRbyr02obwh-EQrS7qNPaz0Zgpy4CLOsb1VE",
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "subjectStatus": "Ongoing"
+                }),
+                success: function (data) {
+                    console.log("success : " + data);
+                },
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
+                },
+                complete: function () {
+                    console.log("complete!!");
+                }
+            });
+        }
+
+        function apiMessageReadCheck() {
+            var serverURL = $("#serverurl").val();
+            $.ajax({
+                "url": serverURL + "gateway/bethesdasoft/aemessage/1/message-status",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJaQlZIQUwiLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlhdCI6MTYyMjA5MTA5NCwiZXhwIjoxNjIyMDkxMTI0LCJpcEFkZHIiOiIxNzIuMzEuNTIuMzcifQ.7OcvJk0LRbyr02obwh-EQrS7qNPaz0Zgpy4CLOsb1VE"
+                },
+                success: function (data) {
+                    console.log("success : " + data.code);
+                    console.log("success : " + data.data.messageNo);
+                    console.log("success : " + data.data.messageStatus);
+                },
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
+                },
+                complete: function () {
+                    console.log("complete!!");
+                }
+            });
+        }
+
+        function apiMessageComment() {
+            var serverURL = $("#serverurl").val();
+            $.ajax({
+                "url": serverURL + "/gateway/bethesdasoft/aemessage",
+                "method": "PUT",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJaQlZIQUwiLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlhdCI6MTYyMjA5MTA5NCwiZXhwIjoxNjIyMDkxMTI0LCJpcEFkZHIiOiIxNzIuMzEuNTIuMzcifQ.7OcvJk0LRbyr02obwh-EQrS7qNPaz0Zgpy4CLOsb1VE",
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "studyCode": "AeStudy",
+                    "subjectKey": "TEST001",
+                    "mediaType": "Text",
+                    "body": "해열제 드시고 푹 쉬세요. 증상이 개선되지 않으면 병원에 방문해 주세요."
+                }),
+                success: function (data) {
+                    console.log("success : " + data);
+                },
+                error: function (error) {
+                    console.log("error : " + error.code);
+                    console.log("error : " + error.message);
+                },
+                complete: function () {
+                    console.log("complete!!");
+                }
+            });
+        }
+
+        var accessToken = "";
+        function apiAEToken() {
+            var serverURL = $("#serverurl").val();
+            $.ajax({
+                "url": serverURL + "/oauth/token",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Basic YWVtb25pdG9yOlRtYzZTU1JRRXdGQXlTalhaWkV6VG1yL2MvVjBNcDRSMjE3UUJTSkpqQUk9",
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                "data": {
+                    "username": "procuratio",
+                    "password": "ae2021001",
+                    "grant_type": "password"
+                },
+                success: function (data) {
+                    console.log("success : " + data.access_token);
+                    accessToken = data.access_token;
+                },
+                error: function (error) {
+                    console.log("error : " + error);
+                },
+                complete: function () {
+                    console.log("complete!!");
+                }
+            });
+        }
+
+        function apiAEMessage() {
+            var serverURL = $("#serverurl").val();
+            $.ajax({
+                "url": serverURL + "/aemonitors/userAeData",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Bearer " + accessToken,
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "studyId": "0000000025",
+                    "prtcpntId": "0000000128",
+                    "message": {
+                        "symptmsRegtypeCode": "140",
+                        "type": "Text",
+                        "symptmsCn": "LKS 테스트 진행 - 2",
+                        "callPartner": "본인",
+                        "symptmsRegistDe": "2020-05-25 18:20:03"
+                    }
+                }),
+                success: function (data) {
+                    console.log("success : " + data.studyId);
+                    console.log("success : " + data.prtcpntId);
+                    console.log("success : " + data.message.symptmsRegtypeCode);
+                },
+                error: function (error) {
+                    console.log("error : " + error);
+                },
+                complete: function () {
+                    console.log("complete!!");
+                }
+            });
+        }
+    </script>
+</th:block>
+
+</body>
+
+</html>
