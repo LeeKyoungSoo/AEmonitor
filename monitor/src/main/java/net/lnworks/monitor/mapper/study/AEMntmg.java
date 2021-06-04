@@ -12,6 +12,7 @@ import java.util.List;
 public interface AEMntmg {
     List<AEMPrtcpntSymptmsVO> selectSymptmsList(AEMntrngSymptmsParamVO vo) throws Exception;
     List<AEMStdyPrtcpntVO> selectPrtcpntList(AEMntrngParamVO vo) throws Exception;
+    AEMStdyPrtcpntVO selectPrtcpntView(AEMntrngParamVO vo) throws Exception;
     List<AEMntrngTreeVO> selectAETree(AEMntrngTreeParamVO vo) throws Exception;
     List<AEMntrngTreeVO> selectFavoriteTree(AEMntrngTreeParamVO vo) throws Exception;
     AEMPrtcpntSymptmsVO selectSymptms(AEMntrngSymptmsParamVO vo) throws Exception;

@@ -21,6 +21,10 @@ public class AEMntmgService {
         return aEMntmg.selectPrtcpntList(vo);
     }
 
+    public AEMStdyPrtcpntVO selectPrtcpntView(AEMntrngParamVO vo) throws Exception {
+        return aEMntmg.selectPrtcpntView(vo);
+    }
+
     public List<AEMntrngTreeVO> selectAETree(AEMntrngTreeParamVO vo) throws Exception {
         return aEMntmg.selectAETree(vo);
     }

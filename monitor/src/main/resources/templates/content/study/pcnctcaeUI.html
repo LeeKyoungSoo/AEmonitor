@@ -45,7 +45,7 @@
             <td class="tdTextLeft">
                 <select id="pcnctcaeCoList" name="pcnctcaeCoList" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm"
                     style="width:90%;">
-                    <option value=""></option>
+                    <option value="">------------ 전 체 ------------</option>
                     <th:block th:each="pcnctcae : ${pcnctcaeVOList}" >
                         <option th:value="${pcnctcae.ctcaeVer + '|' + pcnctcae.medDraSoc}" th:text="${pcnctcae.medDraSoc}" />
                     </th:block>

@@ -13,15 +13,15 @@
 
 <th:block th:replace="layout/header"></th:block>
 
+<th:block th:replace="layout/commonLeft"></th:block>
+
 <th:block layout:fragment="content"></th:block>
+
+<th:block th:replace="layout/footer"></th:block>
 
 <!-- 공통 footer -->
 <th:block th:replace="layout/commonFooter"></th:block>
 
-<footer th:replace="layout/footer::footer"></footer>
-
-<!-- 공통 javascript -->
-<!--<th:block th:replace="fragments/commonScript"></th:block>-->
 
 </body>
 
