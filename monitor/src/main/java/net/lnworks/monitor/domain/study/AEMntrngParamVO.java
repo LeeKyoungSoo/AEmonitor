@@ -13,6 +13,9 @@ public class AEMntrngParamVO {
     private String studyId;
     /** 연구기관ID */
     private String stdyInstId;
+    /** 참여자ID */
+    private String prtcpntId;
+
     /** 검색조건 */
     private String searchCnd;
     /** 검색어 */

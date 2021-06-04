@@ -219,6 +219,60 @@ public class StartController {
         return mav;
     }
 
+    @RequestMapping(value = "/examPrtcpnt")
+    public ModelAndView goExamPrtcpnt(HttpServletRequest request, Principal principal) throws Exception {
+        ModelAndView mav = new ModelAndView();
+
+        //사용자의 uniqId를 이용하여 처리 (AS-IS는 userId와 사용이 혼제되어 있음)
+        log.info(TAG_USER + " : " +  principal.getName());
+        LoginVO userVo = new LoginVO();
+        userVo.setUniqId(principal.getName());
+
+        //사용자정보
+        DataListMap userInfoMap = memberLoginService.getUserInfo(userVo);
+        DataListMap userAuthorityMap = memberLoginService.getUserauthority(userVo);
+        //userVo.setUniqId(userInfoMap.get("esntlId").toString());
+
+        //메뉴정보
+        MenuManageVO menuManageVO = new MenuManageVO();
+        menuManageVO.setTmpUniqId(userInfoMap.get("esntlId").toString());
+        menuManageVO.setMode("admin");
+        menuManageVO.setIntnetSysAt(intnetSys);
+        List<DataListMap> menuOneDepthMap = menuConfigService.getLevelOneMenuList(menuManageVO);
+        List<DataListMap> menuAllDepthMap = menuConfigService.getLevelAllMenuList(menuManageVO);
+
+        AEMntrngParamVO aeMntrngParamVO = new AEMntrngParamVO();
+        aeMntrngParamVO.setStudyId(request.getParameter("s_studyId").toString());
+        aeMntrngParamVO.setStdyInstId(request.getParameter("s_studyInstId").toString());
+        aeMntrngParamVO.setPrtcpntId(request.getParameter("s_prtcpntId").toString());
+        AEMStdyPrtcpntVO aemStdyPrtcpntVO = aeMntmgService.selectPrtcpntView(aeMntrngParamVO);
+
+        //연구정보
+        List<StudyInfoMngVO> studyInfoList =  studyMngService.selectMainStudyList(userVo);
+        List<InstMngVO> studyInstInfoList = null;
+        if ( studyInfoList != null && studyInfoList.size() > 0 ) {
+            studyInstInfoList = studyMngService.selectMainInstList(studyInfoList.get(0));
+        }
+
+        mav.addObject("userinfo", userInfoMap);
+        mav.addObject("menuTitle", "AE모니터링");
+        mav.addObject("sdate", DateTimeUtil.getNowDateHb());
+        mav.addObject("edate", DateTimeUtil.getNowDateHb());
+        mav.addObject("userAuthority", userAuthorityMap);
+        mav.addObject("menuOneDepth", menuOneDepthMap);
+        mav.addObject("menuAllDepth", menuAllDepthMap);
+        mav.addObject("studyInfoList", studyInfoList);
+        mav.addObject("studyInstInfoList", studyInstInfoList);
+        mav.addObject("prtcpntInfo", aemStdyPrtcpntVO);
+        mav.addObject("s_studyId", request.getParameter("s_studyId"));
+        mav.addObject("s_studyInstId", request.getParameter("s_studyInstId"));
+        mav.addObject("s_prtcpntId", request.getParameter("s_prtcpntId"));
+
+        mav.setViewName("content/aemnt.html");
+
+        return mav;
+    }
+
     @RequestMapping(value = "/examApiTest")
     public ModelAndView goExamApiTest(HttpServletRequest request, Principal principal) throws Exception {
         ModelAndView mav = new ModelAndView();
