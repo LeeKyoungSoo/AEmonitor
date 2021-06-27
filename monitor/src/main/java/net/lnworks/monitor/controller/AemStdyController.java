@@ -54,7 +54,7 @@ public class AemStdyController {
         aemMntrngVO.setLastUpdusrId(principal.getName());
         returnNum = aeMntmgService.updateAEMSumry(aemMntrngVO);
 
-        if (aemMntrngVO.getMntrngDcsnAt() != null && aemMntrngVO.getMntrngDcsnAt().equals("Y")) {
+       if (aemMntrngVO.getMntrngDcsnAt() != null && aemMntrngVO.getMntrngDcsnAt().equals("Y")) {
             aemMntrngVO.setMntrngDcsnEsntlId(principal.getName());
         }
 
